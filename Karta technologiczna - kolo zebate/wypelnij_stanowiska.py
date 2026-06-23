@@ -40,10 +40,10 @@ STANOWISKO = {
     "30": "JAFO\nFrezarka uniwersalna\nFWF-32J2\n(podzielnica)",
     "35": "JAFO\nFrezarka uniwersalna\nFWF-32J2\n(podzielnica)",
     # Operacje poza zakresem katalogu obrabiarek skrawających:
-    "40": "Brak w katalogu\n(stanowisko\nhartowania\npłomieniowego)",
-    "45": "Brak w katalogu\n(piec do\nodpuszczania)",
-    "50": "Brak w katalogu\n(szlifierka do\nuzębień)",
-    "55": "Brak w katalogu\n(myjnia\nprzemysłowa)",
+    "40": "Stanowisko hartowania\npłomieniowego",
+    "45": "Piec do odpuszczania",
+    "50": "Szlifierka do uzębień",
+    "55": "Myjnia przemysłowa",
     "60": "IOS\nWspółrzędnościowa\nmaszyna pomiarowa\nMP 700E",
 }
 

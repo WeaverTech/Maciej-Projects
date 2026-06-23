@@ -20,25 +20,18 @@ przezbrojeń).
 | 25 | Rowek wpustowy w otworze piasty | **JAFO – FWF-32J2** (przyrząd do dłutowania + podzielnica) | Nóż dłutowniczy do rowka wpustowego | dłutowanie rowka w otworze + podział ✓ |
 | 30 | Nacinanie zębów | **JAFO – FWF-32J2** (podzielnica) | **Frez modułowy krążkowy NFMb** + trzpień frezarski | ta sama maszyna co op 25/35. Uwaga: brak frezarki obwiedniowej w katalogu – przyjęto frezowanie kształtowe frezem modułowym z podziałem |
 | 35 | Otwory poprzeczne, kieszenie, gratowanie, fazowanie | **JAFO – FWF-32J2** (podzielnica) | Wiertło kręte NWKa; frez trzpieniowy NFPb; pogłębiacz stożkowy NWSa (fazowanie) | ta sama maszyna co op 25/30 |
-| 40 | Hartowanie płomieniowe lokalne | **brak w katalogu** | – | obróbka cieplna – wymagane stanowisko hartowania płomieniowego (poza zakresem katalogu) |
-| 45 | Niskie odpuszczanie | **brak w katalogu** | – | obróbka cieplna – wymagany piec do odpuszczania (poza zakresem katalogu) |
-| 50 | Szlifowanie profili zębów po hartowaniu | **brak w katalogu** | (ściernica – brak katalogu) | wymagana szlifierka do uzębień – brak w katalogu (są tylko szlifierki do wałków/otworów/płaszczyzn) |
-| 55 | Mycie / czyszczenie i przekazanie do magazynu | **brak w katalogu** | – | wymagana myjnia przemysłowa (poza zakresem katalogu) |
+| 40 | Hartowanie płomieniowe lokalne | **Stanowisko hartowania płomieniowego** | – | obróbka cieplna (poza katalogiem obrabiarek) |
+| 45 | Niskie odpuszczanie | **Piec do odpuszczania** | – | obróbka cieplna (poza katalogiem obrabiarek) |
+| 50 | Szlifowanie profili zębów po hartowaniu | **Szlifierka do uzębień** | – | poza katalogiem obrabiarek |
+| 55 | Mycie / czyszczenie i przekazanie do magazynu | **Myjnia przemysłowa** | – | poza katalogiem obrabiarek |
 | 60 | Kontrola metrologiczna | **IOS – WMP MP 700E** | (ewolwentomierz – poza katalogiem) | zakres 700×600×420 mm, masa do 500 kg → Ø192×52 mieści się z zapasem ✓ |
 
 ## Minimalizacja nakładu pracy
 - **CHOFUM TZC-32N1** – operacje **15 i 20** (toczenie zewnętrzne + obróbka otworu z jednego zamocowania; tokarka uchwytowa przeznaczona do części typu tarcza/pierścień). Producent dostarcza dedykowane imaki nożowe do tej tokarki.
 - **JAFO FWF-32J2** – operacje **10, 25, 30, 35** (frezowanie czołowe, dłutowanie rowka, nacinanie zębów, otwory/kieszenie – wszystko z podzielnicą).
 
-## Nadal brakuje (do uzupełnienia kolumny „Stanowisko")
-Dla operacji **40, 45, 50, 55** w dostarczonych katalogach **nie ma maszyn**:
-- **40 / 45** – piece / stanowiska do obróbki cieplnej (hartowanie płomieniowe, odpuszczanie),
-- **50** – szlifierka do uzębień (obwiedniowa lub profilowa),
-- **55** – myjnia przemysłowa.
-
-Dostarczone w drugiej turze pliki to **katalogi narzędzi skrawających**
-(frezy, noże, wiertła, rozwiertaki, gwintowniki) i **oprzyrządowania**
-(oprawki, imaki) – posłużyły do uzupełnienia kolumny „Pomoce warsztatowe",
-ale **nie zawierają maszyn** do operacji 40/45/50/55. Aby je przypisać,
-potrzebny jest katalog pieców do obróbki cieplnej, szlifierek do uzębień oraz
-myjni.
+## Uwaga
+Operacje **40, 45, 50, 55** to obróbka cieplna, szlifowanie uzębień i mycie –
+w dostarczonych katalogach nie ma ich modeli, dlatego w kolumnie „Stanowisko"
+wpisano ogólne nazwy stanowisk (stanowisko hartowania płomieniowego, piec do
+odpuszczania, szlifierka do uzębień, myjnia przemysłowa).
