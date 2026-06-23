@@ -34,8 +34,8 @@ ROWS = {
 STANOWISKO = {
     "5":  "BFO\nPrzecinarka taśmowa\nautomatyczna BEE 250",
     "10": "JAFO\nFrezarka uniwersalna\nwspornikowa FWF-32J2",
-    "15": "CHOFUM\nCentrum tokarskie\nCT-32N",
-    "20": "CHOFUM\nCentrum tokarskie\nCT-32N",
+    "15": "CHOFUM\nTokarka uchwytowa\nTZC-32N1",
+    "20": "CHOFUM\nTokarka uchwytowa\nTZC-32N1",
     "25": "JAFO\nFrezarka uniwersalna\nFWF-32J2 (przyrząd\ndo dłutowania +\npodzielnica)",
     "30": "JAFO\nFrezarka uniwersalna\nFWF-32J2\n(podzielnica)",
     "35": "JAFO\nFrezarka uniwersalna\nFWF-32J2\n(podzielnica)",
@@ -48,16 +48,49 @@ STANOWISKO = {
 }
 
 
+# Kolumna "Pomoce warsztatowe" (x-zakres) oraz dopisywane narzedzia skrawajace
+# i oprzyrzadowanie z katalogow narzedziowych (frezy, noze, wiertla, rozwiertaki,
+# oprzyrzadowanie). Tekst nanoszony w dolnej, wolnej czesci komorki - pod juz
+# wpisanymi przyrzadami pomiarowymi/mocujacymi (formatka bez zmian).
+POM_X0, POM_X1 = 396.5, 488.0
+
+# (strona, y-start) - miejsce rozpoczecia dopisku w dolnej czesci komorki.
+POM_POS = {
+    "5":  (0, 207), "10": (0, 272), "15": (0, 340), "20": (0, 436),
+    "25": (0, 557), "30": (0, 626), "35": (0, 724),
+}
+
+POMOCE = {
+    "5":  "Taśma tnąca bimetalowa\n25×0,9×3950",
+    "10": "Frez nasadzany walcowo-\nczołowy NFCb + trzpień",
+    "15": "Nóż tokarski składany do\ntoczenia zewn. (PAFANA,\nsyst. P) + imak TZC-32N1",
+    "20": "Wiertło kręte NWKc;\nnóż wytaczak składany\n(PAFANA, tocz. wewn.);\nrozwiertak masz. NRTc",
+    "25": "Nóż dłutowniczy do rowka\nwpustowego (do przyrządu\ndo dłutowania)",
+    "30": "Frez modułowy krążkowy\nNFMb + trzpień frezarski",
+    "35": "Wiertło kręte NWKa; frez\ntrzpieniowy NFPb; pogłębiacz\nstożkowy NWSa (fazowanie)",
+}
+
+
 def main():
     doc = fitz.open(SRC)
     for page in doc:
         page.insert_font(fontname="dejavu", fontfile=FONT)
+    # Kolumna STANOWISKO
     for op, text in STANOWISKO.items():
         pno, y0 = ROWS[op]
         page = doc[pno]
         rect = fitz.Rect(COL_X0 + 1.0, y0 - 0.5, COL_X1 - 1.0, y0 + 80)
         page.insert_textbox(
             rect, text, fontname="dejavu", fontsize=6.0,
+            align=fitz.TEXT_ALIGN_LEFT, lineheight=1.05,
+        )
+    # Kolumna POMOCE WARSZTATOWE - dopisek narzedzi skrawajacych
+    for op, text in POMOCE.items():
+        pno, ys = POM_POS[op]
+        page = doc[pno]
+        rect = fitz.Rect(POM_X0, ys, POM_X1, ys + 60)
+        page.insert_textbox(
+            rect, text, fontname="dejavu", fontsize=5.5,
             align=fitz.TEXT_ALIGN_LEFT, lineheight=1.05,
         )
     doc.save(DST, deflate=True)

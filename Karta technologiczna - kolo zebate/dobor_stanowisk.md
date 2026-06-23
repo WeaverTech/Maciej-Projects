@@ -1,36 +1,44 @@
-# Dobór stanowisk (obrabiarek) do karty technologicznej – koło zębate
+# Dobór stanowisk i narzędzi do karty technologicznej – koło zębate
 
 **Wyrób:** koło zębate, **materiał:** staliwo, **półfabrykat:** Ø192 × 52 mm.
 
-Obrabiarki dobrano **wyłącznie** z katalogu *„9.1.1 Elektroniczny katalog
-obrabiarek – polskie obrabiarki do metali"*. Każde stanowisko sprawdzono pod
-kątem zgodności technologicznej oraz możliwości zmieszczenia przedmiotu
-(Ø192 × 52 mm) w przestrzeni roboczej / na stole maszyny. Tam, gdzie po sobie
-następują operacje tego samego typu, użyto **tej samej maszyny**, aby
-zminimalizować liczbę przezbrojeń i nakład pracy.
+Stanowiska (obrabiarki) dobrano z katalogu *„9.1.1 Elektroniczny katalog
+obrabiarek – polskie obrabiarki do metali"*, a narzędzia skrawające i
+oprzyrządowanie z katalogów narzędziowych (frezy nasadzane i trzpieniowe,
+noże PAFANA, wiertła, rozwiertaki, gwintowniki, oprzyrządowanie BBiał / imaki
+TZC-32N1). Sprawdzono zgodność technologiczną oraz zmieszczenie przedmiotu
+(Ø192 × 52 mm) w przestrzeni roboczej / na stole maszyny. Dla następujących po
+sobie operacji tego samego typu użyto **tej samej maszyny** (minimalizacja
+przezbrojeń).
 
-| Nr op | Operacja | Stanowisko (katalog) | Uzasadnienie doboru i sprawdzenie wymiarowe |
-|------|----------|----------------------|---------------------------------------------|
-| 5 | Odcięcie półfabrykatu z pręta | **BFO – przecinarka taśmowa automatyczna BEE 250** | Cięcie automatyczne prętów; maks. przekrój okrągły 90° = Ø250 > Ø192. Pręt mieści się w imadłach piły. |
-| 10 | Wyrównanie powierzchni czołowych (baza) | **JAFO – frezarka uniwersalna wspornikowa FWF-32J2** | Pomoce: imadło maszynowe + czujnik zegarowy → frezowanie czołowe. Stół 320 × 1300 mm mieści Ø192; wrzeciono pionowe ISO40/50; maks. masa 200 kg. |
-| 15 | Toczenie zewnętrznych średnic | **CHOFUM – centrum tokarskie CT-32N** | Pomoce: uchwyt 3-szczękowy, mikrometr → tokarka. Maks. średnica toczenia Ø320 > Ø192. |
-| 20 | Otwór osiowy, roztaczanie/frezowanie i wykończenie piasty | **CHOFUM – centrum tokarskie CT-32N** | Ta sama maszyna co op 15 (dwie operacje tokarskie z rzędu → minimalizacja przezbrojeń). Oś C + napędzane narzędzia umożliwiają toczenie zewn., wytaczanie i frezowanie otworu z jednego zamocowania. |
-| 25 | Rowek wpustowy w otworze piasty | **JAFO – frezarka uniwersalna FWF-32J2** (przyrząd do dłutowania + podzielnica) | FWF-32J2 współpracuje z przyrządem do dłutowania i podzielnicą → wykonanie rowka wpustowego (dłutowanie) i podział kątowy. |
-| 30 | Nacinanie zębów | **JAFO – frezarka uniwersalna FWF-32J2** (podzielnica) | Ta sama maszyna co op 25 i 35 (operacje frezarskie z rzędu na podzielnicy). Uwaga: w katalogu **brak frezarki obwiedniowej** – najbliższym technologicznie stanowiskiem jest frezarka uniwersalna z podzielnicą (frezowanie kształtowe z podziałem). |
-| 35 | Otwory poprzeczne, kieszenie, gratowanie, fazowanie | **JAFO – frezarka uniwersalna FWF-32J2** (podzielnica) | Pomoce: imadło, uchwyt podziałowy → frezowanie z podziałem. Ta sama maszyna co op 25/30 – brak dodatkowych przezbrojeń. |
-| 40 | Hartowanie płomieniowe lokalne | *Brak w katalogu* | Operacja obróbki cieplnej – katalog zawiera wyłącznie obrabiarki skrawające. Wymagane stanowisko hartowania płomieniowego (poza zakresem katalogu). |
-| 45 | Niskie odpuszczanie | *Brak w katalogu* | Obróbka cieplna – wymagany piec do odpuszczania (poza zakresem katalogu). |
-| 50 | Szlifowanie profili zębów po hartowaniu | *Brak w katalogu* | Wymaga szlifierki do uzębień – brak takiej maszyny w katalogu (są jedynie szlifierki do wałków, otworów i płaszczyzn, nieprzeznaczone do szlifowania boków zębów). |
-| 55 | Mycie / czyszczenie i przekazanie do magazynu | *Brak w katalogu* | Operacja mycia – wymagana myjnia przemysłowa (poza zakresem katalogu obrabiarek). |
-| 60 | Kontrola metrologiczna | **IOS – współrzędnościowa maszyna pomiarowa MP 700E** | Zakres pomiarowy 700 × 600 × 420 mm, rozdzielczość 0,001 mm, masa przedmiotu do 500 kg → Ø192 × 52 mieści się z zapasem. Kontrola wymiarów, kształtu i położenia. (Pomiar odchyłek zarysu/linii zęba ewolwentomierzem – przyrząd spoza katalogu.) |
+| Nr op | Operacja | Stanowisko (katalog) | Narzędzia skrawające / oprzyrządowanie | Sprawdzenie wymiarowe |
+|------|----------|----------------------|----------------------------------------|-----------------------|
+| 5 | Odcięcie półfabrykatu z pręta | **BFO – przecinarka taśmowa BEE 250** | Taśma tnąca bimetalowa 25×0,9×3950 | cięcie Ø250 > Ø192 ✓ |
+| 10 | Wyrównanie powierzchni czołowych (baza) | **JAFO – frezarka uniwersalna FWF-32J2** | Frez nasadzany walcowo-czołowy NFCb + trzpień | stół 320×1300 mieści Ø192 ✓ |
+| 15 | Toczenie zewnętrznych średnic | **CHOFUM – tokarka uchwytowa TZC-32N1** | Nóż tokarski składany do toczenia zewn. (PAFANA, syst. P) + imak TZC-32N1 | toczenie nad suportem Ø320 > Ø192; uchwyt Ø315 ✓ |
+| 20 | Otwór osiowy, roztaczanie i wykończenie piasty | **CHOFUM – tokarka uchwytowa TZC-32N1** | Wiertło kręte NWKc; nóż wytaczak składany (PAFANA, tocz. wewn.); rozwiertak maszynowy NRTc | ta sama maszyna co op 15 (wiercenie + toczenie + wytaczanie z jednego zamocowania) |
+| 25 | Rowek wpustowy w otworze piasty | **JAFO – FWF-32J2** (przyrząd do dłutowania + podzielnica) | Nóż dłutowniczy do rowka wpustowego | dłutowanie rowka w otworze + podział ✓ |
+| 30 | Nacinanie zębów | **JAFO – FWF-32J2** (podzielnica) | **Frez modułowy krążkowy NFMb** + trzpień frezarski | ta sama maszyna co op 25/35. Uwaga: brak frezarki obwiedniowej w katalogu – przyjęto frezowanie kształtowe frezem modułowym z podziałem |
+| 35 | Otwory poprzeczne, kieszenie, gratowanie, fazowanie | **JAFO – FWF-32J2** (podzielnica) | Wiertło kręte NWKa; frez trzpieniowy NFPb; pogłębiacz stożkowy NWSa (fazowanie) | ta sama maszyna co op 25/30 |
+| 40 | Hartowanie płomieniowe lokalne | **brak w katalogu** | – | obróbka cieplna – wymagane stanowisko hartowania płomieniowego (poza zakresem katalogu) |
+| 45 | Niskie odpuszczanie | **brak w katalogu** | – | obróbka cieplna – wymagany piec do odpuszczania (poza zakresem katalogu) |
+| 50 | Szlifowanie profili zębów po hartowaniu | **brak w katalogu** | (ściernica – brak katalogu) | wymagana szlifierka do uzębień – brak w katalogu (są tylko szlifierki do wałków/otworów/płaszczyzn) |
+| 55 | Mycie / czyszczenie i przekazanie do magazynu | **brak w katalogu** | – | wymagana myjnia przemysłowa (poza zakresem katalogu) |
+| 60 | Kontrola metrologiczna | **IOS – WMP MP 700E** | (ewolwentomierz – poza katalogiem) | zakres 700×600×420 mm, masa do 500 kg → Ø192×52 mieści się z zapasem ✓ |
 
-## Podsumowanie minimalizacji nakładu pracy
-- **CHOFUM CT-32N** – operacje **15 i 20** (toczenie zewnętrzne + obróbka otworu z jednego zamocowania).
-- **JAFO FWF-32J2** – operacje **10, 25, 30, 35** (frezowanie czołowe, dłutowanie rowka, nacinanie zębów, otwory/kieszenie z podzielnicą).
+## Minimalizacja nakładu pracy
+- **CHOFUM TZC-32N1** – operacje **15 i 20** (toczenie zewnętrzne + obróbka otworu z jednego zamocowania; tokarka uchwytowa przeznaczona do części typu tarcza/pierścień). Producent dostarcza dedykowane imaki nożowe do tej tokarki.
+- **JAFO FWF-32J2** – operacje **10, 25, 30, 35** (frezowanie czołowe, dłutowanie rowka, nacinanie zębów, otwory/kieszenie – wszystko z podzielnicą).
 
-## Uwagi
-Operacje **40, 45, 50, 55** dotyczą obróbki cieplnej, szlifowania uzębień oraz
-mycia – w dostarczonym katalogu (polskie obrabiarki do metali) **nie ma** maszyn
-realizujących te zadania, dlatego nie przypisano im modeli. W razie potrzeby
-można je uzupełnić po dostarczeniu katalogu pieców, szlifierek do uzębień
-i myjni.
+## Nadal brakuje (do uzupełnienia kolumny „Stanowisko")
+Dla operacji **40, 45, 50, 55** w dostarczonych katalogach **nie ma maszyn**:
+- **40 / 45** – piece / stanowiska do obróbki cieplnej (hartowanie płomieniowe, odpuszczanie),
+- **50** – szlifierka do uzębień (obwiedniowa lub profilowa),
+- **55** – myjnia przemysłowa.
+
+Dostarczone w drugiej turze pliki to **katalogi narzędzi skrawających**
+(frezy, noże, wiertła, rozwiertaki, gwintowniki) i **oprzyrządowania**
+(oprawki, imaki) – posłużyły do uzupełnienia kolumny „Pomoce warsztatowe",
+ale **nie zawierają maszyn** do operacji 40/45/50/55. Aby je przypisać,
+potrzebny jest katalog pieców do obróbki cieplnej, szlifierek do uzębień oraz
+myjni.
