@@ -17,8 +17,8 @@ przezbrojeń).
 | 10 | Wyrównanie powierzchni czołowych (baza) | **JAFO – frezarka uniwersalna FWF-32J2** | Frez nasadzany walcowo-czołowy NFCb + trzpień | stół 320×1300 mieści Ø192 ✓ |
 | 15 | Toczenie zewnętrznych średnic | **CHOFUM – tokarka uchwytowa TZC-32N1** | Nóż tokarski składany do toczenia zewn. (PAFANA, syst. P) + imak TZC-32N1 | toczenie nad suportem Ø320 > Ø192; uchwyt Ø315 ✓ |
 | 20 | Otwór osiowy, roztaczanie i wykończenie piasty | **CHOFUM – tokarka uchwytowa TZC-32N1** | Wiertło kręte NWKc; nóż wytaczak składany (PAFANA, tocz. wewn.); rozwiertak maszynowy NRTc | ta sama maszyna co op 15 (wiercenie + toczenie + wytaczanie z jednego zamocowania) |
-| 25 | Rowek wpustowy w otworze piasty | **JAFO – FWF-32J2** (przyrząd do dłutowania + podzielnica) | Nóż dłutowniczy do rowka wpustowego | dłutowanie rowka w otworze + podział ✓ |
-| 30 | Nacinanie zębów | **JAFO – FWF-32J2** (podzielnica) | **Frez modułowy krążkowy NFMb** + trzpień frezarski | ta sama maszyna co op 25/35. Uwaga: brak frezarki obwiedniowej w katalogu – przyjęto frezowanie kształtowe frezem modułowym z podziałem |
+| 25 | Dłutowanie rowka wpustowego | **Dłutownica** (maszyna dedykowana) | Nóż dłutowniczy do rowka wpustowego | dłutowanie rowka w otworze wymaga dedykowanej dłutownicy (nie frezarki z przystawką); maszyna spoza katalogu |
+| 30 | Frezowanie obwiedniowe uzębienia | **Frezarka obwiedniowa do uzębień** | Frez ślimakowy / frez modułowy | nacinanie obwiedniowe wymaga dedykowanej frezarki obwiedniowej (nie frezarki z podzielnicą); maszyna spoza katalogu |
 | 35 | Otwory poprzeczne, kieszenie, gratowanie, fazowanie | **JAFO – FWF-32J2** (podzielnica) | Wiertło kręte NWKa; frez trzpieniowy NFPb; pogłębiacz stożkowy NWSa (fazowanie) | ta sama maszyna co op 25/30 |
 | 40 | Hartowanie płomieniowe lokalne | **Stanowisko hartowania płomieniowego** | – | obróbka cieplna (poza katalogiem obrabiarek) |
 | 45 | Niskie odpuszczanie | **Piec do odpuszczania** | – | obróbka cieplna (poza katalogiem obrabiarek) |
@@ -28,7 +28,9 @@ przezbrojeń).
 
 ## Minimalizacja nakładu pracy
 - **CHOFUM TZC-32N1** – operacje **15 i 20** (toczenie zewnętrzne + obróbka otworu z jednego zamocowania; tokarka uchwytowa przeznaczona do części typu tarcza/pierścień). Producent dostarcza dedykowane imaki nożowe do tej tokarki.
-- **JAFO FWF-32J2** – operacje **10, 25, 30, 35** (frezowanie czołowe, dłutowanie rowka, nacinanie zębów, otwory/kieszenie – wszystko z podzielnicą).
+- **JAFO FWF-32J2** – operacje **10 i 35** (frezowanie czołowe oraz wiercenie otworów poprzecznych / frezowanie powierzchni odciążających / fazowanie).
+
+Operacje wymagające maszyn specjalnych (a nie frezarki z przystawką): **25 – dłutownica**, **30 – frezarka obwiedniowa do uzębień**. Maszyn tych nie ma w dostarczonym katalogu, więc wpisano ich nazwy ogólne.
 
 ## Uwaga
 Operacje **40, 45, 50, 55** to obróbka cieplna, szlifowanie uzębień i mycie –

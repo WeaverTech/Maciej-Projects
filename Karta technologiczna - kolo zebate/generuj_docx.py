@@ -21,60 +21,42 @@ OPERACJE = [
     ("5", "BFO\nPrzecinarka taśmowa automatyczna BEE 250",
      "Odcięcie materiału wyjściowego z pręta walcowanego na określoną długość "
      "z uwzględnieniem naddatku na obróbkę powierzchni czołowych.",
-     "Suwmiarka\nDalmierz laserowy\nTaśma tnąca bimetalowa 25×0,9×3950"),
+     "Suwmiarka"),
     ("10", "JAFO\nFrezarka uniwersalna wspornikowa FWF-32J2",
-     "Wyrównanie powierzchni bocznych (czołowych) półfabrykatu w celu uzyskania "
-     "bazy technologicznej do dalszych operacji.",
-     "Imadło maszynowe\nSuwmiarka\nCzujnik zegarowy\nFrez nasadzany walcowo-czołowy NFCb + trzpień"),
+     "Frezowanie zgrubne powierzchni czołowych.",
+     "Imadło maszynowe\nSuwmiarka\nCzujnik zegarowy"),
     ("15", "CHOFUM\nTokarka uchwytowa TZC-32N1",
-     "Wstępne usunięcie naddatku z zewnętrznej średnicy przedmiotu obrabianego, "
-     "oraz obróbka kształtująca zewnętrznych średnic pod dokładne wymiary przed "
-     "operacjami nacinania uzębienia i szlifowania.",
-     "Uchwyt 3-szczękowy\nmikrometr zewnętrzny\nsuwmiarka\nNóż tokarski składany do toczenia "
-     "zewn. (PAFANA, syst. P) + imak TZC-32N1"),
+     "Toczenie zgrubne i średniodokładne powierzchni walcowej.",
+     "Uchwyt 3-szczękowy\nmikrometr zewnętrzny\nsuwmiarka"),
     ("20", "CHOFUM\nTokarka uchwytowa TZC-32N1",
-     "Wykonanie wstępnego otworu osiowego w piaście koła, roztaczanie/frezowanie "
-     "wewnętrznego otworu w celu zbliżenia geometrii do wymiaru nominalnego, "
-     "ostateczna obróbka wykańczająca otworu piasty zapewniająca wymaganą "
-     "tolerancję pasowania.",
-     "Imadło\nSuwmiarka\nUchwyt trójszczękowy\nWiertło kręte NWKc; nóż wytaczak składany "
-     "(PAFANA, tocz. wewn.); rozwiertak maszynowy NRTc"),
-    ("25", "JAFO\nFrezarka uniwersalna FWF-32J2\n(przyrząd do dłutowania + podzielnica)",
-     "Wstępne wybranie materiału pod rowek wpustowy w otworze piasty i wykończenie "
-     "rowka wpustowego na pełną szerokość i głębokość zgodnie z tolerancją "
-     "zapisaną w dokumentacji.",
-     "Przyrząd podziałowy\nsuwmiarka głębokościowa\npłytki wzorcowe\nNóż dłutowniczy do rowka wpustowego"),
-    ("30", "JAFO\nFrezarka uniwersalna FWF-32J2\n(podzielnica)",
-     "Nacinanie zębów na wieńcu metodą obwiedniową z pozostawieniem naddatku na "
-     "operację szlifowania. Ostateczne kształtowanie profilu zęba przed obróbką "
-     "cieplną w celu minimalizacji naddatków szlifierskich.",
-     "Trzpień montażowy\nmikrometr talerzykowy\nFrez modułowy krążkowy NFMb + trzpień frezarski"),
+     "Wiercenie i powiercanie oraz frezowanie średnio dokładne i wykańczające "
+     "otworu piasty.",
+     "Imadło\nSuwmiarka\nUchwyt trójszczękowy"),
+    ("25", "Dłutownica",
+     "Dłutowanie zgrubne i średnio dokładne rowka wpustowego.",
+     "Przyrząd podziałowy\nsuwmiarka głębokościowa\npłytki wzorcowe"),
+    ("30", "Frezarka obwiedniowa do uzębień",
+     "Frezowanie obwiedniowe zgrubne i średnio dokładne uzębienia.",
+     "Trzpień montażowy\nmikrometr talerzykowy"),
     ("35", "JAFO\nFrezarka uniwersalna FWF-32J2\n(podzielnica)",
-     "Wykonanie otworów prostopadłych do osi głównej przedmiotu, wyfrezowanie "
-     "wybrań/kieszeni redukujących masę własną koła zębatego, usunięcie ostrych "
-     "krawędzi, gratowanie i sfazowanie krawędzi czołowych otworu oraz krawędzi zębów.",
-     "Imadło maszynowe\nUchwyt podziałowy\nsuwmiarka\nWiertło kręte NWKa; frez trzpieniowy NFPb; "
-     "pogłębiacz stożkowy NWSa"),
+     "Wiercenie otworów poprzecznych, frezowanie zgrubne powierzchni "
+     "odciążających oraz wykonanie faz frezem fazującym.",
+     "Imadło maszynowe\nUchwyt podziałowy\nsuwmiarka"),
     ("40", "Stanowisko hartowania płomieniowego",
-     "Lokalne hartowanie płomieniowe innych wybranych stref elementu "
-     "(np. powierzchni czołowych piasty).",
+     "Hartowanie ogniowe.",
      "Termometr bezdotykowy"),
     ("45", "Piec do odpuszczania",
      "Niskie odpuszczanie po procesie hartowania w celu likwidacji naprężeń "
      "własnych i poprawy udarności rdzenia.",
      "termoogniwa kontrolne z rejestratorem profili temperatur"),
     ("50", "Szlifierka do uzębień",
-     "Ostateczna obróbka wykańczająca profili zębów po hartowaniu w celu uzyskania "
-     "wysokiej klasy dokładności geometrii i niskiej chropowatości powierzchni.",
+     "Ostateczna obróbka wykańczająca profili zębów po hartowaniu poprzez szlifowanie.",
      "trzpień precyzyjny\nmikrometr talerzykowy"),
     ("55", "Myjnia przemysłowa",
-     "Usunięcie pozostałości płynów obróbkowych, olejów hartowniczych oraz "
-     "zanieczyszczeń po szlifowaniu. Przekazanie gotowego wyrobu do magazynu.",
+     "Dokładne mycie i czyszczenie.",
      "Kosze transportowe\nalkaliczny środek myjący\npistolet ze sprężonym powietrzem"),
     ("60", "IOS\nWspółrzędnościowa maszyna pomiarowa MP 700E",
-     "Ostateczna kontrola metrologiczna gotowego wyrobu. Sprawdzenie zgodności "
-     "wymiarów liniowych, kątowych, tolerancji kształtu i położenia oraz parametrów "
-     "struktury geometrycznej powierzchni (chropowatości) z dokumentacją konstrukcyjną.",
+     "Ostateczna kontrola wymiarów gotowego wyrobu.",
      "Współrzędnościowa maszyna pomiarowa\newolwentomierz do kontroli odchyłek profilu i linii zęba"),
 ]
 
@@ -177,7 +159,8 @@ def main():
     foot = doc.add_table(rows=1, cols=3)
     foot.style = 'Table Grid'
     foot.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for c, val in enumerate(["Opracował:", "Sprawdził:", "Zatwierdził:"]):
+    for c, val in enumerate(["Opracował: Jakub Wydra", "Sprawdził: Kacper Tokarski",
+                             "Zatwierdził: Maciej Tkacz"]):
         style_cell(foot.cell(0, c), val, size=9, align='left')
     set_col_widths(foot, [Cm(6.2), Cm(6.2), Cm(6.0)])
 
