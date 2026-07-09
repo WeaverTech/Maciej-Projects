@@ -74,12 +74,14 @@ export function WorkshopEnvironment() {
       />
       <spotLight
         position={[0.5, 6, -4.5]}
-        angle={0.5}
+        angle={0.55}
         penumbra={0.6}
-        intensity={80}
+        intensity={260}
         color="#e8eef5"
         castShadow
       />
+      {/* Fill na stanowisko SCARA — kamera podchodzi tu z boku. */}
+      <pointLight position={[-2.5, 2.2, -3]} intensity={22} color="#cfd9e4" />
       {/* Akcent — zgaszony pomarańcz odbity od stanowiska maszyn. */}
       <pointLight position={[3.5, 1.5, -5.5]} intensity={8} color="#d9742b" />
     </group>

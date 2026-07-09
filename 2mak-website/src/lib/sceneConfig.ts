@@ -51,14 +51,14 @@ export const SCENES: SceneDefinition[] = [
     id: "scene-2-print",
     label: "Druk 3D i prototypowanie",
     // Dojazd do stanowiska z robotem SCARA; tu odbywa się Exploded View.
-    camera: { position: [2.4, 1.7, -0.5], target: [0, 1.2, -4], fov: 40 },
+    camera: { position: [-3.1, 1.9, -1.3], target: [0.2, 1.0, -4.4], fov: 44 },
     scrollWeight: 1.6,
   },
   {
     id: "scene-3-machines",
     label: "Budowa maszyn",
     // Obrót o ~90°: kamera przechodzi na bok stanowiska montażowego.
-    camera: { position: [-4.5, 1.6, -4.2], target: [0.5, 1.0, -4.5], fov: 42 },
+    camera: { position: [-4.4, 1.4, -5.6], target: [0.8, 0.7, -4.6], fov: 42 },
     scrollWeight: 1.2,
   },
   {

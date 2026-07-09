@@ -52,8 +52,8 @@ export function Experience() {
           <CadWireframe position={[-1.4, 1.6, 3.4]} />
 
           {/* Sceny 2 i 3 — robot SCARA (Exploded View) + stanowisko maszyn. */}
-          <ScaraRobot position={[0, 0.55, -4.4]} />
-          <MachineStation position={[2.2, 0, -4.8]} />
+          <ScaraRobot position={[0, 0, -4.4]} />
+          <MachineStation position={[2.4, 0, -5.4]} />
 
           {/* Scena 4 — Depth of Field sterowany scrollem. */}
           <PostFX />
