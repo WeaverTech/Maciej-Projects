@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Cable, Clock, Mail, MapPin, Phone } from 'lucide-react'
+import { Clock, Mail, MapPin, Phone } from 'lucide-react'
+import BrandLogo from '../ui/BrandLogo'
 
 export default function Footer() {
   return (
@@ -8,9 +9,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 md:grid-cols-3">
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center border-2 border-brand-500 bg-steel-950">
-              <Cable className="h-5 w-5 text-brand-500" />
-            </div>
+            <BrandLogo className="h-11 w-11" />
             <span className="text-lg font-black uppercase tracking-widest text-white">
               Prima<span className="text-brand-500">-Hydro</span>
             </span>
@@ -28,8 +27,8 @@ export default function Footer() {
           <ul className="space-y-3 text-sm text-steel-300">
             <li className="flex items-center gap-2.5">
               <Phone className="h-4 w-4 shrink-0 text-brand-500" />
-              <a href="tel:+48601234567" className="font-mono hover:text-brand-400">
-                +48 601 234 567
+              <a href="tel:+48606478677" className="font-mono hover:text-brand-400">
+                +48 606 478 677
               </a>
             </li>
             <li className="flex items-center gap-2.5">
@@ -41,9 +40,9 @@ export default function Footer() {
             <li className="flex items-start gap-2.5">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" />
               <span>
-                ul. Przemysłowa 12
+                Błagodać 1B
                 <br />
-                63-400 Ostrów Wielkopolski
+                26-234 Mnin
               </span>
             </li>
           </ul>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Cable, Clock, MapPin, Phone } from 'lucide-react'
+import { Clock, MapPin, Phone } from 'lucide-react'
+import BrandLogo from '../ui/BrandLogo'
 
 export default function Header() {
   return (
@@ -10,7 +11,7 @@ export default function Header() {
           <div className="flex items-center gap-6">
             <span className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5 text-brand-500" />
-              ul. Przemysłowa 12, 63-400 Ostrów Wielkopolski
+              Błagodać 1B, 26-234 Mnin
             </span>
             <span className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 text-brand-500" />
@@ -24,10 +25,7 @@ export default function Header() {
       {/* Główna belka z logo i nawigacją */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         <Link to="/" className="group flex items-center gap-3">
-          <div className="relative flex h-11 w-11 items-center justify-center border-2 border-brand-500 bg-steel-900">
-            <Cable className="h-6 w-6 text-brand-500" />
-            <span className="absolute -bottom-1 -right-1 h-2 w-2 bg-hazard-400" />
-          </div>
+          <BrandLogo className="h-12 w-12" />
           <div className="leading-tight">
             <span className="block text-lg font-black uppercase tracking-widest text-white">
               Prima<span className="text-brand-500">-Hydro</span>
@@ -39,23 +37,23 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-semibold uppercase tracking-wide text-steel-300 md:flex">
-          <a href="/#uslugi" className="transition-colors hover:text-brand-400">
+          <a href="#uslugi" className="transition-colors hover:text-brand-400">
             Usługi
           </a>
-          <a href="/#konfigurator" className="transition-colors hover:text-brand-400">
+          <a href="#konfigurator" className="transition-colors hover:text-brand-400">
             Konfigurator
           </a>
-          <a href="/#kontakt" className="transition-colors hover:text-brand-400">
+          <a href="#kontakt" className="transition-colors hover:text-brand-400">
             Kontakt
           </a>
         </nav>
 
         <a
-          href="tel:+48601234567"
+          href="tel:+48606478677"
           className="flex items-center gap-2 border border-brand-500 bg-brand-500/10 px-4 py-2 text-sm font-bold text-brand-400 transition-colors hover:bg-brand-500 hover:text-steel-950"
         >
           <Phone className="h-4 w-4" />
-          <span className="font-mono">+48 601 234 567</span>
+          <span className="font-mono">+48 606 478 677</span>
         </a>
       </div>
     </header>

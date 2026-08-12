@@ -14,6 +14,20 @@ npm run build    # build produkcyjny
 npm run preview  # podgląd builda
 ```
 
+## Logo
+
+Plik logo firmy należy umieścić jako `public/logo.png` – strona podstawia go automatycznie
+w nagłówku i stopce (gdy pliku brak, wyświetlany jest techniczny znak zastępczy).
+
+## Hosting na GitHub Pages
+
+Repozytorium zawiera workflow `.github/workflows/deploy-pages.yml`, który po każdym pushu
+na `main` buduje aplikację i publikuje ją na GitHub Pages
+(`https://<właściciel>.github.io/<nazwa-repo>/`).
+
+Jednorazowa konfiguracja: w repozytorium **Settings → Pages → Build and deployment →
+Source: GitHub Actions**.
+
 ## Funkcjonalności
 
 - **Strona główna** (`/`) – industrialny design (ciemna stal, pomarańcz, żółć ostrzegawcza),
