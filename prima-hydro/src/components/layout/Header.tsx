@@ -25,7 +25,7 @@ export default function Header() {
       {/* Główna belka z logo i nawigacją */}
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
         <Link to="/" className="group flex items-center gap-3">
-          <BrandLogo className="h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]" />
+          <BrandLogo className="h-11 w-11" />
           <div className="leading-tight">
             <span className="block text-lg font-black uppercase tracking-widest text-white">
               Prima<span className="text-brand-500">-Hydro</span>

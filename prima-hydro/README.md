@@ -14,19 +14,13 @@ npm run build    # build produkcyjny
 npm run preview  # podgląd builda
 ```
 
-## Logo
-
-Logo firmy leży w `public/logo.webp` (z kopią `public/logo.png` jako fallback).
-Strona podstawia je automatycznie w nagłówku, hero i stopce.
-
 ## Hosting na GitHub Pages
 
-Repozytorium zawiera workflow `.github/workflows/deploy-pages.yml`, który po każdym pushu
-na `main` buduje aplikację i publikuje ją na GitHub Pages
-(`https://<właściciel>.github.io/<nazwa-repo>/`).
+Workflow `.github/workflows/deploy-pages.yml` publikuje stronę po każdym pushu na `main`.
 
-Jednorazowa konfiguracja: w repozytorium **Settings → Pages → Build and deployment →
-Source: GitHub Actions**.
+1. Zmerguj PR do `main`.
+2. W repozytorium: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Adres: `https://weavertech.github.io/Maciej-Projects/`
 
 ## Funkcjonalności
 
