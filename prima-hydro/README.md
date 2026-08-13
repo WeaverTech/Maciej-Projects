@@ -16,8 +16,8 @@ npm run preview  # podgląd builda
 
 ## Logo
 
-Plik logo firmy należy umieścić jako `public/logo.png` – strona podstawia go automatycznie
-w nagłówku i stopce (gdy pliku brak, wyświetlany jest techniczny znak zastępczy).
+Logo firmy leży w `public/logo.webp` (z kopią `public/logo.png` jako fallback).
+Strona podstawia je automatycznie w nagłówku, hero i stopce.
 
 ## Hosting na GitHub Pages
 

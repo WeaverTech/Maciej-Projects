@@ -9,7 +9,7 @@ export default function Footer() {
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 md:grid-cols-3">
         <div>
           <div className="mb-4 flex items-center gap-3">
-            <BrandLogo className="h-11 w-11" />
+            <BrandLogo className="h-16 w-16" />
             <span className="text-lg font-black uppercase tracking-widest text-white">
               Prima<span className="text-brand-500">-Hydro</span>
             </span>

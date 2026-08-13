@@ -7,10 +7,11 @@ interface BrandLogoProps {
 }
 
 /**
- * Logo firmowe – ładuje public/logo.png; gdy pliku brak,
- * wyświetla techniczny znak zastępczy.
+ * Logo firmowe – ładuje public/logo.webp (z fallbackiem PNG).
+ * Gdy pliku brak, wyświetla techniczny znak zastępczy.
  */
-export default function BrandLogo({ className = 'h-11 w-11' }: BrandLogoProps) {
+export default function BrandLogo({ className = 'h-16 w-16' }: BrandLogoProps) {
+  const [src, setSrc] = useState(`${import.meta.env.BASE_URL}logo.webp`)
   const [failed, setFailed] = useState(false)
 
   if (failed) {
@@ -26,10 +27,14 @@ export default function BrandLogo({ className = 'h-11 w-11' }: BrandLogoProps) {
 
   return (
     <img
-      src={`${import.meta.env.BASE_URL}logo.png`}
-      alt="Logo Prima-Hydro"
-      className={`shrink-0 object-contain ${className}`}
-      onError={() => setFailed(true)}
+      src={src}
+      alt="Logo Prima-Hydro – zakuwanie węży hydraulicznych"
+      className={`shrink-0 object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] ${className}`}
+      onError={() => {
+        const png = `${import.meta.env.BASE_URL}logo.png`
+        if (src !== png) setSrc(png)
+        else setFailed(true)
+      }}
     />
   )
 }
