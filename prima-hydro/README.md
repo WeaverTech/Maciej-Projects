@@ -16,11 +16,12 @@ npm run preview  # podgląd builda
 
 ## Hosting na GitHub Pages
 
-Workflow `.github/workflows/deploy-pages.yml` publikuje stronę po każdym pushu na `main`.
+Workflow `.github/workflows/deploy-pages.yml` publikuje stronę **tylko z gałęzi `main`**.
 
-1. Zmerguj PR do `main`.
+1. Zmerguj zmiany do `main`.
 2. W repozytorium: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-3. Adres: `https://weavertech.github.io/Maciej-Projects/`
+3. W **Actions** uruchom workflow *Deploy Prima-Hydro to GitHub Pages* **z gałęzi `main`** (nie z feature brancha).
+4. Adres: `https://weavertech.github.io/Maciej-Projects/`
 
 ## Funkcjonalności
 
