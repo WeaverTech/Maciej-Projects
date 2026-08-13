@@ -3,9 +3,6 @@ name: Deploy Prima-Hydro to GitHub Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'prima-hydro/**'
-      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -24,9 +21,12 @@ jobs:
       run:
         working-directory: prima-hydro
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      # Rejestruje / naprawia konfigurację Pages – bez tego deploy bywa 404
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/setup-node@v6
         with:
           node-version: 22
           cache: npm
@@ -38,19 +38,21 @@ jobs:
         env:
           DEPLOY_BASE: /Maciej-Projects/
 
-      # SPA fallback – dzięki temu bezpośrednie wejście na /admin nie zwraca 404
+      # SPA fallback – bezpośrednie wejście na /admin nie zwraca 404
       - run: cp dist/index.html dist/404.html
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: prima-hydro/dist
 
   deploy:
     needs: build
+    # Środowisko github-pages wpuszcza tylko gałąź main
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
