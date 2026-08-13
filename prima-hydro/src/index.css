@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  /* Industrialna paleta: ciemna stal + pomarańcz ostrzegawczy + żółć */
+  --color-steel-950: #0b0d10;
+  --color-steel-900: #12151a;
+  --color-steel-850: #171b21;
+  --color-steel-800: #1e232b;
+  --color-steel-700: #2b323d;
+  --color-steel-600: #3d4654;
+  --color-steel-400: #7c8798;
+  --color-steel-300: #a3adbc;
+  --color-steel-200: #cdd4de;
+
+  --color-brand-400: #ff9633;
+  --color-brand-500: #f97316;
+  --color-brand-600: #ea580c;
+
+  --color-hazard-400: #fbbf24;
+  --color-hazard-500: #f59e0b;
+
+  --font-sans: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-steel-950 text-steel-200 font-sans antialiased;
+}
+
+/* Pas ostrzegawczy (czarno-żółte skosy) */
+.hazard-stripes {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-hazard-500) 0 12px,
+    #0b0d10 12px 24px
+  );
+}
+
+/* Subtelna siatka techniczna w tle sekcji hero */
+.blueprint-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+::selection {
+  background: var(--color-brand-500);
+  color: #0b0d10;
+}
+
+/* Scrollbar w klimacie industrialnym */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-steel-950);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-steel-700);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-600);
+}
