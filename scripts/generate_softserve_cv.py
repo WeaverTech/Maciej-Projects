@@ -20,6 +20,7 @@ from reportlab.pdfgen import canvas
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "softserve-cv"
 REDSKY_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "redsky-cv"
+INBOLT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "inbolt-cv"
 FONT_REGULAR = "DejaVuSans"
 FONT_BOLD = "DejaVuSans-Bold"
 
@@ -69,7 +70,7 @@ CV_EN = {
             "items": [
                 "Robotics simulation & digital twins: Visual Components, robot workcells, robot paths, process logic, collision checks, cycle flows and layout optimization.",
                 "Programming: Python, C++, Arduino/C, JavaScript basics; automation scripts, calculation scripts, hardware-control experiments and technical troubleshooting.",
-                "Robotics & control: kinematics fundamentals, motion basics, sensing concepts, control systems, dynamic systems modelling, automation, mechatronics and analytical mechanics coursework.",
+                "Robotics & control: kinematics fundamentals, motion basics, sensing concepts, control systems, dynamic systems modelling, automation, mechatronics and analytical mechanics coursework; industrial robot programming (Kawasaki, Epson - certified courses).",
                 "Simulation exposure: MATLAB at university; ROS self-study in personal robotics projects; strong willingness to learn Gazebo, Isaac Sim and similar tools.",
                 "CAD & prototyping: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; rapid prototyping with FDM, SLA and MJF; design for additive manufacturing and reverse engineering.",
                 "Hardware-software integration: NEMA stepper motors, TMC/DRV motor drivers, Arduino/ESP32-class microcontroller and single-board platforms, wiring, testing and iterative debugging of electromechanical prototypes.",
@@ -95,6 +96,7 @@ CV_EN = {
                     "date": "Jan 2025 - May 2026",
                     "items": [
                         "Created robotics simulations and digital twins of production workcells in Visual Components for automotive clients.",
+                        "Developed Python scripts for process optimization and for improving simulation behaviour and performance.",
                         "Developed robot logic, motion sequences, robot paths, collision checks, cycle flows and virtual process validation.",
                         "Optimized workcell layouts and 3D geometry for simulation needs, using SolidWorks and Autodesk Inventor.",
                         "Analyzed customer documentation, engineering standards and technical specifications to support solution concepts aligned with production requirements.",
@@ -144,7 +146,8 @@ CV_EN = {
         {
             "title": "Certificates",
             "items": [
-                "Kawasaki robot operation and programming - integrator course, ASTOR Robotics Center (May 2022).",
+                "Kawasaki robot operation and programming - integrator course with certificate, ASTOR Robotics Center (May 2022).",
+                "Epson industrial robot programming - certified course.",
                 "Python programming courses and self-directed Python/C++ development in robotics and automation projects.",
             ],
         },
@@ -159,6 +162,7 @@ CV_EN = {
         "Technical Stack": [
             "Python",
             "C++ / Arduino C",
+            "Kawasaki & Epson robots",
             "Visual Components",
             "MATLAB basics",
             "ROS self-study",
@@ -205,7 +209,7 @@ CV_PL = {
             "items": [
                 "Symulacje robotyczne i digital twins: Visual Components, gniazda zrobotyzowane, ścieżki ruchu robotów, logika procesu, wykrywanie kolizji, cykle pracy i optymalizacja layoutu.",
                 "Programowanie: Python, C++, Arduino/C, podstawy JavaScript; skrypty automatyzujące, obliczeniowe, do sterowania hardware'em i rozwiązywania problemów technicznych.",
-                "Robotyka i sterowanie: podstawy kinematyki, ruchu, sensoryki, układów sterowania, modelowania układów dynamicznych, automatyki, mechatroniki i mechaniki analitycznej.",
+                "Robotyka i sterowanie: podstawy kinematyki, ruchu, sensoryki, układów sterowania, modelowania układów dynamicznych, automatyki, mechatroniki i mechaniki analitycznej; programowanie robotów przemysłowych (Kawasaki, Epson - kursy z certyfikatami).",
                 "Narzędzia symulacyjne: MATLAB na studiach; ROS rozwijany samodzielnie w projektach robotycznych; gotowość do nauki Gazebo, Isaac Sim i podobnych środowisk.",
                 "CAD i prototypowanie: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; rapid prototyping w FDM, SLA i MJF; projektowanie pod technologie przyrostowe i inżynieria odwrotna.",
                 "Integracja hardware-software: silniki krokowe NEMA, sterowniki TMC/DRV, platformy mikrokontrolerowe klasy Arduino/ESP32 i komputery jednopłytkowe, okablowanie, testowanie i iteracyjne debugowanie prototypów elektromechanicznych.",
@@ -231,6 +235,7 @@ CV_PL = {
                     "date": "01.2025 - 05.2026",
                     "items": [
                         "Tworzenie symulacji robotycznych i cyfrowych bliźniaków gniazd produkcyjnych w Visual Components dla klientów z branży Automotive.",
+                        "Pisanie skryptów w Pythonie do optymalizacji procesów oraz usprawniania działania i wydajności symulacji.",
                         "Przygotowywanie logiki pracy robotów, sekwencji ruchu, ścieżek, kontroli kolizji, cykli produkcyjnych i wirtualnej walidacji procesu.",
                         "Optymalizacja layoutów stanowisk oraz geometrii 3D na potrzeby symulacji z użyciem SolidWorks i Autodesk Inventor.",
                         "Analiza dokumentacji klienta, standardów inżynieryjnych i specyfikacji technicznych w celu wsparcia koncepcji rozwiązań zgodnych z wymaganiami produkcyjnymi.",
@@ -280,7 +285,8 @@ CV_PL = {
         {
             "title": "Certyfikaty",
             "items": [
-                "Obsługa i programowanie robotów Kawasaki - kurs dla integratorów, ASTOR Robotics Center (05.2022).",
+                "Obsługa i programowanie robotów Kawasaki - kurs dla integratorów z certyfikatem, ASTOR Robotics Center (05.2022).",
+                "Programowanie robotów przemysłowych Epson - kurs z certyfikatem.",
                 "Kursy programowania w Pythonie oraz samodzielny rozwój w Python/C++ w projektach robotycznych i automatyzacyjnych.",
             ],
         },
@@ -295,6 +301,7 @@ CV_PL = {
         "Stack techniczny": [
             "Python",
             "C++ / Arduino C",
+            "Roboty Kawasaki i Epson",
             "Visual Components",
             "Podstawy MATLAB",
             "ROS - samodzielna nauka",
@@ -344,7 +351,7 @@ PROFILE_REDSKY_PL = (
 
 REDSKY_SKILLS_EN = [
     "Hands-on prototyping & hardware: end-to-end electromechanical builds - CAD design (SolidWorks, Inventor, Fusion 360), 3D printing (FDM/SLA/MJF), component sourcing and selection (NEMA steppers, TMC/DRV drivers, microcontrollers), assembly, wiring and bring-up testing.",
-    "Mechatronics & control: kinematics, control systems, dynamic systems modelling, automation and mechatronics coursework; industrial robot programming (Kawasaki, teach pendant).",
+    "Mechatronics & control: kinematics, control systems, dynamic systems modelling, automation and mechatronics coursework; industrial robot programming (Kawasaki, Epson - certified courses, teach pendant).",
     "Programming: Python, C++, Arduino/C; hardware-control code, automation and calculation scripts, iterative debugging of electromechanical prototypes.",
     "Robotics software & simulation: Visual Components digital twins (robot paths, collision checks, cycle flows, layout optimization); ROS self-study; MATLAB at university; simulation-to-real validation mindset.",
     "Rapid iteration & ownership: personal R&D projects taken from concept to working prototype; reverse engineering; technical documentation; pragmatic build-test-improve approach.",
@@ -353,7 +360,7 @@ REDSKY_SKILLS_EN = [
 
 REDSKY_SKILLS_PL = [
     "Praktyczne prototypowanie i hardware: kompletne konstrukcje elektromechaniczne - projekt CAD (SolidWorks, Inventor, Fusion 360), druk 3D (FDM/SLA/MJF), dobór i pozyskiwanie komponentów (silniki krokowe NEMA, sterowniki TMC/DRV, mikrokontrolery), montaż, okablowanie i testy uruchomieniowe.",
-    "Mechatronika i sterowanie: kinematyka, układy sterowania, modelowanie układów dynamicznych, automatyka i mechatronika na studiach; programowanie robotów przemysłowych (Kawasaki, teach pendant).",
+    "Mechatronika i sterowanie: kinematyka, układy sterowania, modelowanie układów dynamicznych, automatyka i mechatronika na studiach; programowanie robotów przemysłowych (Kawasaki, Epson - kursy z certyfikatami, teach pendant).",
     "Programowanie: Python, C++, Arduino/C; kod sterujący hardware'em, skrypty automatyzujące i obliczeniowe, iteracyjne debugowanie prototypów elektromechanicznych.",
     "Oprogramowanie robotyczne i symulacje: cyfrowe bliźniaki w Visual Components (ścieżki robotów, kontrola kolizji, cykle pracy, optymalizacja layoutu); ROS we własnym zakresie; MATLAB na studiach; podejście simulation-to-real.",
     "Szybka iteracja i odpowiedzialność: projekty własne R&D od koncepcji do działającego prototypu; inżynieria odwrotna; dokumentacja techniczna; pragmatyczne podejście buduj-testuj-poprawiaj.",
@@ -400,6 +407,92 @@ CV_REDSKY_PL["sidebar"]["Słowa kluczowe"] = [
     "ROS (własne projekty)",
     "Digital twins",
     "Rapid prototyping",
+]
+
+
+PROFILE_INBOLT_EN = (
+    "Robotics application engineering profile: Mechanical Engineering student at Cracow University "
+    "of Technology and certified Software Technician with commercial Application Engineer experience "
+    "in robotics simulation and digital twins (Visual Components) for automotive clients, including "
+    "Python scripting for process optimization and simulation improvements. Certified courses in "
+    "industrial robot programming (Kawasaki, Epson). Built a SCARA robotic arm from scratch - CAD, "
+    "3D printing, stepper drives, microcontroller electronics and Python/C++ control software. "
+    "Strong CAD modelling and 3D-printing background. Native Polish, English C1; based in Poland, "
+    "available full-time and open to extensive travel to customer sites."
+)
+
+PROFILE_INBOLT_PL = (
+    "Profil inżyniera aplikacyjnego robotyki: student Mechaniki i Budowy Maszyn na Politechnice "
+    "Krakowskiej oraz Technik Programista z komercyjnym doświadczeniem na stanowisku Application "
+    "Engineer w symulacjach robotycznych i cyfrowych bliźniakach (Visual Components) dla klientów "
+    "Automotive, w tym pisanie skryptów w Pythonie do optymalizacji procesów i usprawniania "
+    "symulacji. Certyfikowane kursy programowania robotów przemysłowych (Kawasaki, Epson). Od "
+    "podstaw zbudowane ramię robota SCARA - CAD, druk 3D, napędy krokowe, elektronika "
+    "mikrokontrolerowa i oprogramowanie sterujące w Pythonie/C++. Mocny warsztat CAD i druku 3D. "
+    "Polski ojczysty, angielski C1; baza w Polsce, dostępność w pełnym wymiarze i gotowość do "
+    "częstych podróży do klientów."
+)
+
+INBOLT_SKILLS_EN = [
+    "Industrial robot programming: Kawasaki and Epson robots (certified courses) - teach pendant workflows, motion programs and robot cell testing; fast learner of FANUC, ABB and UR environments.",
+    "Python: solid scripting skills - process-optimization and simulation-improvement scripts in Visual Components, automation and calculation tools; C++ and Arduino/C for hardware control.",
+    "Robotics simulation & digital twins: Visual Components workcells for automotive clients - robot paths, collision checks, cycle flows, layout optimization and virtual process validation.",
+    "Customer-facing engineering: working with client documentation and automotive engineering standards; communicating simulation assumptions and improvement proposals to engineers and stakeholders.",
+    "CAD modelling & 3D printing: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; FDM/SLA/MJF rapid prototyping, design for manufacturing and reverse engineering.",
+    "Systems integration: SCARA arm built end-to-end (mechanics, electronics, software); hardware-software integration, testing and iterative debugging.",
+    "Work style: proactive, autonomous and quality-focused; native Polish, English C1; open to extensive travel to customer sites.",
+]
+
+INBOLT_SKILLS_PL = [
+    "Programowanie robotów przemysłowych: roboty Kawasaki i Epson (kursy z certyfikatami) - teach pendant, programy ruchu i testy stanowisk zrobotyzowanych; szybka adaptacja do środowisk FANUC, ABB i UR.",
+    "Python: solidne umiejętności skryptowe - skrypty optymalizujące procesy i usprawniające symulacje w Visual Components, narzędzia automatyzujące i obliczeniowe; C++ i Arduino/C do sterowania hardware'em.",
+    "Symulacje robotyczne i digital twins: gniazda w Visual Components dla klientów Automotive - ścieżki robotów, kontrola kolizji, cykle pracy, optymalizacja layoutu i wirtualna walidacja procesu.",
+    "Praca z klientem: analiza dokumentacji i standardów inżynieryjnych Automotive; komunikowanie założeń symulacji i propozycji usprawnień inżynierom i interesariuszom.",
+    "CAD i druk 3D: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; rapid prototyping FDM/SLA/MJF, projektowanie pod produkcję i inżynieria odwrotna.",
+    "Integracja systemów: ramię SCARA zbudowane end-to-end (mechanika, elektronika, software); integracja hardware-software, testy i iteracyjne debugowanie.",
+    "Styl pracy: proaktywność, samodzielność i dbałość o jakość; polski ojczysty, angielski C1; gotowość do częstych podróży do zakładów klientów.",
+]
+
+CV_INBOLT_EN = copy.deepcopy(CV_EN)
+CV_INBOLT_EN.update(
+    {
+        "filename": "Maciej_Tkacz_CV_Inbolt_EN",
+        "outdir": INBOLT_DIR,
+        "title": "Robotics Application Engineer",
+        "profile": PROFILE_INBOLT_EN,
+    }
+)
+CV_INBOLT_EN["sections"][0]["items"] = INBOLT_SKILLS_EN
+CV_INBOLT_EN["sidebar"]["Robotics Keywords"] = [
+    "Industrial robots (Kawasaki, Epson)",
+    "Robot deployment & testing",
+    "Digital twins",
+    "Robot paths & collisions",
+    "Python scripting",
+    "CAD & 3D printing",
+    "Automotive standards",
+    "Customer collaboration",
+]
+
+CV_INBOLT_PL = copy.deepcopy(CV_PL)
+CV_INBOLT_PL.update(
+    {
+        "filename": "Maciej_Tkacz_CV_Inbolt_PL",
+        "outdir": INBOLT_DIR,
+        "title": "Robotics Application Engineer",
+        "profile": PROFILE_INBOLT_PL,
+    }
+)
+CV_INBOLT_PL["sections"][0]["items"] = INBOLT_SKILLS_PL
+CV_INBOLT_PL["sidebar"]["Słowa kluczowe"] = [
+    "Roboty przemysłowe (Kawasaki, Epson)",
+    "Wdrożenia i testy robotów",
+    "Digital twins",
+    "Ścieżki i kolizje robotów",
+    "Skrypty Python",
+    "CAD i druk 3D",
+    "Standardy Automotive",
+    "Współpraca z klientem",
 ]
 
 
@@ -889,17 +982,105 @@ maciek01110@gmail.com | +48 881 912 125
     return path
 
 
+def write_inbolt_linkedin_message() -> Path:
+    path = INBOLT_DIR / "linkedin_message_inbolt.md"
+    path.write_text(
+        """# LinkedIn message - Inbolt, Robotics Application Engineer (Poland)
+
+Inbolt is a French company (Paris HQ) and the first recruitment call is with an
+HQ recruiter, so the primary message is in English. A Polish version is included
+as a fallback. The short note fits LinkedIn's 300-character connection-request limit.
+
+## Full version (EN) - InMail or after connecting
+
+Hello,
+
+I am reaching out about the Robotics Application Engineer (Poland) role at Inbolt.
+The position maps closely to what I have been doing commercially: I worked as an
+Application Engineer at AIAutomation, building robotics simulations and digital twins
+in Visual Components for automotive clients - robot paths, collision checking, cycle
+flows and layout optimization - and writing Python scripts for process optimization
+and improving simulation behaviour.
+
+Beyond simulation, I am hands-on with industrial robots and hardware:
+- certified courses in industrial robot programming (Kawasaki integrator course at
+  ASTOR Robotics Center, and Epson robot programming),
+- a SCARA robotic arm designed and built from scratch (CAD, 3D printing, stepper
+  drives, microcontroller electronics, Python/C++ control software),
+- strong CAD modelling (SolidWorks, Inventor, Fusion 360) and 3D printing
+  (FDM/SLA/MJF) - I noticed both are listed as desirable for this role.
+
+I am based in Poland (Krakow), a native Polish speaker with C1 English, available
+full-time thanks to a flexible study schedule, and open to extensive travel to
+customer sites - the customer-facing side of application engineering is the part
+I enjoy most. Vision-guided robotics is exactly the direction I want to grow in,
+and Inbolt's real-time 3D-vision guidance is a product I would be genuinely excited
+to deploy.
+
+I would be glad to send my CV and talk about how I could support Inbolt's
+deployments in Poland and across Europe.
+
+Best regards,
+Maciej Tkacz
+maciek01110@gmail.com | +48 881 912 125
+
+## Short connection note (EN, max 300 characters)
+
+Hello, I'm reaching out about the Robotics Application Engineer (Poland) role.
+Ex-Application Engineer: Visual Components digital twins for automotive plus Python
+optimization scripts; certified Kawasaki and Epson robot programming; CAD/3D printing.
+Based in PL, open to travel. Maciej Tkacz
+
+## Wersja pełna (PL)
+
+Dzień dobry,
+
+piszę w sprawie roli Robotics Application Engineer (Poland) w Inbolt. To stanowisko
+mocno pokrywa się z tym, co robiłem komercyjnie: jako Application Engineer w
+AIAutomation tworzyłem symulacje robotyczne i cyfrowe bliźniaki w Visual Components
+dla klientów Automotive - ścieżki robotów, kontrola kolizji, cykle produkcyjne,
+optymalizacja layoutów - oraz pisałem skrypty w Pythonie do optymalizacji procesów
+i usprawniania działania symulacji.
+
+Poza symulacjami pracuję praktycznie z robotami przemysłowymi i hardware'em:
+- certyfikowane kursy programowania robotów przemysłowych (kurs integratorski
+  Kawasaki w ASTOR Robotics Center oraz programowanie robotów Epson),
+- ramię SCARA zaprojektowane i zbudowane od zera (CAD, druk 3D, napędy krokowe,
+  elektronika mikrokontrolerowa, sterowanie w Pythonie/C++),
+- mocny warsztat CAD (SolidWorks, Inventor, Fusion 360) i druku 3D (FDM/SLA/MJF) -
+  obie rzeczy są wpisane w ogłoszeniu jako mile widziane.
+
+Mieszkam w Polsce (Kraków), polski to mój język ojczysty, angielski C1. Jestem
+dostępny w pełnym wymiarze dzięki możliwości dostosowania toku studiów i jestem
+gotowy na częste podróże do zakładów klientów - praca z klientem to część application
+engineeringu, którą lubię najbardziej. Robotyka sterowana wizyjnie to dokładnie
+kierunek, w którym chcę się rozwijać.
+
+Chętnie prześlę CV i porozmawiam o tym, jak mógłbym wesprzeć wdrożenia Inbolt
+w Polsce i Europie.
+
+Pozdrawiam,
+Maciej Tkacz
+maciek01110@gmail.com | 881 912 125
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     REDSKY_DIR.mkdir(parents=True, exist_ok=True)
+    INBOLT_DIR.mkdir(parents=True, exist_ok=True)
     created = []
-    for cv in (CV_EN, CV_PL, CV_REDSKY_EN, CV_REDSKY_PL):
+    for cv in (CV_EN, CV_PL, CV_REDSKY_EN, CV_REDSKY_PL, CV_INBOLT_EN, CV_INBOLT_PL):
         created.append(build_ats_docx(cv))
         created.append(build_visual_docx(cv))
         created.append(build_ats_pdf(cv))
         created.append(build_visual_pdf(cv))
     created.append(write_recruiter_messages())
     created.append(write_redsky_linkedin_message())
+    created.append(write_inbolt_linkedin_message())
     for path in created:
         print(path.relative_to(OUT_DIR.parents[1]))
 
