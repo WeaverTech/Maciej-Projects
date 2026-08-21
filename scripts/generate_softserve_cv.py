@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from pathlib import Path
 from typing import Iterable
 
@@ -18,6 +19,7 @@ from reportlab.pdfgen import canvas
 
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "softserve-cv"
+REDSKY_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "redsky-cv"
 FONT_REGULAR = "DejaVuSans"
 FONT_BOLD = "DejaVuSans-Bold"
 
@@ -48,13 +50,15 @@ PROFILE_PL = (
 
 CV_EN = {
     "filename": "Maciej_Tkacz_CV_SoftServe_EN",
+    "lang": "en",
+    "outdir": OUT_DIR,
     "name": "Maciej Tkacz",
     "title": "Junior Robotics / Simulation Engineer",
     "contact": [
         "Email: maciek01110@gmail.com",
         "Phone: +48 881 912 125",
         "Location: Krakow, Poland",
-        "English: C1",
+        "Polish: native | English: C1",
         "Driving licence: category B",
     ],
     "profile_title": "Professional Profile",
@@ -68,7 +72,7 @@ CV_EN = {
                 "Robotics & control: kinematics fundamentals, motion basics, sensing concepts, control systems, dynamic systems modelling, automation, mechatronics and analytical mechanics coursework.",
                 "Simulation exposure: MATLAB at university; ROS self-study in personal robotics projects; strong willingness to learn Gazebo, Isaac Sim and similar tools.",
                 "CAD & prototyping: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; rapid prototyping with FDM, SLA and MJF; design for additive manufacturing and reverse engineering.",
-                "Hardware-software integration: stepper motors, motor drivers, microcontroller/single-board platforms, wiring, testing and iterative debugging of electromechanical prototypes.",
+                "Hardware-software integration: NEMA stepper motors, TMC/DRV motor drivers, Arduino/ESP32-class microcontroller and single-board platforms, wiring, testing and iterative debugging of electromechanical prototypes.",
                 "Teamwork: technical documentation, communication with engineering teams and collaborative problem solving in interdisciplinary environments.",
             ],
         },
@@ -76,7 +80,7 @@ CV_EN = {
             "title": "Selected Robotics Project",
             "subtitle": "SCARA Robotic Arm Prototype | Personal R&D Project",
             "items": [
-                "Designed and built an end-to-end SCARA robotic arm prototype, covering mechanical concept, CAD modelling, kinematic layout, actuator/driver selection, electronics and wiring.",
+                "Designed and built an end-to-end SCARA robotic arm prototype, covering mechanical concept, CAD modelling, kinematic layout, selection of NEMA stepper actuators and TMC/DRV drivers, microcontroller electronics and wiring.",
                 "Optimized components for 3D printing, including PET-G and carbon-fibre reinforced materials, with focus on stiffness, assembly constraints and rapid iteration.",
                 "Developed Python/C++ control software for motion and hardware-interaction experiments, applying forward/inverse kinematics and control-system fundamentals.",
                 "Integrated mechanical, electronic and software subsystems through iterative assembly, testing and debugging, gaining practical hardware-software integration experience.",
@@ -88,7 +92,7 @@ CV_EN = {
                 {
                     "role": "Application Engineer",
                     "company": "AIAutomation",
-                    "date": "Aug 2025 - May 2026",
+                    "date": "Jan 2025 - May 2026",
                     "items": [
                         "Created robotics simulations and digital twins of production workcells in Visual Components for automotive clients.",
                         "Developed robot logic, motion sequences, robot paths, collision checks, cycle flows and virtual process validation.",
@@ -182,6 +186,8 @@ CV_EN = {
 
 CV_PL = {
     "filename": "Maciej_Tkacz_CV_SoftServe_PL",
+    "lang": "pl",
+    "outdir": OUT_DIR,
     "name": "Maciej Tkacz",
     "title": "Junior Robotics / Simulation Engineer",
     "contact": [
@@ -202,7 +208,7 @@ CV_PL = {
                 "Robotyka i sterowanie: podstawy kinematyki, ruchu, sensoryki, układów sterowania, modelowania układów dynamicznych, automatyki, mechatroniki i mechaniki analitycznej.",
                 "Narzędzia symulacyjne: MATLAB na studiach; ROS rozwijany samodzielnie w projektach robotycznych; gotowość do nauki Gazebo, Isaac Sim i podobnych środowisk.",
                 "CAD i prototypowanie: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; rapid prototyping w FDM, SLA i MJF; projektowanie pod technologie przyrostowe i inżynieria odwrotna.",
-                "Integracja hardware-software: silniki krokowe, sterowniki silników, platformy mikrokontrolerowe/jednopłytkowe, okablowanie, testowanie i iteracyjne debugowanie prototypów elektromechanicznych.",
+                "Integracja hardware-software: silniki krokowe NEMA, sterowniki TMC/DRV, platformy mikrokontrolerowe klasy Arduino/ESP32 i komputery jednopłytkowe, okablowanie, testowanie i iteracyjne debugowanie prototypów elektromechanicznych.",
                 "Praca zespołowa: dokumentacja techniczna, komunikacja z zespołami inżynieryjnymi i rozwiązywanie problemów w środowisku interdyscyplinarnym.",
             ],
         },
@@ -210,7 +216,7 @@ CV_PL = {
             "title": "Wybrany projekt robotyczny",
             "subtitle": "Prototyp ramienia robota SCARA | Projekt własny R&D",
             "items": [
-                "Zaprojektowanie i budowa end-to-end prototypu ramienia SCARA: koncepcja mechaniczna, modelowanie CAD, układ kinematyczny, dobór napędów/sterowników, elektronika i okablowanie.",
+                "Zaprojektowanie i budowa end-to-end prototypu ramienia SCARA: koncepcja mechaniczna, modelowanie CAD, układ kinematyczny, dobór napędów krokowych NEMA i sterowników TMC/DRV, elektronika mikrokontrolerowa i okablowanie.",
                 "Optymalizacja części pod druk 3D, w tym PET-G i materiały wzmacniane włóknem węglowym, z naciskiem na sztywność, montaż i szybkie iteracje konstrukcji.",
                 "Tworzenie oprogramowania sterującego w Pythonie/C++ do eksperymentów z ruchem i komunikacją z hardware'em, z wykorzystaniem podstaw kinematyki prostej/odwrotnej i sterowania.",
                 "Integracja podsystemów mechanicznych, elektronicznych i software'owych poprzez iteracyjny montaż, testowanie i debugowanie.",
@@ -222,7 +228,7 @@ CV_PL = {
                 {
                     "role": "Application Engineer",
                     "company": "AIAutomation",
-                    "date": "08.2025 - 05.2026",
+                    "date": "01.2025 - 05.2026",
                     "items": [
                         "Tworzenie symulacji robotycznych i cyfrowych bliźniaków gniazd produkcyjnych w Visual Components dla klientów z branży Automotive.",
                         "Przygotowywanie logiki pracy robotów, sekwencji ruchu, ścieżek, kontroli kolizji, cykli produkcyjnych i wirtualnej walidacji procesu.",
@@ -314,6 +320,89 @@ CV_PL = {
 }
 
 
+PROFILE_REDSKY_EN = (
+    "Hands-on robotics builder: Mechanical Engineering student at Cracow University of Technology "
+    "and certified Software Technician who takes electromechanical systems from concept to working "
+    "prototype. Commercial experience creating robotics simulations and digital twins in Visual "
+    "Components for automotive production. Independently designed and built a SCARA robotic arm - "
+    "CAD, 3D-printed structure, NEMA stepper actuators with TMC/DRV drivers, microcontroller "
+    "electronics and Python/C++ control software. Pragmatic, fast-iteration prototyping mindset "
+    "and strong interest in physical AI and robotics automation. Fluent Polish, English C1; "
+    "available full-time thanks to a flexible study schedule."
+)
+
+PROFILE_REDSKY_PL = (
+    "Praktyczny inżynier-konstruktor robotyki: student Mechaniki i Budowy Maszyn na Politechnice "
+    "Krakowskiej oraz Technik Programista, prowadzący układy elektromechaniczne od koncepcji do "
+    "działającego prototypu. Komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych "
+    "bliźniaków w Visual Components dla produkcji Automotive. Samodzielnie zaprojektowałem i "
+    "zbudowałem ramię robota SCARA - CAD, konstrukcja drukowana 3D, napędy krokowe NEMA ze "
+    "sterownikami TMC/DRV, elektronika mikrokontrolerowa oraz oprogramowanie sterujące w "
+    "Pythonie/C++. Pragmatyczne, szybkie prototypowanie i silne zainteresowanie physical AI oraz "
+    "automatyzacją. Dostępność w pełnym wymiarze dzięki możliwości dostosowania toku studiów."
+)
+
+REDSKY_SKILLS_EN = [
+    "Hands-on prototyping & hardware: end-to-end electromechanical builds - CAD design (SolidWorks, Inventor, Fusion 360), 3D printing (FDM/SLA/MJF), component sourcing and selection (NEMA steppers, TMC/DRV drivers, microcontrollers), assembly, wiring and bring-up testing.",
+    "Mechatronics & control: kinematics, control systems, dynamic systems modelling, automation and mechatronics coursework; industrial robot programming (Kawasaki, teach pendant).",
+    "Programming: Python, C++, Arduino/C; hardware-control code, automation and calculation scripts, iterative debugging of electromechanical prototypes.",
+    "Robotics software & simulation: Visual Components digital twins (robot paths, collision checks, cycle flows, layout optimization); ROS self-study; MATLAB at university; simulation-to-real validation mindset.",
+    "Rapid iteration & ownership: personal R&D projects taken from concept to working prototype; reverse engineering; technical documentation; pragmatic build-test-improve approach.",
+    "Collaboration: fluent Polish (native) and English (C1); teamwork in interdisciplinary engineering environments.",
+]
+
+REDSKY_SKILLS_PL = [
+    "Praktyczne prototypowanie i hardware: kompletne konstrukcje elektromechaniczne - projekt CAD (SolidWorks, Inventor, Fusion 360), druk 3D (FDM/SLA/MJF), dobór i pozyskiwanie komponentów (silniki krokowe NEMA, sterowniki TMC/DRV, mikrokontrolery), montaż, okablowanie i testy uruchomieniowe.",
+    "Mechatronika i sterowanie: kinematyka, układy sterowania, modelowanie układów dynamicznych, automatyka i mechatronika na studiach; programowanie robotów przemysłowych (Kawasaki, teach pendant).",
+    "Programowanie: Python, C++, Arduino/C; kod sterujący hardware'em, skrypty automatyzujące i obliczeniowe, iteracyjne debugowanie prototypów elektromechanicznych.",
+    "Oprogramowanie robotyczne i symulacje: cyfrowe bliźniaki w Visual Components (ścieżki robotów, kontrola kolizji, cykle pracy, optymalizacja layoutu); ROS we własnym zakresie; MATLAB na studiach; podejście simulation-to-real.",
+    "Szybka iteracja i odpowiedzialność: projekty własne R&D od koncepcji do działającego prototypu; inżynieria odwrotna; dokumentacja techniczna; pragmatyczne podejście buduj-testuj-poprawiaj.",
+    "Współpraca: polski (ojczysty) i angielski (C1); praca zespołowa w interdyscyplinarnych środowiskach inżynierskich.",
+]
+
+CV_REDSKY_EN = copy.deepcopy(CV_EN)
+CV_REDSKY_EN.update(
+    {
+        "filename": "Maciej_Tkacz_CV_RedSky_EN",
+        "outdir": REDSKY_DIR,
+        "title": "Junior Robotics Engineer - Prototyping & Simulation",
+        "profile": PROFILE_REDSKY_EN,
+    }
+)
+CV_REDSKY_EN["sections"][0]["items"] = REDSKY_SKILLS_EN
+CV_REDSKY_EN["sidebar"]["Robotics Keywords"] = [
+    "Mechatronics",
+    "Kinematics",
+    "Motion control",
+    "Stepper drives (NEMA, TMC/DRV)",
+    "Embedded electronics",
+    "ROS (self-study)",
+    "Digital twins",
+    "Rapid prototyping",
+]
+
+CV_REDSKY_PL = copy.deepcopy(CV_PL)
+CV_REDSKY_PL.update(
+    {
+        "filename": "Maciej_Tkacz_CV_RedSky_PL",
+        "outdir": REDSKY_DIR,
+        "title": "Junior Robotics Engineer - prototypowanie i symulacje",
+        "profile": PROFILE_REDSKY_PL,
+    }
+)
+CV_REDSKY_PL["sections"][0]["items"] = REDSKY_SKILLS_PL
+CV_REDSKY_PL["sidebar"]["Słowa kluczowe"] = [
+    "Mechatronika",
+    "Kinematyka",
+    "Sterowanie ruchem",
+    "Napędy krokowe (NEMA, TMC/DRV)",
+    "Elektronika embedded",
+    "ROS (własne projekty)",
+    "Digital twins",
+    "Rapid prototyping",
+]
+
+
 def set_doc_defaults(doc: Document) -> None:
     section = doc.sections[0]
     section.top_margin = Cm(1.3)
@@ -386,7 +475,7 @@ def build_ats_docx(cv: dict) -> Path:
     consent = doc.add_paragraph(cv["consent"])
     consent.runs[0].font.size = Pt(7)
 
-    path = OUT_DIR / f"{cv['filename']}_ATS.docx"
+    path = cv["outdir"] / f"{cv['filename']}_ATS.docx"
     doc.save(path)
     return path
 
@@ -453,11 +542,11 @@ def build_visual_docx(cv: dict) -> Path:
         add_section_doc(right, heading)
         add_doc_bullets(right, items)
 
-    add_section_doc(right, "Consent" if cv is CV_EN else "Zgoda")
+    add_section_doc(right, "Consent" if cv["lang"] == "en" else "Zgoda")
     c = right.add_paragraph(cv["consent"])
     c.runs[0].font.size = Pt(7)
 
-    path = OUT_DIR / f"{cv['filename']}_Visual.docx"
+    path = cv["outdir"] / f"{cv['filename']}_Visual.docx"
     doc.save(path)
     return path
 
@@ -532,7 +621,7 @@ class PdfWriter:
 
 
 def build_ats_pdf(cv: dict) -> Path:
-    path = OUT_DIR / f"{cv['filename']}_ATS.pdf"
+    path = cv["outdir"] / f"{cv['filename']}_ATS.pdf"
     pdf = PdfWriter(path)
     x = pdf.margin
     width = pdf.width - 2 * pdf.margin
@@ -596,7 +685,7 @@ def draw_sidebar(c: canvas.Canvas, cv: dict, x: float, y: float, width: float):
 
 
 def build_visual_pdf(cv: dict) -> Path:
-    path = OUT_DIR / f"{cv['filename']}_Visual.pdf"
+    path = cv["outdir"] / f"{cv['filename']}_Visual.pdf"
     c = canvas.Canvas(str(path), pagesize=A4)
     page_w, page_h = A4
     margin = 1.15 * cm
@@ -678,7 +767,7 @@ def build_visual_pdf(cv: dict) -> Path:
             for item in job["items"]:
                 bullet_local(item)
 
-    heading_local("Consent" if cv is CV_EN else "Zgoda")
+    heading_local("Consent" if cv["lang"] == "en" else "Zgoda")
     write_local(cv["consent"], size=6.8, leading=8)
     c.save()
     return path
@@ -720,15 +809,97 @@ Maciej Tkacz
     return path
 
 
+def write_redsky_linkedin_message() -> Path:
+    path = REDSKY_DIR / "linkedin_message_redsky.md"
+    path.write_text(
+        """# Wiadomość LinkedIn - Red Sky, Robotic Engineer (Robotics Automation)
+
+Oferta celuje w profil senior/founding engineer (5+ lat doświadczenia), dlatego wiadomość
+jest świadomie szczera co do etapu kariery i gra kartą "hands-on buildera" oraz pytaniem
+o miejsce dla juniora w tym lub innych projektach Red Sky.
+
+## Wersja pełna (PL) - po zaakceptowaniu zaproszenia lub InMail
+
+Dzień dobry,
+
+piszę w sprawie ogłoszenia Robotic Engineer (Robotics Automation) w startupie budowanym
+przez Red Sky. Od razu uczciwie zaznaczę: wiem, że rola celuje w osoby z 5+ latami
+doświadczenia, a ja jestem na wcześniejszym etapie. Odzywam się mimo to, bo profil
+"hands-on buildera" to dokładnie to, co robię na co dzień - i chcę zapytać, czy w tym
+projekcie lub innych inicjatywach Red Sky jest też przestrzeń dla ambitnego inżyniera
+na poziomie junior/mid.
+
+W skrócie o mnie:
+- komercyjne doświadczenie w symulacjach robotycznych i cyfrowych bliźniakach
+  (Visual Components, klienci Automotive; 01.2025-05.2026) - ścieżki robotów, kolizje,
+  cykle produkcyjne, optymalizacja layoutów,
+- własny projekt R&D: ramię SCARA zbudowane od zera - CAD, druk 3D, napędy krokowe NEMA,
+  sterowniki TMC/DRV, elektronika mikrokontrolerowa, kod sterujący w Pythonie/C++,
+- kurs integratorski robotów Kawasaki (teach pendant), rapid prototyping FDM/SLA/MJF,
+- student Mechaniki i Budowy Maszyn (PK) z dyplomem Technika Programisty; angielski C1,
+- dostępność w pełnym wymiarze - mam możliwość dostosowania toku studiów.
+
+Jeśli uzna Pani, że to ma sens, chętnie prześlę CV i opowiem o projektach. Będę też
+wdzięczny za informację, czy Red Sky planuje role juniorskie w obszarze robotyki.
+
+Pozdrawiam,
+Maciej Tkacz
+maciek01110@gmail.com | 881 912 125
+
+## Wersja krótka (PL) - notatka do zaproszenia (limit 300 znaków)
+
+Dzień dobry, piszę ws. roli Robotic Engineer (startup z Red Sky). Jestem na etapie
+junior/mid, ale to profil typowego buildera: komercyjne symulacje robotyczne (Visual
+Components), Python/C++, własnoręcznie zbudowane ramię SCARA. Czy jest przestrzeń dla
+juniora? Chętnie prześlę CV. Maciej Tkacz
+
+## Full version (EN)
+
+Hello,
+
+I am reaching out about the Robotic Engineer (Robotics Automation) role at the startup
+being built with Red Sky. Let me be upfront: I know the role targets engineers with 5+
+years of experience, and I am at an earlier stage of my career. I am writing anyway
+because the hands-on builder profile is exactly what I do every day - and I would like
+to ask whether there is room in this project, or other Red Sky initiatives, for an
+ambitious junior/mid-level engineer.
+
+Briefly about me:
+- commercial experience creating robotics simulations and digital twins
+  (Visual Components, automotive clients; Jan 2025 - May 2026) - robot paths, collision
+  checks, production cycles, layout optimization,
+- personal R&D project: a SCARA robotic arm built from scratch - CAD, 3D printing,
+  NEMA stepper actuators, TMC/DRV drivers, microcontroller electronics and Python/C++
+  control software,
+- Kawasaki industrial robot integrator course (teach pendant), rapid prototyping with
+  FDM/SLA/MJF,
+- Mechanical Engineering student (Cracow University of Technology) and certified
+  Software Technician; fluent Polish, English C1,
+- available full-time thanks to a flexible study schedule.
+
+If this sounds relevant, I would be happy to send my CV and talk about my projects.
+I would also appreciate knowing whether Red Sky plans any junior robotics roles.
+
+Best regards,
+Maciej Tkacz
+maciek01110@gmail.com | +48 881 912 125
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    REDSKY_DIR.mkdir(parents=True, exist_ok=True)
     created = []
-    for cv in (CV_EN, CV_PL):
+    for cv in (CV_EN, CV_PL, CV_REDSKY_EN, CV_REDSKY_PL):
         created.append(build_ats_docx(cv))
         created.append(build_visual_docx(cv))
         created.append(build_ats_pdf(cv))
         created.append(build_visual_pdf(cv))
     created.append(write_recruiter_messages())
+    created.append(write_redsky_linkedin_message())
     for path in created:
         print(path.relative_to(OUT_DIR.parents[1]))
 
