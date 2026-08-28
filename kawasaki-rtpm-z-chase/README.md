@@ -14,7 +14,8 @@ rzeczy, które w praktyce decydują o użyteczności RTPM: **jak szybko** korekt
 
 | Plik | Rola |
 | --- | --- |
-| `as/zchase.as` | wszystkie programy AS (generator, logger, ruch, raport) |
+| `as/zchase.as` | test RTPM: generator, logger, ruch, raport |
+| `as/zstack.as` | wyszukiwanie wysokości stosu dalmierzem + test powtarzalności |
 | `tools/zc_analyze.py` | analiza logu CSV: uchyb, opóźnienie, wzmocnienie, wykres |
 
 ## Programy w `as/zchase.as`
@@ -233,6 +234,58 @@ w `zc_send`, a potem czy opcja jest faktycznie odblokowana.
 | E1093 „Incorrect motion instruction to execute modulate motion” | RTPM włączony przy instrukcji ruchu, która go nie obsługuje — korekta musi lecieć na ruchu liniowym/CP |
 | E1095 | próba wykonania instrukcji ruchu w zadaniu PC — generator ma tylko liczyć |
 | E6533 „No RTPM board” | konfiguracja celuje w wariant sprzętowy (czujnik łuku), nie w wariant „by user input” |
+
+## Zastosowanie docelowe: pomiar wysokości stosu warstw
+
+Jeżeli dalmierz na kiści ma służyć do znajdowania wysokości stosu przy
+paletyzacji, to warto się zatrzymać nad jednym pytaniem, zanim pójdą pieniądze
+na opcję: **RTPM prawdopodobnie nie jest do tego potrzebny.** Stos nie rusza się
+w trakcie odkładania warstwy. Zmienia wysokość między cyklami, a nie w czasie
+ruchu, więc korekta sprowadza się do przesunięcia punktu odłożenia przed ruchem
+(`POINT put = SHIFT(put BY 0,0,dz)`) — a to działa na gołym AS, bez żadnej opcji.
+
+RTPM zarabia na siebie wtedy, gdy cel ucieka *podczas* ruchu: śledzenie
+przenośnika, śledzenie spoiny, praca siłowa, kompensacja ruchomego podłoża.
+Do wysokości warstwy to armata na wróbla — i dlatego test „uciekającego punktu”
+z `zchase.as` jest dobrym testem samej funkcji RTPM, ale **nie** jest testem
+Twojej aplikacji. Dla niej rozstrzygająca jest powtarzalność pomiaru, a nie pasmo
+korekty. Do tego służy `zstack.as`.
+
+Geometria wychodzi tu wyjątkowo wygodnie: w CP kołnierz jest zawsze pionowy, więc
+wiązka dalmierza jest równoległa do Z bazowego i wysokość szczytu to zwykłe
+odejmowanie, `z_szczytu = DZ(HERE) - offset`. Żadnych obrotów ani przeliczeń
+układów — `offset` kalibrujesz raz, na wzorcu o znanej wysokości.
+
+### Co decyduje o wyborze rozwiązania: interfejs czujnika
+
+| Interfejs dalmierza | Co potrzebne po stronie sterownika |
+| --- | --- |
+| wyjście przełączające (próg) | nic — zwykłe wejście dwustanowe, `SIG()` / `SWAIT` |
+| odległość jako słowo na magistrali (PLC, fieldbus) | nic — `BITS(pierwszy_sygnal, 16)` czyta słowo jako liczbę |
+| wyjście analogowe | karta wejść analogowych (osobna opcja; błędy E1000/E1001 dotyczą właśnie ADC) |
+| Ethernet / port szeregowy | opcja TCP/IP lub RS-232 |
+
+Dwa pierwsze warianty nie wymagają żadnej opcji, więc jeśli tylko dalmierz je ma,
+to jest najkrótsza droga do działającego układu.
+
+### Jak działa `zstack.as`
+
+Robot zjeżdża powoli w dół, a zadanie PC (`zs_watch`) czeka na sygnał z czujnika
+i zatrzymuje ruch instrukcją `BRAKE` — to jedyna instrukcja ruchu dozwolona
+w zadaniach PC i właśnie po to jest. Pozycja odczytywana jest tuż przed
+zatrzymaniem, więc zawiera możliwie mało drogi hamowania.
+
+I tu jest sedno dokładności: pozycja po `BRAKE` to pozycja **zatrzymania**, a nie
+pozycja zadziałania czujnika. Różnica to droga hamowania plus opóźnienie jednego
+cyklu zadania PC, i rośnie wprost z prędkością przejazdu. Dlatego `zs_repeat`
+powtarza pomiar `zs.n` razy i podaje rozrzut oraz odchylenie standardowe —
+i dlatego warto go przepuścić przy kilku wartościach `zs.vsearch`. Jeśli wynik
+zależy od prędkości, dominuje hamowanie i masz dwa wyjścia: zwolnić przejazd albo
+sięgnąć po `HSENSESET` / `HSENSE` (też opcja, ale inna i znacznie bardziej
+typowa), które zatrzaskują pozę w chwili zbocza sygnału, niezależnie od tego, ile
+robot jeszcze przejedzie zanim stanie.
+
+Uruchomienie: ustaw robota nad stosem i `>EXECUTE zs_repeat`.
 
 ## Uwaga o pomiarach w symulacji
 
