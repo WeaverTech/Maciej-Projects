@@ -47,7 +47,9 @@
 ; ---- ruch nosny (carrier) -----------------------------------------
   zc.xamp = 250             ; amplituda przejazdu w X [mm]
   zc.fcar = 0.1             ; czestotliwosc przejazdu w X [Hz] (tylko std)
-  zc.vcar = 300             ; predkosc [mm/s], wymaga ABS.SPEED ON
+  zc.vcar = 300             ; predkosc [mm/s]; przekazywana zawsze z
+;                           ; jednostka MM/S - bez niej AS czyta liczbe
+;                           ; jako procenty i zglasza E0106
   zc.acc = 50               ; ACCURACY [mm] - zlewanie segmentow w CP
   zc.seg = 10               ; min. dlugosc segmentu w zc_main_std [mm]
 ;                           ; za male segmenty zalewaja planer i konczy
@@ -195,7 +197,7 @@
     STOP
   END
   ABS.SPEED ON
-  SPEED zc.vcar ALWAYS
+  SPEED zc.vcar MM/S ALWAYS
   ACCURACY zc.acc ALWAYS
   CP ON
   zc.t0 = TIMER(0)
@@ -239,7 +241,7 @@
   POINT zc.home = HERE
   zc.z0 = DZ(zc.home)
   ABS.SPEED ON
-  SPEED zc.vcar ALWAYS
+  SPEED zc.vcar MM/S ALWAYS
   ACCURACY zc.acc ALWAYS
   CP ON
   zc.t0 = TIMER(0)

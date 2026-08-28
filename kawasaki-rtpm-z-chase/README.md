@@ -224,6 +224,7 @@ w `zc_send`, a potem czy opcja jest faktycznie odblokowana.
 
 | Objaw | Przyczyna |
 | --- | --- |
+| E0106 „Value is out of range” na kroku z `SPEED` | prędkość podana bez jednostki — AS czyta samą liczbę jako procenty, więc `SPEED 300` to 300 %; musi być `SPEED zc.vcar MM/S ALWAYS` |
 | P0109 „Invalid statement” przy instrukcji RTPM | parser nie zna tego słowa kluczowego — zła nazwa instrukcji albo brak rozszerzenia AS opcji w sterowniku; sprawdź `>HELP/P` |
 | „Step format incorrect” przy wczytywaniu pliku | to samo co wyżej, tylko wychodzi podczas `LOAD` — wybierz zakomentowanie kroku i popraw go w edytorze |
 | „Option is not set up” | opcja RTPM nie jest odblokowana w wirtualnym kontrolerze — wymaga licencji od Kawasaki, samo neoROSET jej nie doda |
