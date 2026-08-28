@@ -136,6 +136,35 @@ Jeśli pomylisz te dwie konwencje, korekta albo się scałkuje i ucieknie w limi
 albo w ogóle nie ruszy — objaw jest na tyle charakterystyczny, że od razu widać,
 która wersja jest poprawna.
 
+### Jak ustalić prawdziwą nazwę instrukcji
+
+Nie zgaduj nazwy — sterownik potrafi ją wypisać sam. Z terminala:
+
+```
+>HELP/P          lista instrukcji programowych (opcjonalnie z literą, np. HELP/P R)
+>HELP/F          lista funkcji
+>HELP/SW         lista przełączników systemowych
+>HELP/PPC        instrukcje dopuszczalne w zadaniach PC
+>ID              wersja oprogramowania sterownika
+```
+
+Listy pochodzą z tablicy słów kluczowych **tego** sterownika, więc pokazują dokładnie
+to, co jest w nim zainstalowane. Jeśli instrukcji RTPM nie ma na żadnej z nich,
+to rozszerzenia AS tej opcji po prostu w tym sterowniku nie ma i żadna składnia
+nie zadziała.
+
+Warto przy tym rozróżnić dwie klasy błędów, bo mówią o zupełnie różnych problemach:
+
+- **P0109 „Invalid statement”** to błąd parsera, zgłaszany już przy wpisywaniu lub
+  wczytywaniu kroku. Znaczy tyle, że AS nie zna takiego słowa kluczowego — czyli
+  albo nazwa instrukcji jest zła, albo opcji nie ma w oprogramowaniu sterownika.
+- **„Option is not set up”** i błędy z serii E to błędy wykonania. Pojawiają się
+  dopiero wtedy, gdy instrukcja jest rozpoznana, ale opcja nie jest odblokowana
+  albo dane korekty są nie do przyjęcia.
+
+Innymi słowy: dopóki widzisz P0109, problem jest po stronie nazwy/instalacji, a nie
+licencji ani parametrów.
+
 ## Ograniczenia serii CP
 
 CP to paletyzator: cztery osie, kołnierz zawsze pionowy. Fizycznie realizowalne
@@ -195,6 +224,8 @@ w `zc_send`, a potem czy opcja jest faktycznie odblokowana.
 
 | Objaw | Przyczyna |
 | --- | --- |
+| P0109 „Invalid statement” przy instrukcji RTPM | parser nie zna tego słowa kluczowego — zła nazwa instrukcji albo brak rozszerzenia AS opcji w sterowniku; sprawdź `>HELP/P` |
+| „Step format incorrect” przy wczytywaniu pliku | to samo co wyżej, tylko wychodzi podczas `LOAD` — wybierz zakomentowanie kroku i popraw go w edytorze |
 | „Option is not set up” | opcja RTPM nie jest odblokowana w wirtualnym kontrolerze — wymaga licencji od Kawasaki, samo neoROSET jej nie doda |
 | E1090 „External modulation data is not input” | RTPM włączony, ale nic nie przychodzi — generator nie wystartował albo `zc_send` jest puste |
 | E1091 / E1092 | dane korekty poza dopuszczalnym zakresem — zmniejsz `zc.lim` / `zc.rate` |
