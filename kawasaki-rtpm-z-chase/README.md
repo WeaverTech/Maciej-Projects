@@ -86,6 +86,35 @@ Podgląd wizualny: włącz w neoROSET rysowanie śladu TCP — przy działający
 tor w płaszczyźnie XZ przestaje być linią prostą i zaczyna falować, mimo że
 program wykonuje tylko `LMOVE` między dwoma punktami o tym samym Z.
 
+## Co ustawić na teach pendancie
+
+Rig nie wymaga żadnej konfiguracji na TP: nie ma uczonych poz, nie używa sygnałów
+I/O ani panelu operatora. Zostaje tylko normalne przygotowanie do uruchomienia —
+tryb `REPEAT`, teach lock zwolniony, moc silników ON, skasowane błędy i prędkość
+monitora. Prędkość monitora ma znaczenie, mimo `ABS.SPEED ON`: prędkość programowa
+obowiązuje tylko wtedy, gdy `prędkość maksymalna × prędkość monitora` jest od niej
+większa. Przy 300 mm/s i monitorze ustawionym na kilka procent robot pojedzie
+wolniej, niż zakłada test, i pomiar nadążania wyjdzie zbyt optymistyczny.
+
+Trzy rzeczy, które warto sprawdzić, bo psują wynik po cichu:
+
+- **`TOOL` i `BASE`.** `DZ(HERE)` zwraca Z aktualnego TCP w układzie bazowym, więc
+  jeśli `BASE` jest przesunięty albo obrócony, „oś Z” w logu nie jest pionem.
+  Do testu najprościej mieć `BASE` zerowy (`>BASE NULL`) i świadomie wybrane
+  narzędzie — samo `TOOL` nie zmienia kierunku Z, ale przesuwa punkt, którego
+  wysokość mierzysz.
+- **Gdzie ląduje log.** `TYPE` pisze na terminal (okno terminala neoROSET / KRterm),
+  nie na TP — na pendancie CSV się nie pojawi. Dodatkowo przełącznik systemowy
+  `MESSAGES` musi być ON (domyślnie jest; sprawdzisz przez `>SWITCH MESSAGES`).
+- **Układ, w którym RTPM nakłada korektę.** Jeżeli opcja pozwala wybrać między
+  układem bazowym a narzędzia, dla tego testu ma być bazowy. W CP oś narzędzia
+  jest równoległa do Z bazowego, więc korekta w układzie narzędzia też pójdzie
+  pionowo — ale z odwróconym znakiem, bo narzędzie patrzy w dół. Objaw jest
+  jednoznaczny: robot zamiast gonić punkt, ucieka od niego w przeciwną stronę.
+
+Podgląd na samym pendancie jest możliwy, ale wymaga zdefiniowania okna tekstowego
+w funkcji pomocniczej 0509 — wtedy odkomentuj linię `IFPWOVERWRITE` w `zc_log`.
+
 ## Co trzeba uzupełnić — `zc_send`
 
 Składni instrukcji samej opcji nie ma w podręczniku AS Language Reference
