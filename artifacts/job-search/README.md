@@ -68,9 +68,35 @@ jednocześnie pracę zdalną i zagraniczną.
 - **Dlaczego:** to najbliższy odpowiednik Twojej pracy w AIAutomation, tylko w nowszym stacku:
   symulacje fizyczne, kinematyka, **praca z modelami CAD w symulacji**, skrypty Python do
   automatyzacji logiki symulacji. Ich Robotics Lab jest w Krakowie
-- **Do nauki przed rozmową:** Isaac Sim/Omniverse - podstawy wystarczą, żeby rozmawiać
 - **Link:** https://justjoin.it/job-offer/grid-dynamics-poland-simulation-engineer-nvidia-omniverse-python-robotics--krakow-ai
+- **Ogłoszenie na LinkedIn:** https://www.linkedin.com/jobs/view/4418163132/
 - **Wszystkie lokalizacje:** https://www.griddynamics.com/careers/discover-openings
+
+**Aktualizacja oceny po analizie ogłoszenia na LinkedIn (02.09.2026):**
+
+Trzy dane, których nie było w wersji na justjoin, i które zmieniają obraz:
+
+1. **Poziom: Mid-Senior level.** To nie jest rola juniorska - jesteś poniżej oczekiwanego
+   poziomu. Traktuj tę aplikację jako ambitną, nie jako pewniak.
+2. **Wisi 3 miesiące i ma tylko 33 aplikacje.** Bardzo mało. Specjaliści od Omniverse/Isaac Sim
+   są rzadcy, więc prawdopodobnie mają problem z obsadzeniem roli - a to działa na Twoją korzyść.
+   Firma, która nie może kogoś znaleźć, staje się elastyczna wobec profilu.
+3. **Lista wymagań jest odwrócona w bardzo szczęśliwy dla Ciebie sposób.** W wymaganiach
+   twardych są **narzędzia** (Isaac Sim, Omniverse, Unity, Unreal), a w "nice to have"
+   jest **domena**: doświadczenie w symulacjach robotycznych, ROS, systemy CAD.
+   Czyli: wymagają dokładnie tego, czego nie masz, a jako opcjonalne traktują dokładnie to,
+   w czym masz komercyjne doświadczenie.
+
+**Co się pokrywa:** Python, integracja modeli CAD do środowiska symulacyjnego (to była Twoja
+codzienność w AIAutomation), symulacja fizyczna i układy mechaniczne (kierunek studiów),
+walidacja i strojenie kinematyki oraz ograniczeń, wersjonowanie assetów, dokumentowanie
+workflow symulacyjnego, symulacje robotyczne komercyjnie, Kraków.
+
+**Czego brakuje:** Omniverse i Isaac Sim - czyli to, co jest w **tytule** stanowiska.
+Do tego Unity/Unreal. Tego nie da się zagadać na rozmowie technicznej.
+
+**Wniosek:** aplikuj, ale wynik zależy wyłącznie od tego, czy pokażesz cokolwiek własnego
+w Isaac Sim. Zobacz sekcję "Projekt, który decyduje" poniżej.
 
 ---
 
@@ -211,11 +237,44 @@ Elysium Robotics wprost pisze, że **nie sponsoruje** wiz.
 
 ### Równolegle (inwestycja w kompetencje, największa dźwignia)
 - **ROS 2** - masz podstawy, dociągnij do poziomu "zbudowałem działający node/pakiet"
-- **Isaac Sim lub Gazebo** - jeden projekt SCARA przeniesiony do symulacji byłby idealnym
-  portfolio: masz model CAD i realny robot, więc możesz pokazać porównanie sim-to-real.
-  To jeden projekt, który odpowiada na wymagania praktycznie wszystkich ofert z tej listy
+- **Isaac Sim lub Gazebo** - patrz sekcja "Projekt, który decyduje" poniżej
 - **MAVLink/PX4** - tylko jeśli chcesz iść w drony (Sopra Steria)
 - **Podstawy computer vision** (OpenCV) - wymagane przez Inbolt, Mech-Mind, Sereact
+
+---
+
+## Projekt, który decyduje: SCARA w Isaac Sim
+
+Jeden projekt, który odblokowuje najwięcej ofert z tej listy - w tym Grid Dynamics, gdzie
+brak Omniverse/Isaac Sim jest jedyną realną przeszkodą.
+
+**Dlaczego właśnie ten projekt, a nie kurs czy tutorial:** masz coś, czego nie ma prawie
+żaden kandydat na te stanowiska - **model CAD i jednocześnie fizyczny robot**. Możesz więc
+zrobić to, czego tutoriale nie dają: porównać zachowanie symulacji z rzeczywistością.
+A "validate and tune physical parameters, kinematics, and constraints" to pierwszy punkt
+obowiązków w ogłoszeniu Grid Dynamics. Nie musisz twierdzić, że znasz Omniverse - pokazujesz
+działający rezultat, a to na rozmowie technicznej jest mocniejszym argumentem.
+
+**Zakres minimalny, który już wystarcza do rozmowy:**
+1. Eksport SCARA z CAD i import do Isaac Sim (przejście przez USD - to samo w sobie jest
+   umiejętnością, którą wymieniają w ogłoszeniach)
+2. Zdefiniowanie przegubów, limitów i osi - czyli Twój układ kinematyczny w symulacji
+3. Skrypt w Pythonie sterujący ruchem w symulacji, najlepiej z tą samą logiką kinematyki
+   prostej/odwrotnej, którą masz w kodzie fizycznego robota
+4. Jedno proste porównanie sim-to-real: ten sam ruch w symulacji i na fizycznym robocie,
+   plus krótka notatka o rozbieżnościach i ich przyczynach
+5. Repozytorium na GitHubie: kod, plik USD, kilka zdjęć fizycznego robota, dwa nagrania
+   (symulacja i rzeczywistość) oraz README opisujące, co zostało zwalidowane
+
+**Co to daje w praktyce:**
+- Grid Dynamics: zamyka jedyną poważną lukę, w roli, która wisi 3 miesiące
+- SoftServe 88766: wprost wymieniają Isaac Sim i Gazebo
+- Visual Components OLP: dowód, że "get your hands dirty with real robot systems" to prawda
+- Każda rozmowa techniczna: masz przygotowaną historię projektową, w której odpowiadałeś
+  za mechanikę, elektronikę, kod i walidację
+
+To zdecydowanie lepsza inwestycja czasu niż kolejna wersja CV - treść CV jest już dopracowana,
+a brakuje właśnie dowodów.
 
 ### Higiena poszukiwań
 - Alerty na LinkedIn: "robotics engineer", "simulation engineer", "application engineer robotics"
