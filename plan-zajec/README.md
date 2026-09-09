@@ -30,6 +30,9 @@ python plan.py generuj 13M5 --ics       # dodatkowo kalendarz ICS
 python plan.py pokaz 13M5               # plan grupy w konsoli
 python plan.py sprawdz                  # kontrola: czy każda komórka planu została odczytana
 
+# co dokładnie jest w danym tygodniu (przydatne, bo połowa zajęć jest co 2 tygodnie)
+python plan.py tydzien 13M5 2026-10-05 --podgrupy GL04 GK/P03 SL02 SP01
+
 # plan przefiltrowany do własnych podgrup (zajęcia wspólne zostają)
 python plan.py pokaz 13M5 --podgrupy GL04 GK/P03 SL02 SP01 \
     --md moj-plan.md --ics moj-plan.ics

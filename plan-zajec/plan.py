@@ -101,6 +101,33 @@ def cmd_pokaz(args):
         print(f"zapisano {args.ics}")
 
 
+def cmd_tydzien(args):
+    from datetime import date, timedelta
+
+    from planpk.model import DAY_ORDER, format_date, minutes_of
+
+    files = _pages([args.grupa])
+    if not files:
+        sys.exit(f"nie znaleziono grupy {args.grupa} w {DATA}")
+    plan = GroupPlan(files[0], first_year=args.rok)
+    blocks = plan.filtered(args.podgrupy) if args.podgrupy else plan.blocks
+
+    day = date.fromisoformat(args.data)
+    monday = day - timedelta(days=day.weekday())
+    print(f"== {plan.name}, tydzień od {format_date(monday)} ==")
+    for offset, name in enumerate(DAY_ORDER):
+        when = monday + timedelta(days=offset)
+        today = sorted([b for b in blocks if b.day == name and when in b.dates],
+                       key=lambda b: minutes_of(b.start))
+        if not today:
+            continue
+        print(f"\n{DAY_NAMES[name]} {format_date(when)}")
+        for b in today:
+            who = b.groups or "cała grupa"
+            print(f"  {b.time:<12} {b.subject[:44]:<46} {b.form_name:<13} "
+                  f"{who:<16} {b.room:<8} {b.lecturer.title()}")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -129,6 +156,12 @@ def main():
     p.add_argument("--md", help="zapisz Markdown do pliku")
     p.add_argument("--ics", help="zapisz kalendarz do pliku")
     p.set_defaults(func=cmd_pokaz)
+
+    p = sub.add_parser("tydzien", help="plan konkretnego tygodnia")
+    p.add_argument("grupa")
+    p.add_argument("data", help="dowolny dzień z tego tygodnia, np. 2026-10-05")
+    p.add_argument("--podgrupy", nargs="*", default=[])
+    p.set_defaults(func=cmd_tydzien)
 
     args = ap.parse_args()
     sys.exit(args.func(args) or 0)
