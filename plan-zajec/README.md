@@ -1,6 +1,8 @@
-# Plan zajęć WM PK w czytelnej formie
+# Plan zajęć 13M5 w czytelnej formie
 
-Oficjalny plan Wydziału Mechanicznego PK
+Semestr zimowy 2026/2027, Wydział Mechaniczny PK, grupa **13M5**.
+
+Oficjalny plan
 ([podzial.mech.pk.edu.pl](https://podzial.mech.pk.edu.pl/stacjonarne/archiwum/2026-2027/zima/index.xml))
 to jedna wielka tabela: kolumny to kolejne tygodnie semestru, wiersze to 45-minutowe sloty,
 a w komórkach siedzą skróty. Te skrypty zamieniają to na plan dzień po dniu:
@@ -10,25 +12,26 @@ godziny, przedmiot, forma zajęć, **podgrupa**, sala, prowadzący i konkretne d
 
 | Ścieżka | Zawartość |
 | --- | --- |
+| `wygenerowane/Plan_13M5_kalendarz.pdf` | **kalendarz do druku i na telefon**: siatka tydzień A / tydzień B osobno dla podgrup GL02, GL03 i GL04 |
+| `wygenerowane/grupy/13M5.md` | pełny plan grupy, ze wszystkimi podgrupami |
+| `wygenerowane/grupy/13M5-GL04-GKP03.md` | plan zawężony do podgrup `GL04` i `GK/P03` |
+| `wygenerowane/kalendarze/*.ics` | te same dwa plany jako kalendarz (Google Calendar, Outlook) |
 | `plan.py` | narzędzie wiersza poleceń (pobieranie, generowanie, podgląd) |
+| `kalendarz_pdf.py` | generator kalendarza PDF |
 | `planpk/parser.py` | odczyt tabeli HTML (rowspan, kolumny tygodni, legenda kodów) |
 | `planpk/model.py` | scalanie slotów w bloki zajęć i rozpoznawanie rytmu (co tydzień / co 2 tygodnie) |
 | `planpk/eksport.py` | eksport do Markdown i do kalendarza ICS |
-| `wygenerowane/grupy/*.md` | gotowy plan każdej z 77 grup |
-| `wygenerowane/kalendarze/*.ics` | kalendarze do zaimportowania (Google Calendar, Outlook) |
-| `wygenerowane/README.md` | spis grup wraz z listą ich podgrup |
 
-## Użycie
+## Odświeżenie planu
 
 ```bash
 pip install -r requirements.txt
 
-python plan.py pobierz                  # pobiera strony wszystkich grup do dane/
-python plan.py pobierz 13M5 13M4        # tylko wybrane grupy
-python plan.py generuj                  # Markdown dla wszystkiego, co jest w dane/
-python plan.py generuj 13M5 --ics       # dodatkowo kalendarz ICS
-python plan.py pokaz 13M5               # plan grupy w konsoli
-python plan.py sprawdz                  # kontrola: czy każda komórka planu została odczytana
+python plan.py pobierz 13M5             # pobiera stronę grupy do dane/
+python plan.py generuj 13M5 --ics       # Markdown + kalendarz ICS
+python kalendarz_pdf.py                 # kalendarz PDF (siatka A/B dla GL02, GL03, GL04)
+python plan.py pokaz 13M5               # plan w konsoli
+python plan.py sprawdz 13M5             # kontrola: czy każda komórka planu została odczytana
 
 # co dokładnie jest w danym tygodniu (przydatne, bo połowa zajęć jest co 2 tygodnie)
 python plan.py tydzien 13M5 2026-10-05 --podgrupy GL04 GK/P03 SL02 SP01
@@ -66,6 +69,18 @@ widać wpisy dla kilku różnych `GLxx` — obowiązują tylko te z własnym num
 
 Formy zajęć: `W` – wykład, `C` – ćwiczenia, `L` – laboratorium, `P` – projekt,
 `K` – konwersatorium, `S` – seminarium, `e-l` – e-learning.
+
+## Kalendarz PDF
+
+Zajęcia idą w rytmie dwutygodniowym, więc jedna siatka tygodnia nie wystarcza. PDF ma
+dla każdej podgrupy GL dwie strony: **tydzień A** i **tydzień B** (na stronie tytułowej
+jest spis, który tydzień jest którego typu). Bloki obrysowane linią przerywaną to zajęcia
+do wyboru z rodziny `GK/P`, `SL` lub `SP`, a przy zajęciach bez równego rytmu wypisane są
+konkretne daty.
+
+Podział rocznika na podgrupy laboratoryjne nie jest jednakowy dla wszystkich przedmiotów
+— osobna strona pokazuje, ile godzin laboratorium przypada na `GL02`, `GL03` i `GL04`
+w każdym przedmiocie.
 
 ## Uwagi o danych źródłowych
 
