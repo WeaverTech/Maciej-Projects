@@ -4,7 +4,7 @@ from __future__ import annotations
 import collections
 import re
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 
 from .parser import SUBGROUP_RE, parse_page
 
@@ -78,18 +78,38 @@ def format_date(d):
 
 
 def describe_dates(dates, all_day_dates):
+    """Rytm liczony w tygodniach zajęciowych, a nie w dniach.
+
+    Semestr ma przerwy (święta, dni rektorskie), więc dwa spotkania oddalone
+    o 28 dni potrafią być zwykłym rytmem co dwa tygodnie.
+    """
     dates = sorted(dates)
     if len(dates) == 1:
         return f"jednorazowo {format_date(dates[0])}"
-    gaps = {(b - a).days for a, b in zip(dates, dates[1:])}
-    covered = [d for d in all_day_dates if dates[0] <= d <= dates[-1]]
-    if gaps == {7} and len(dates) == len(covered) and len(dates) >= 10:
-        return f"co tydzień ({len(dates)} spotkań)"
-    if gaps == {7}:
-        return (f"co tydzień {format_date(dates[0])} – {format_date(dates[-1])} "
-                f"({len(dates)} spotkań)")
-    prefix = "co 2 tygodnie" if gaps == {14} else "terminy"
-    return f"{prefix} ({len(dates)}): " + ", ".join(format_date(d) for d in dates)
+
+    span = f"{format_date(dates[0])} – {format_date(dates[-1])}"
+    teaching = set(all_day_dates)
+    covers_all = dates[0] == all_day_dates[0] and dates[-1] == all_day_dates[-1]
+
+    if _regular_every(dates, 7, teaching):
+        return (f"co tydzień ({len(dates)} spotkań)" if covers_all
+                else f"co tydzień, {span} ({len(dates)} spotkań)")
+    if _regular_every(dates, 14, teaching):
+        return f"co 2 tygodnie, {span} ({len(dates)} spotkań)"
+    return f"terminy ({len(dates)}): " + ", ".join(format_date(d) for d in dates)
+
+
+def _regular_every(dates, step_days, teaching):
+    """Czy terminy idą co N dni, licząc tylko tygodnie, w których w ogóle są zajęcia."""
+    for earlier, later in zip(dates, dates[1:]):
+        gap = (later - earlier).days
+        if gap % step_days:
+            return False
+        skipped = [earlier + timedelta(days=step_days * k)
+                   for k in range(1, gap // step_days)]
+        if any(d in teaching for d in skipped):
+            return False
+    return True
 
 
 def normalize_groups(groups):
