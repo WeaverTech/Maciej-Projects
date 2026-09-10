@@ -18,6 +18,7 @@ godziny, przedmiot, forma zajęć, **podgrupa**, sala, prowadzący i konkretne d
 | `wygenerowane/kalendarze/*.ics` | te same dwa plany jako kalendarz (Google Calendar, Outlook) |
 | `plan.py` | narzędzie wiersza poleceń (pobieranie, generowanie, podgląd) |
 | `kalendarz_pdf.py` | generator kalendarza PDF |
+| `sprawdz_kalendarz.py` | audyt gotowego kalendarza (czy siatki pokazują dokładnie to, co jest w planie) |
 | `planpk/parser.py` | odczyt tabeli HTML (rowspan, kolumny tygodni, legenda kodów) |
 | `planpk/model.py` | scalanie slotów w bloki zajęć i rozpoznawanie rytmu (co tydzień / co 2 tygodnie) |
 | `planpk/eksport.py` | eksport do Markdown i do kalendarza ICS |
@@ -32,6 +33,7 @@ python plan.py generuj 13M5 --ics       # Markdown + kalendarz ICS
 python kalendarz_pdf.py                 # kalendarz PDF (siatka A/B dla GL02, GL03, GL04)
 python plan.py pokaz 13M5               # plan w konsoli
 python plan.py sprawdz 13M5             # kontrola: czy każda komórka planu została odczytana
+python sprawdz_kalendarz.py             # kontrola: czy kalendarz PDF zgadza się z planem
 
 # co dokładnie jest w danym tygodniu (przydatne, bo połowa zajęć jest co 2 tygodnie)
 python plan.py tydzien 13M5 2026-10-05 --podgrupy GL04 GK/P03 SL02 SP01
@@ -94,11 +96,38 @@ Podgrupy `GK/P` projektu z podstaw niezawodności nie są powiązane z numerami 
 `GK/P01` to cała grupa 13M4, a 13M5 dzieli się na `GK/P02` i `GK/P03`. Oba terminy
 zostają więc na każdej siatce.
 
+## Kontrola poprawności
+
+Dwa poziomy kontroli, obie kończą się kodem wyjścia różnym od zera, gdy coś się nie zgadza:
+
+- `plan.py sprawdz` — poziom HTML-a: liczba kolorowych komórek w źródle musi się równać
+  liczbie odczytanych slotów. Dla wszystkich 77 grup: 0 niezgodności.
+- `sprawdz_kalendarz.py` — poziom gotowego PDF-u. Sprawdza, że każde z 647 wystąpień
+  zajęć trafia na siatkę właściwej podgrupy w tygodniu właściwego typu, że żadna kratka
+  nie obiecuje zajęć w tygodniu, w którym ich nie ma, że każdy skrócony termin i każdy
+  wpis podpisany obcą grupą jest wypisany na stronie wyjątków, że nic nie wypada poza
+  ramy siatki (dni pon–pt, godziny 7.30–21.15) oraz że suma godzin lekcyjnych zgadza się
+  co do slotu: źródło 660, siatka 683, różnica 23 to opisane skrócenia.
+
+Generator PDF-u dodatkowo zgłasza na stdout każdy tekst, który nie zmieścił się w kratce.
+
 ## Uwagi o danych źródłowych
 
 - Ostatni tydzień semestru (kolumna z datami 26 I – 2 II) jest w źródle rysowany
   pojedynczymi 45-minutowymi slotami: dwa przedmioty, które normalnie występują
   naprzemiennie co dwa tygodnie, dostają wtedy po pół bloku. Skrypt odwzorowuje to wiernie.
 - Ten sam przedmiot bywa prowadzony przez kilka osób w różnych terminach — takie wpisy
-  są rozbite na osobne wiersze, bo różnią się prowadzącym.
+  są rozbite na osobne wiersze, bo różnią się prowadzącym. Bywa też, że jeden
+  90-minutowy blok jest rozpisany na dwie 45-minutowe połowy z różnymi prowadzącymi;
+  to nie jest skrócenie zajęć i kalendarz nie traktuje tego jako wyjątku.
+- Poza ostatnim tygodniem zdarzają się pojedyncze terminy skrócone do 45 minut
+  (np. napędy dla `GL03` w czwartki zwykle zaczynają się o 17.00, a nie o 16.15).
+  Kratka w siatce ma jedną wysokość, więc takie terminy są wypisane co do daty
+  na stronie wyjątków.
+- Wpis „Godzina dla przemysłu” (środa 11.00–12.30) jest w planie 13M5 podpisany
+  grupami `12A; 12B1; 12I1` i występuje identycznie w 31 planach — wygląda na
+  zajęcia wydziałowe. Kalendarz go pokazuje, ale z adnotacją.
+- Liczba godzin laboratorium bywa mocno nierówna między podgrupami i tak jest
+  w źródle — np. Miernictwo to dla `GL02` trzy spotkania po 45 minut, a dla `GL03`
+  szesnaście godzin lekcyjnych.
 - Plan na serwerze uczelni bywa aktualizowany; wystarczy ponowić `pobierz` i `generuj`.

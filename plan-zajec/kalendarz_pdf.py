@@ -93,6 +93,7 @@ def merge_blocks(blocks):
                 current["end_min"] = max(current["end_min"], end)
                 current["end"] = b.end if end > minutes_of(current["end"]) else current["end"]
                 current["dates"] += b.dates
+                current["sessions"] += [(d, b.start, b.end) for d in b.dates]
                 current["rooms"].add(b.room)
                 current["lecturers"] += [w for w in b.lecturer.split(" / ") if w]
                 continue
@@ -102,6 +103,7 @@ def merge_blocks(blocks):
                        "start": b.start, "end": b.end, "end_min": end,
                        "subject": b.subject, "subgroups": b.subgroups,
                        "rooms": {b.room}, "dates": list(b.dates),
+                       "sessions": [(d, b.start, b.end) for d in b.dates],
                        "lecturers": [w for w in b.lecturer.split(" / ") if w]}
         if current:
             out.append(current)
@@ -146,6 +148,66 @@ def wrap(c, text, width, font, size):
     return simpleSplit(text, font, size, width)
 
 
+def covers_group(groups, group):
+    """Czy lista odbiorców z komórki w ogóle obejmuje naszą grupę.
+
+    Plan wydziału wstawia do planów grup wpisy wspólne (np. godzina dla przemysłu)
+    podpisane sztywną listą zupełnie innych grup - warto to widzieć, a nie brać
+    za swoje zajęcia.
+    """
+    # "13M GL04" to grupa 13M z podgrupą - liczy się tylko pierwszy człon
+    parts = [p.split()[0] for p in groups.split(";") if p.strip()]
+    return not parts or any(group.startswith(p) for p in parts)
+
+
+def parity_of(day):
+    return "A" if week_index(day) % 2 == 0 else "B"
+
+
+def hhmm(minutes):
+    return f"{minutes // 60}.{minutes % 60:02d}"
+
+
+def shortened_dates(entry):
+    """Terminy, w których zajęcia nie wypełniają całej kratki.
+
+    Uwaga: 90-minutowy blok bywa rozpisany w źródle na dwie 45-minutowe połowy
+    z różnymi prowadzącymi - to nie jest skrócenie, więc najpierw sklejamy
+    przedziały z jednego dnia.
+    """
+    span = (minutes_of(entry["start"]), minutes_of(entry["end"]))
+    by_date = collections.defaultdict(list)
+    for day, start, end in entry["sessions"]:
+        if day in set(entry["dates"]):
+            by_date[day].append((minutes_of(start), minutes_of(end)))
+
+    out = {}
+    for day, pieces in by_date.items():
+        merged = []
+        for start, end in sorted(pieces):
+            if merged and start <= merged[-1][1]:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], end))
+            else:
+                merged.append((start, end))
+        if merged != [span]:
+            out[day] = (", ".join(f"{hhmm(a)}-{hhmm(b)}" for a, b in merged),
+                        sum(b - a for a, b in merged))
+    return out
+
+
+def span_note(entry, parity, teaching_dates):
+    """Adnotacja dla zajęć, które nie trwają przez cały semestr."""
+    all_weeks = sorted(d for d in teaching_dates[entry["day"]] if parity_of(d) == parity)
+    mine = [d for d in entry["dates"] if d in set(all_weeks)]
+    if not mine or len(mine) == len(all_weeks):
+        return ""
+    if mine[0] == all_weeks[0]:
+        return f"do {short_date(mine[-1])}"
+    if mine[-1] == all_weeks[-1]:
+        return f"od {short_date(mine[0])}"
+    return f"{short_date(mine[0])} – {short_date(mine[-1])}"
+
+
 def shows_in(entry, gl, halves):
     """Czy blok trafia na stronę danej podgrupy GL."""
     subs = entry["subgroups"]
@@ -179,6 +241,7 @@ class Calendar:
         self.group = group
         self.gl_variants = gl_variants
         self.colors = {}
+        self.dropped = []  # teksty, które nie zmieściły się w kratce
 
     def color_for(self, code):
         if code not in self.colors:
@@ -213,8 +276,9 @@ class Calendar:
             "Bloki obrysowane linią przerywaną to zajęcia do wyboru: chodzisz tylko na jeden",
             "termin z danej rodziny (SP i GK/P - projekt, SL - laboratorium). Projekty mają",
             "w kratce dopisek PROJEKT i osobną stronę ze wszystkimi terminami.",
-            "Wykrzyknik przy nazwie oznacza, że terminy nie układają się w równy rytm",
-            "i trzeba je sprawdzić w spisie na ostatniej stronie.",
+            "Wykrzyknik przy nazwie oznacza, że coś odbiega od reguły: nierówny rytm,",
+            "termin skrócony do 45 minut albo wpis podpisany obcą grupą. Wszystkie takie",
+            "przypadki są wypisane co do daty na końcu pliku.",
         ]:
             c.drawString(40, y, line)
             y -= 13
@@ -372,13 +436,19 @@ class Calendar:
             y -= 13
         y -= 8
         c.setFont(REGULAR, 8.5)
-        for line in wrap(c, "„—" + "” oznacza, że w planie 13M5 nie ma tego laboratorium "
-                             "dla tej podgrupy. Jeśli trafisz do takiej podgrupy, warto "
-                             "potwierdzić termin u starosty — to może być zajęcia "
-                             "przypisane do drugiej grupy dziekańskiej.",
-                         self.w - 80, REGULAR, 8.5):
-            c.drawString(40, y, line)
-            y -= 11
+        for text in [
+            "„—” oznacza, że w planie 13M5 nie ma tego laboratorium dla tej podgrupy.",
+            "Liczby bywają bardzo nierówne i tak jest w źródle — np. Miernictwo to dla "
+            "GL02 tylko trzy spotkania po 45 minut (27 X, 10 XI, 24 XI), a dla GL03 "
+            "szesnaście godzin. Te wartości policzone są wprost z planu, ale przed "
+            "wyborem podgrupy warto je potwierdzić u starosty.",
+            "GL02 i GL03 występują wyłącznie w planie 13M5, natomiast GL04 jest wspólna "
+            "z grupą 13M4 — te same zajęcia widnieją w obu planach.",
+        ]:
+            for line in wrap(c, text, self.w - 80, REGULAR, 8.5):
+                c.drawString(40, y, line)
+                y -= 11
+            y -= 3
         c.showPage()
 
     def grid(self, title, subtitles, entries):
@@ -471,63 +541,79 @@ class Calendar:
         y = y_top - height + 1 + height - pad - 4.6
 
         name = SHORT.get(entry["subject"], entry["subject"])
-        if entry["irregular"]:
+        if entry["irregular"] or entry["shortened"] or entry["foreign"]:
             name = "! " + name
         size = 5.9 if height < 26 else 6.4
         c.setFont(BOLD, size)
-        for line in wrap(c, name, text_w, BOLD, size)[:3]:
+        name_lines = wrap(c, name, text_w, BOLD, size)
+        for line in name_lines[:3]:
             c.drawString(x + pad, y, line)
             y -= size + 0.7
+        if len(name_lines) > 3:
+            self.dropped.append((entry, "nazwa", " ".join(name_lines[3:])))
 
+        # W ciasnej kratce ważniejsze jest, czyje to zajęcia, niż kto je prowadzi,
+        # dlatego prowadzący ustępuje miejsca podgrupie i skraca się jako pierwszy.
         c.setFont(REGULAR, size - 0.5)
-        details = [entry["headline"]]
-        if entry["lecturers"]:
-            details.append(", ".join(w.title() for w in entry["lecturers"][:2]))
-        if entry["note"]:
-            details.append(entry["note"])
-        for detail in details:
-            for line in wrap(c, detail, text_w, REGULAR, size - 0.5)[:2]:
-                if y < y_top - height + 3:
-                    return
-                c.drawString(x + pad, y, line)
-                y -= size + 0.2
+        small = size - 0.5
+        capacity = int((y - (y_top - height + 3)) / (small + 0.2)) + 1
+        who = [w.title() for w in entry["lecturers"]]
+        who_short = (who[0] + " i in." if len(who) > 1 else who[0]) if who else ""
+        candidates = [
+            [entry["headline"], entry["note"], ", ".join(who)],
+            [entry["headline"], entry["note"], who_short],
+            [entry["headline"], entry["note_short"], who_short],
+            [entry["headline"], entry["note_short"]],
+        ]
+        chosen, lines = None, None
+        for details in candidates:
+            details = [d for d in details if d]
+            wrapped = [line for d in details
+                       for line in wrap(c, d, text_w, REGULAR, small)]
+            if len(wrapped) <= capacity:
+                chosen, lines = details, wrapped
+                break
+        if chosen is None:
+            chosen = [d for d in candidates[-1] if d]
+            lines = [line for d in chosen for line in wrap(c, d, text_w, REGULAR, small)]
+            self.dropped.append((entry, "szczegóły", " | ".join(lines[capacity:])))
+            lines = lines[:capacity]
+        for line in lines:
+            c.drawString(x + pad, y, line)
+            y -= small + 0.2
 
-    def exceptions(self, irregular, squeezed):
+    def exceptions(self, sections):
         c = self.c
-        c.setFont(BOLD, 15)
-        c.drawString(40, self.h - 45, "Terminy, których nie widać w siatce")
-        y = self.h - 75
-
-        c.setFont(BOLD, 11)
-        c.drawString(40, y, "Zajęcia bez równego rytmu (oznaczone „!”)")
-        y -= 16
-        c.setFont(REGULAR, 9)
-        for text in irregular:
-            for i, line in enumerate(wrap(c, text, self.w - 90, REGULAR, 9)):
-                c.drawString(40 if i == 0 else 52, y, line)
-                y -= 11.5
-            y -= 2
-
-        y -= 10
-        c.setFont(BOLD, 11)
-        c.drawString(40, y, "Ostatni tydzień semestru (26 I – 2 II)")
-        y -= 16
-        c.setFont(REGULAR, 9)
-        for line in wrap(c, "W ostatnim tygodniu plan jest ściśnięty: przedmioty, które "
-                            "normalnie idą co dwa tygodnie, dostają po 45 minut zamiast 90. "
-                            "Dlatego te terminy są wypisane osobno, a nie w siatce.",
-                         self.w - 80, REGULAR, 9):
-            c.drawString(40, y, line)
-            y -= 11.5
-        y -= 6
-        for text in squeezed:
-            for i, line in enumerate(wrap(c, text, self.w - 90, REGULAR, 9)):
-                c.drawString(40 if i == 0 else 52, y, line)
-                y -= 11.5
+        y = None
+        for heading, intro, items in sections:
+            needed = 30 + 12 * len(wrap(c, intro or "", self.w - 80, REGULAR, 9)) \
+                + 11.5 * sum(len(wrap(c, t, self.w - 90, REGULAR, 9)) + 0.2 for t in items)
+            if y is None or y - needed < 40:
+                if y is not None:
+                    c.showPage()
+                c.setFont(BOLD, 15)
+                c.drawString(40, self.h - 45, "Terminy, których nie widać w siatce")
+                y = self.h - 75
+            c.setFont(BOLD, 11)
+            c.drawString(40, y, heading)
+            y -= 16
+            c.setFont(REGULAR, 9)
+            if intro:
+                for line in wrap(c, intro, self.w - 80, REGULAR, 9):
+                    c.drawString(40, y, line)
+                    y -= 11.5
+                y -= 4
+            for text in items:
+                for i, line in enumerate(wrap(c, text, self.w - 90, REGULAR, 9)):
+                    c.drawString(40 if i == 0 else 52, y, line)
+                    y -= 11.5
+                y -= 2
+            y -= 12
         c.showPage()
 
 
-def build(group, gl_variants, out_path):
+def prepare(group, gl_variants):
+    """Wszystko, co trafia do PDF-u, bez rysowania - dzięki temu audyt sprawdza to samo."""
     plan = GroupPlan(ROOT / "dane" / f"{group}.htm")
     entries = merge_blocks(plan.blocks)
 
@@ -551,22 +637,32 @@ def build(group, gl_variants, out_path):
                "subject": b.subject, "form": b.form, "groups": b.groups, "room": b.room}
               for b in plan.blocks if last_day_of[b.day] in b.dates]
 
-    teaching_weeks = collections.defaultdict(set)
+    teaching_dates = collections.defaultdict(set)
     for entry in main:
-        for day in entry["dates"]:
-            teaching_weeks[entry["day"]].add(week_index(day))
-    teaching_weeks = {day: sorted(weeks) for day, weeks in teaching_weeks.items()}
+        teaching_dates[entry["day"]].update(entry["dates"])
+    teaching_weeks = {day: sorted({week_index(d) for d in dates})
+                      for day, dates in teaching_dates.items()}
 
     for entry in main:
         entry["parity"] = classify(entry)
         entry["irregular"] = not is_regular(entry, entry["parity"], teaching_weeks)
+        # Kratka ma jeden prostokąt, a w źródle pojedyncze terminy bywają skrócone
+        # do 45 minut - takie wyjątki idą na ostatnią stronę, żeby ich nie zgubić.
+        entry["shortened"] = shortened_dates(entry)
+        entry["foreign"] = not covers_group(entry["groups"], group)
         entry["choice"] = choice_label(entry)
         entry["headline"] = " · ".join(
             x for x in [FORM_LABEL.get(entry["form"], entry["form"]), entry["room"]] if x)
         entry["note"] = entry["choice"] or (entry["subgroups"][0] if entry["subgroups"] else "")
+        entry["note_short"] = entry["note"]
+        if entry["foreign"]:
+            entry["note"] = f"w źródle: {entry['groups']}"
+            entry["note_short"] = "wpis wydziałowy"
         if entry["irregular"] or len(entry["dates"]) == 1:
             entry["note"] = "tylko " * (len(entry["dates"]) == 1) + ", ".join(
                 short_date(d) for d in entry["dates"])
+            entry["note_short"] = (entry["note"] if len(entry["dates"]) == 1
+                                   else f"{len(entry['dates'])} terminów – spis na końcu")
 
     weeks = sorted({week_index(d) for e in main for d in e["dates"]})
     weeks_a = [ANCHOR + timedelta(weeks=w) for w in weeks if w % 2 == 0]
@@ -618,28 +714,6 @@ def build(group, gl_variants, out_path):
         ))
     project_page = [(name, code, options) for (name, code), options in projects.items()]
 
-    cal = Calendar(out_path, group, gl_variants)
-    cal.cover(weeks_a, weeks_b, choices, subjects)
-    cal.projects(project_page)
-    cal.comparison(comparison_rows)
-
-    for gl in gl_variants:
-        halves = PROJECT_HALVES.get(gl, tuple(HALF_NAME))
-        for parity, label in (("A", "TYDZIEŃ A"), ("B", "TYDZIEŃ B")):
-            visible = [dict(e, note=variant_note(e, gl))
-                       for e in main
-                       if e["parity"] in (parity, "AB") and shows_in(e, gl, halves)]
-            example = weeks_a if parity == "A" else weeks_b
-            cal.grid(f"{group} · podgrupa {gl} · {label}",
-                     ["tygodnie zaczynające się: "
-                      + ", ".join(short_date(d) for d in example),
-                      "projekt Metody komputerowe mechaniki: "
-                      + " albo ".join(f"{s} ({HALF_NAME[s]})" for s in halves)
-                      + (f" — {gl} dzieli się na pół" if len(halves) > 1 else ""),
-                      "projekt Podstawy niezawodności: GK/P02 albo GK/P03 "
-                      "(przydziału nie widać w planie)"],
-                     visible)
-
     irregular = []
     for entry in sorted(main, key=lambda e: (DAYS.index(e["day"]), minutes_of(e["start"]))):
         if not entry["irregular"]:
@@ -657,8 +731,94 @@ def build(group, gl_variants, out_path):
             f"{entry['start']}-{entry['end']} · "
             f"{SHORT.get(entry['subject'], entry['subject'])} "
             f"({entry['form']}, {entry['groups'] or 'cała grupa'}, sala {entry['room']})")
-    cal.exceptions(irregular, squeezed_lines)
+
+    shortened_lines = []
+    for entry in sorted(main, key=lambda e: (DAYS.index(e["day"]), minutes_of(e["start"]))):
+        if not entry["shortened"]:
+            continue
+        by_time = collections.defaultdict(list)
+        for day, (label, _) in entry["shortened"].items():
+            by_time[label].append(day)
+        for label, days in sorted(by_time.items()):
+            shortened_lines.append(
+                f"{DAY_NAMES[entry['day']]} {SHORT.get(entry['subject'], entry['subject'])} "
+                f"({entry['form']}, {entry['groups'] or 'cała grupa'}): zamiast "
+                f"{entry['start']}-{entry['end']} tylko {label} w terminach "
+                + ", ".join(format_date(d) for d in sorted(days)))
+
+    foreign_lines = []
+    for entry in main:
+        if entry["foreign"]:
+            foreign_lines.append(
+                f"{DAY_NAMES[entry['day']]} {entry['start']}-{entry['end']} · "
+                f"{SHORT.get(entry['subject'], entry['subject'])} (sala {entry['room']}) "
+                f"— w źródle podpisane grupami „{entry['groups']}”, a więc nie {group}. "
+                f"Ten sam wpis jest w planach 31 różnych grup, więc wygląda na zajęcia "
+                f"wydziałowe; warto potwierdzić, czy dotyczy Ciebie.")
+
+    return {"plan": plan, "main": main, "finale": finale, "last_day_of": last_day_of,
+            "weeks_a": weeks_a, "weeks_b": weeks_b, "choices": choices,
+            "subjects": subjects, "comparison_rows": comparison_rows,
+            "project_page": project_page, "irregular": irregular,
+            "squeezed_lines": squeezed_lines, "shortened_lines": shortened_lines,
+            "foreign_lines": foreign_lines, "teaching_dates": teaching_dates}
+
+
+def pages(data, gl_variants):
+    """(tytuł, podtytuły, widoczne bloki) dla każdej siatki kalendarza."""
+    for gl in gl_variants:
+        halves = PROJECT_HALVES.get(gl, tuple(HALF_NAME))
+        for parity, label in (("A", "TYDZIEŃ A"), ("B", "TYDZIEŃ B")):
+            visible = []
+            for entry in data["main"]:
+                if entry["parity"] not in (parity, "AB") or not shows_in(entry, gl, halves):
+                    continue
+                span = span_note(entry, parity, data["teaching_dates"])
+                note, short = variant_note(entry, gl), entry["note_short"]
+                if span and not entry["irregular"] and len(entry["dates"]) > 1:
+                    note = f"{note}, {span}" if note else span
+                    short = f"{short}, {span}" if short else span
+                visible.append(dict(entry, note=note, note_short=short))
+            example = data["weeks_a"] if parity == "A" else data["weeks_b"]
+            yield gl, parity, label, example, halves, visible
+
+
+def build(group, gl_variants, out_path):
+    data = prepare(group, gl_variants)
+
+    cal = Calendar(out_path, group, gl_variants)
+    cal.cover(data["weeks_a"], data["weeks_b"], data["choices"], data["subjects"])
+    cal.projects(data["project_page"])
+    cal.comparison(data["comparison_rows"])
+
+    for gl, parity, label, example, halves, visible in pages(data, gl_variants):
+        cal.grid(f"{group} · podgrupa {gl} · {label}",
+                 ["tygodnie zaczynające się: "
+                  + ", ".join(short_date(d) for d in example),
+                  "projekt Metody komputerowe mechaniki: "
+                  + " albo ".join(f"{s} ({HALF_NAME[s]})" for s in halves)
+                  + (f" — {gl} dzieli się na pół" if len(halves) > 1 else ""),
+                  "projekt Podstawy niezawodności: GK/P02 albo GK/P03 "
+                  "(przydziału nie widać w planie)"],
+                 visible)
+
+    cal.exceptions([
+        ("Zajęcia bez równego rytmu (oznaczone „!”)", "", data["irregular"]),
+        ("Pojedyncze terminy skrócone do 45 minut (oznaczone „!”)",
+         "Kratka w siatce ma jedną wysokość, a plan skraca niektóre spotkania. "
+         "W tych terminach zajęcia trwają krócej, niż wynika z siatki.",
+         data["shortened_lines"]),
+        ("Wpisy nie podpisane naszą grupą (oznaczone „!”)", "", data["foreign_lines"]),
+        ("Ostatni tydzień semestru (26 I – 2 II)",
+         "W ostatnim tygodniu plan jest ściśnięty: przedmioty, które normalnie idą co "
+         "dwa tygodnie, dostają po 45 minut zamiast 90. Dlatego te terminy są wypisane "
+         "osobno, a nie w siatce.",
+         data["squeezed_lines"]),
+    ])
     cal.save()
+    for entry, what, text in cal.dropped:
+        print(f"UWAGA: nie zmieściło się ({what}) w {entry['code']} "
+              f"{entry['day']} {entry['start']}: {text}")
     return out_path
 
 
