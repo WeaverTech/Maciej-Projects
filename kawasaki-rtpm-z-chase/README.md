@@ -1,22 +1,210 @@
-# RTPM Z-chase — test „uciekającego punktu” w osi Z (Kawasaki CP, neoROSET)
+# Adaptacyjna wysokość pobierania płyt ze stosu (Kawasaki CP, neoROSET)
 
-Stanowisko testowe do sprawdzenia funkcji RTPM (Real Time Path Modification) na
-robocie serii CP w symulatorze neoROSET. Generator w zadaniu PC tworzy wirtualny
-punkt, który wędruje/ucieka w osi Z, a robot ma go gonić korektą RTPM nakładaną
-na wolny ruch nośny w osi X. Log z przebiegu wychodzi na terminal jako CSV i jest
-przeliczany na konkretne liczby: uchyb nadążania, opóźnienie, tłumienie amplitudy.
+Robot pobiera płyty ze stosu, którego wysokość zmienia się w trakcie produkcji, bo
+w różnych momentach dokładane są nowe płyty. Dalmierz siedzi na kiści, w osi TCP.
+Wymaganie klienta: maksymalna wydajność, więc **żadnych zatrzymań** — ani `BREAK`,
+ani dwelli, ani czekania na czujnik. Wysokość punktu pobrania ma się dopasowywać
+w trakcie ruchu i być ustalona najpóźniej na 50 cm nad stosem.
 
-Sedno testu nie polega na tym, żeby „ładnie się ruszało”, tylko żeby zmierzyć trzy
-rzeczy, które w praktyce decydują o użyteczności RTPM: **jak szybko** korekta nadąża,
-**jak duża** korekta jest jeszcze przyjmowana i **jakie opóźnienie** wnosi cała pętla.
+Testy na stanowisku pokazały, że **włączenie opcji RTPM działa jak `BREAK`** —
+robot przystaje. To zresztą i tak było niewłaściwe narzędzie do tego zadania,
+o czym niżej. Rozwiązanie w `as/plate.as` nie używa żadnej opcji i nie zawiera
+ani jednego `BREAK` w części wydajnościowej.
 
 ## Zawartość
 
 | Plik | Rola |
 | --- | --- |
-| `as/zchase.as` | test RTPM: generator, logger, ruch, raport |
-| `as/zstack.as` | wyszukiwanie wysokości stosu dalmierzem + test powtarzalności |
-| `tools/zc_analyze.py` | analiza logu CSV: uchyb, opóźnienie, wzmocnienie, wykres |
+| `as/plate.as` | **rozwiązanie właściwe**: adaptacyjna wysokość pobrania bez zatrzymań, z symulatorem dalmierza |
+| `as/zchase.as` | wcześniejszy test funkcji RTPM (generator, logger, raport) |
+| `as/zstack.as` | pomiar wysokości stosu dalmierzem na postoju + test powtarzalności |
+| `tools/zc_analyze.py` | analiza logu CSV ze starego testu RTPM; do `plate.as` niepotrzebna |
+
+`plate.as` sprawdza się w całości w neoROSET — wynik wychodzi na terminal jako
+gotowa tabela, bez żadnych narzędzi zewnętrznych.
+
+---
+
+# `plate.as` — jak to działa
+
+## Dlaczego bez RTPM
+
+To nie jest zadanie śledzenia ruchomego celu, tylko **późnego wiązania punktu**.
+Stos nie rusza się podczas zjazdu robota — płyta zostaje dołożona *między*
+cyklami, a nie w ciągu tych kilkuset milisekund, kiedy robot schodzi. Wystarczy
+więc, żeby współrzędna Z punktu docelowego została ustalona najpóźniej jak się da,
+ale wciąż zanim planer zatwierdzi ostatni segment ruchu. To jest czysty AS.
+
+RTPM zarabia na siebie tam, gdzie cel ucieka *w trakcie* ruchu: śledzenie
+przenośnika, spoiny, kompensacja ruchomego podłoża. Tutaj byłoby armatą na wróbla
+— i jeszcze taką, która zatrzymuje robota.
+
+## Trzy kroki cyklu
+
+1. **Pomiar w locie.** Robot zjeżdża nad stos jednym długim ruchem. Przez cały ten
+   czas zadanie PC `pl_probe` próbkuje dalmierz co 10 ms i uaktualnia estymatę
+   szczytu. Zadanie ruchu nigdy na nic nie czeka — czyta gotową liczbę.
+2. **Zamrożenie na 50 cm.** Gdy zmierzona odległość spadnie do `pl.zcom`
+   (domyślnie 500 mm), próbki przestają być przyjmowane. Poniżej tej wysokości
+   punkt pobrania jest już ustalony, dokładnie tak, jak wymaga tego aplikacja.
+3. **Łańcuch segmentów zamiast jednego ruchu.** Ostatnie 500 mm jest podzielone na
+   `pl.nseg` segmentów sklejanych przez `CP ON` + `ACCURACY`, z których każdy jest
+   wystawiany z aktualną estymatą. Segmenty leżą na jednej prostej, więc nic tu nie
+   jest ścinane i robot nie zwalnia między nimi — a punkt docelowy jest wiązany tak
+   późno, jak pozwala wyprzedzenie planera. Nawet gdyby planer zdążył zaplanować
+   pierwszy segment ze starą wartością, kolejne ściągają tor do właściwej wysokości.
+
+Nigdzie w cyklu nie ma `BREAK`, `SWAIT` ani `TWAIT`. Dlatego bufor planera nigdy
+się nie opróżnia i robot nie zwalnia. Jedyny `BREAK` w pliku jest po ostatnim
+cyklu, żeby doczekać końca ruchu przed ubiciem zadań PC.
+
+## Uruchomienie w neoROSET
+
+1. Wstaw do sceny robota serii CP i ustaw go **wysoko nad środkiem stosu**, z
+   zapasem w dół co najmniej 1,2 m i z zapasem `pl.xpl` (900 mm) w bok w osi X.
+   Ta poza jest punktem odniesienia dla całej geometrii — niczego nie trzeba uczyć.
+2. Wczytaj `as/plate.as` do wirtualnego kontrolera.
+3. Tryb `REPEAT`, moc silników ON, **prędkość monitora 100 %**. Mimo `ABS.SPEED ON`
+   prędkość programowa 1500 mm/s obowiązuje tylko wtedy, gdy prędkość maksymalna
+   pomnożona przez prędkość monitora jest od niej większa — przy niskim monitorze
+   robot pojedzie wolniej i pomiar wydajności wyjdzie nieprawdziwy.
+4. `>EXECUTE pl_cycle`
+
+Dalmierza nie ma jeszcze na stanowisku, więc jego rolę pełni zadanie PC `pl_sim`:
+utrzymuje wirtualny stos, dokłada na niego płyty co `pl.tadd` sekund i zwraca
+odległość obarczoną szumem, kwantyzacją do rozdzielczości czujnika i opóźnieniem
+toru pomiarowego. To jedyny program, którego na stanowisku się nie uruchamia.
+
+Podgląd wizualny: włącz rysowanie śladu TCP. Przy `pl.adapt = 1` widać, że dno
+zjazdu wędruje razem ze stosem, a przy `pl.adapt = 0` tor jest zawsze taki sam.
+
+## Co pokazuje raport
+
+Po ostatnim cyklu `pl_report` wypisuje na terminal tabelę i podsumowanie:
+
+| Kolumna | Znaczenie |
+| --- | --- |
+| `t_cykl` | czas między kolejnymi pobraniami, mierzony przez zadanie PC na rzeczywistym ruchu, a nie na przepływie programu |
+| `szczyt` | prawdziwa wysokość szczytu stosu z symulatora |
+| `estym` | wysokość, którą wyliczył estymator i która poszła do ostatniego segmentu |
+| `blad` | o ile TCP minęło się z prawdziwym szczytem — dokładność całego układu |
+| `v_min` | najmniejsza prędkość TCP w cyklu |
+| `t_wolno` | łączny czas w cyklu z prędkością poniżej `pl.vslow` |
+
+Dwie rzeczy do sprawdzenia:
+
+- **Brak zatrzymań** — `v_min` wyraźnie większe od zera i `t_wolno` bliskie zeru.
+- **Brak straty wydajności** — średni czas cyklu taki sam jak w przebiegu
+  odniesienia. Puść raz z `pl.adapt = 0` (stały punkt pobrania, bez pomiaru)
+  i porównaj tę jedną liczbę.
+
+Pierwszy cykl jest z raportu pomijany: robot startuje z postoju, więc jego `v_min`
+i czas cyklu niczego nie mówią.
+
+W kolumnie `blad` zobaczysz stały dodatni offset mniej więcej równy `pl.accp`.
+To nie jest błąd pomiaru, tylko ścięcie naroża na zawrocie: przy `ACCURACY 3` robot
+zawraca 3 mm nad zadanym punktem. Zmniejszenie `pl.accp` zbija ten offset, ale
+obniża `v_min` — i to jest właśnie ten kompromis, który trzeba świadomie wybrać.
+
+## Eksperymenty, które warto puścić
+
+| Zmiana | Co zobaczysz |
+| --- | --- |
+| `pl.tau = 0` | błąd rośnie wprost z prędkością zjazdu — to najłatwiejsza do przeoczenia pułapka całego układu (patrz niżej) |
+| `pl.adapt = 0` | punkt pobrania stały, błąd rośnie z każdą dołożoną płytą; czas cyklu do porównania |
+| `pl.vfast` 1000 / 2000 / 3000 | przy poprawnym `pl.tau` błąd nie powinien zależeć od prędkości |
+| `pl.nseg` 1 vs 5 | przy 1 segmencie punkt jest wiązany wcześniej; jeśli wynik się pogarsza, znaczy, że planer wyprzedza głębiej niż o jeden ruch |
+| `pl.accp` 1 / 3 / 20 | wymiana dokładności na `v_min` |
+| `pl.thru` > 0 | pobranie w przelocie: zawrót zamienia się w płaskie U i `v_min` przestaje siadać, kosztem ruchu poziomego w chwili zetknięcia z płytą |
+| `pl.nadd`, `pl.tadd` | jak szybko stos może rosnąć, zanim estymator przestanie nadążać |
+
+## Opóźnienie toru pomiarowego — najważniejszy parametr
+
+Czujnik plus magistrala plus cykl zadania PC dają opóźnienie `pl.tau`. Odczyt, który
+przychodzi teraz, opisuje sytuację sprzed `pl.tau` sekund, kiedy TCP było wyżej.
+Bez poprawki wynik zależy od prędkości zjazdu, i to bardzo: przy 30 ms opóźnienia
+i zjeździe 3000 mm/s to 90 mm błędu. `pl_probe` liczy prędkość pionową sama i
+odejmuje `vz * pl.tau`, przez co błąd znika.
+
+Na stanowisku `pl.tau` trzeba **zmierzyć, a nie oszacować**. Najprościej tak: puść
+kilka cykli przy `pl.tau = 0` i przy dwóch różnych `pl.vfast`. Błąd jest wtedy
+liniowy względem prędkości, a jego nachylenie to dokładnie `pl.tau`.
+
+## Co się zmienia, gdy przyjedzie prawdziwy dalmierz
+
+Jeden program, `pl_read`, i nic poza tym. Ma ustawić `pl.d` na odległość TCP od
+powierzchni w milimetrach. Reszta pliku nie wie, skąd ta liczba pochodzi.
+
+Dla EtherNet/IP i dla zwykłego PLC kod jest ten sam, bo w obu przypadkach wartość
+ląduje w obrazie wejść sterownika i czyta się ją jednakowo:
+
+```
+pl.d = BITS(pl.sig,16)/10.0
+```
+
+Wyjście analogowe wymagałoby karty ADC (osobna opcja), więc jeśli będzie wybór,
+warto celować w wariant z wartością na magistrali. Poza `pl_read` zmienia się tylko
+tyle, że `pl_sim` przestaje być uruchamiany, a w `pl_watch`, w miejscu wykrycia
+zawrotu, wchodzi `SIGNAL` załączający chwytak.
+
+Trzy stałe do skalibrowania na stanowisku: `pl.hoff` (offset czujnika względem TCP,
+raz, na wzorcu o znanej wysokości), `pl.tau` (jak wyżej) oraz `pl.dmin` / `pl.dmax`
+z karty katalogowej czujnika.
+
+## Ograniczenia, o których trzeba wiedzieć
+
+- **Okno pomiarowe musi być dość długie.** Liczba próbek na zjazd to
+  `(wysokość startu nad stosem − pl.zcom) / pl.vfast / pl.pdt`. Przy domyślnych
+  wartościach wychodzi około 20. Poniżej mniej więcej 10 estymata przestaje być
+  wiarygodna — wtedy albo zacznij zjazd wyżej, albo obniż `pl.zcom`.
+- **Pomiar jest korektą modelu, nie jedynym źródłem prawdy.** Odchyłka większa niż
+  `pl.tol` (200 mm) jest odrzucana, a przy braku świeżych próbek robot jedzie na
+  modelu. Zły odczyt może pogorszyć pozycję o `pl.tol`, ale nie wbije robota w stos.
+- **Płyty dokładane w trakcie zjazdu to problem kolizyjny, którego ten program nie
+  rozwiąże.** Estymata jest zamrażana 500 mm nad stosem; jeśli w tym czasie stos
+  urośnie, robot uderzy. Na to potrzebna jest blokada po stronie podajnika.
+- **Zawrót o 180 stopni oznacza, że pionowa składowa prędkości musi przejść przez
+  zero.** To nie jest postój i nie kosztuje czasu cyklu, ale `v_min` będzie małe.
+  Jeśli ma być inaczej, trzeba pobierać w przelocie (`pl.thru`), a to wymaga
+  podatnej przyssawki.
+- Symulator neoROSET nie odwzorowuje twardych gwarancji czasu rzeczywistego.
+  Wyniki traktuj jako charakterystykę jakościową i porównanie wariantów.
+
+## Parametry (`pl_init`)
+
+| Zmienna | Domyślnie | Znaczenie |
+| --- | --- | --- |
+| `pl.adapt` | 1 | 1 = wysokość z dalmierza, 0 = stały punkt (przebieg odniesienia) |
+| `pl.zcom` | 500 mm | wysokość zamrożenia estymaty nad stosem |
+| `pl.nseg` | 5 | liczba segmentów zjazdu poniżej zamrożenia |
+| `pl.tol` | 200 mm | maksymalna korekta względem modelu |
+| `pl.vfast` | 1500 mm/s | prędkość; zawsze z jednostką `MM/S`, inaczej AS czyta procenty (E0106) |
+| `pl.acc` | 150 mm | `ACCURACY` na trasie |
+| `pl.accp` | 3 mm | `ACCURACY` w punkcie pobrania |
+| `pl.thru` | 0 mm | odsunięcie w X dla pobrania w przelocie |
+| `pl.tau` | 0,03 s | opóźnienie toru pomiarowego |
+| `pl.pdt` | 0,01 s | okres próbkowania estymatora |
+| `pl.alfa` | 0,35 | filtr wykładniczy estymaty |
+| `pl.grip` | 5 mm | wysokość TCP nad szczytem w chwili pobrania |
+| `pl.vslow` | 40 mm/s | poniżej tej prędkości uznajemy, że robot stoi |
+
+---
+
+# Wcześniejszy test funkcji RTPM
+
+Poniższa część dokumentu opisuje stanowisko `zchase.as`, którym sprawdzana była
+sama funkcja RTPM, oraz `zstack.as` — pomiar wysokości stosu na postoju. Do
+`plate.as` nie są potrzebne; zostają jako opis tego, skąd wzięły się powyższe
+wnioski, i jako narzędzie diagnostyczne, gdyby ktoś chciał jeszcze raz podejść
+do samej opcji.
+
+Jedna rzecz warta sprawdzenia przy okazji, bo jest tania: jeżeli postój przy RTPM
+występuje **raz, w miejscu włączenia opcji**, to instrukcja włączająca opróżnia
+bufor planera i obejściem jest włączenie RTPM w pozycji bazowej, gdzie postój nic
+nie kosztuje, i trzymanie go włączonego przez cały cykl z korektą zerową poza
+zjazdem. Jeżeli natomiast postój powtarza się za każdym razem w miejscu, gdzie
+korekta zaczyna napływać, to interpolator głoduje na danych (potwierdzi to błąd
+E1090) i w tej konfiguracji opcja po prostu nie wyrobi.
 
 ## Programy w `as/zchase.as`
 
