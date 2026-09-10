@@ -82,6 +82,18 @@ Podział rocznika na podgrupy laboratoryjne nie jest jednakowy dla wszystkich pr
 — osobna strona pokazuje, ile godzin laboratorium przypada na `GL02`, `GL03` i `GL04`
 w każdym przedmiocie.
 
+### Projekty
+
+Osobna strona zbiera wszystkie cztery terminy projektów, bo w gęstej siatce łatwo je
+przeoczyć. Siatki uwzględniają zapowiedziany podział 13M5 na połowy: `GL02` i połowa
+`GL03` chodzą na `SP01` (P01), druga połowa `GL03` i `GL04` na `SP02` (P02) — stąd
+`PROJECT_HALVES` w `kalendarz_pdf.py`. Tego przypisania nie da się wyczytać z planu,
+który podaje same numery podgrup, więc strona `GL03` pokazuje oba terminy.
+
+Podgrupy `GK/P` projektu z podstaw niezawodności nie są powiązane z numerami `GL`:
+`GK/P01` to cała grupa 13M4, a 13M5 dzieli się na `GK/P02` i `GK/P03`. Oba terminy
+zostają więc na każdej siatce.
+
 ## Uwagi o danych źródłowych
 
 - Ostatni tydzień semestru (kolumna z datami 26 I – 2 II) jest w źródle rysowany

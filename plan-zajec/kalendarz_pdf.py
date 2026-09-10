@@ -48,6 +48,14 @@ PALETTE = ["#BFD8F2", "#CDEBC5", "#F7D9A8", "#E6CDEA", "#F9C9C4", "#C6E8E4",
            "#EBE3AC", "#D8D2C4", "#C9D6F0", "#F2CFE1", "#CFE7B8", "#F0D6B8",
            "#D5E3F7", "#E3D5F7", "#F7E3D5"]
 CHOICE_FAMILIES = ("GK/P", "SL", "SP")
+FORM_LABEL = {"W": "wykład", "C": "ćwicz.", "L": "lab.", "P": "PROJEKT",
+              "S": "sem.", "F": "lektorat", "K": "konwers."}
+
+# Podgrupy projektowe 13M5 (SP01 = "P01", SP02 = "P02") przypisane do podgrup GL.
+# To nie wynika z planu - plan podaje same numery podgrup - tylko z zapowiedzianego
+# podziału: GL02 i połowa GL03 idzie na P01, druga połowa GL03 i GL04 na P02.
+PROJECT_HALVES = {"GL02": ("SP01",), "GL03": ("SP01", "SP02"), "GL04": ("SP02",)}
+HALF_NAME = {"SP01": "P01", "SP02": "P02"}
 
 
 def week_index(day):
@@ -138,6 +146,32 @@ def wrap(c, text, width, font, size):
     return simpleSplit(text, font, size, width)
 
 
+def shows_in(entry, gl, halves):
+    """Czy blok trafia na stronę danej podgrupy GL."""
+    subs = entry["subgroups"]
+    if not subs:
+        return True
+    project = [s for s in subs if s in HALF_NAME]
+    if project:
+        return bool(set(project) & set(halves))
+    return gl in subs or any(s.startswith(CHOICE_FAMILIES) for s in subs)
+
+
+def variant_note(entry, gl):
+    """Dopisek w kratce - dla projektów mówi wprost, czyj to termin."""
+    choice = entry["choice"]
+    if entry["note"] != choice:  # nierówny rytm - w kratce ważniejsze są daty
+        return entry["note"]
+    if choice in HALF_NAME:
+        half = HALF_NAME[choice]
+        if gl == "GL03":
+            return f"{choice} = {half}, połowa GL03"
+        return f"{choice} = {half}, czyli {gl}"
+    if choice.startswith("GK/P"):
+        return f"{choice} albo drugi termin"
+    return entry["note"]
+
+
 class Calendar:
     def __init__(self, path, group, gl_variants):
         self.c = canvas.Canvas(str(path), pagesize=A4)
@@ -177,7 +211,8 @@ class Calendar:
             "już będziesz wiedział, w której jesteś. Reszta zajęć jest identyczna.",
             "",
             "Bloki obrysowane linią przerywaną to zajęcia do wyboru: chodzisz tylko na jeden",
-            "termin z danej rodziny (GK/P - projekt, SL - laboratorium, SP - projekt w grupie).",
+            "termin z danej rodziny (SP i GK/P - projekt, SL - laboratorium). Projekty mają",
+            "w kratce dopisek PROJEKT i osobną stronę ze wszystkimi terminami.",
             "Wykrzyknik przy nazwie oznacza, że terminy nie układają się w równy rytm",
             "i trzeba je sprawdzić w spisie na ostatniej stronie.",
         ]:
@@ -237,6 +272,69 @@ class Calendar:
             y -= 12
         return y
 
+    def projects(self, project_entries):
+        """Wszystkie projekty osobno - łatwo je przeoczyć w gęstej siatce."""
+        c = self.c
+        c.setFont(BOLD, 15)
+        c.drawString(40, self.h - 45, "Projekty")
+        y = self.h - 68
+        c.setFont(REGULAR, 9)
+        for line in wrap(c, "W planie 13M5 są dwa przedmioty z projektem i każdy z nich "
+                            "ma dwa terminy do wyboru — chodzi się tylko na jeden. "
+                            "W siatkach projekty są obrysowane linią przerywaną.",
+                         self.w - 80, REGULAR, 9):
+            c.drawString(40, y, line)
+            y -= 12
+        y -= 10
+
+        for subject, code, options in project_entries:
+            c.setFont(BOLD, 11)
+            c.drawString(40, y, subject)
+            y -= 15
+            c.setFont(REGULAR, 9)
+            for sub, when, room, who, rhythm, who_goes in options:
+                c.setFillColor(self.color_for(code))
+                c.rect(40, y - 2, 8, 8, stroke=0, fill=1)
+                c.setFillColor(black)
+                c.setFont(BOLD, 9)
+                c.drawString(54, y, sub)
+                c.setFont(REGULAR, 9)
+                c.drawString(110, y, f"{when}, sala {room}")
+                y -= 11
+                c.drawString(110, y, f"{who}, {rhythm}")
+                y -= 11
+                if who_goes:
+                    c.setFont(BOLD, 9)
+                    c.drawString(110, y, who_goes)
+                    c.setFont(REGULAR, 9)
+                    y -= 11
+                y -= 4
+            y -= 6
+
+        c.setFont(BOLD, 11)
+        c.drawString(40, y, "Który projekt jest Twój")
+        y -= 15
+        c.setFont(REGULAR, 9)
+        for line in wrap(c, "Zapowiedziany podział na połowy — GL02 i połowa GL03 na P01, "
+                            "druga połowa GL03 i GL04 na P02 — dotyczy podgrup SP01 i SP02, "
+                            "bo tylko one są wewnętrznymi podgrupami 13M5. Tak są "
+                            "poustawiane siatki: strona GL02 pokazuje sam SP01, strona GL04 "
+                            "sam SP02, a strona GL03 oba, bo GL03 dzieli się na pół.",
+                         self.w - 80, REGULAR, 9):
+            c.drawString(40, y, line)
+            y -= 12
+        y -= 6
+        for line in wrap(c, "Podgrup GK/P plan nie wiąże z numerami GL: GK/P01 to cała grupa "
+                            "13M4, a 13M5 dzieli się na GK/P02 i GK/P03. Jeżeli obowiązują "
+                            "te same połowy co przy SP, to razem z P01 idzie jeden z tych "
+                            "terminów, a z P02 drugi — najpewniej kolejno GK/P02 i GK/P03, "
+                            "ale to jedyna rzecz w tym pliku, której nie da się wyczytać z "
+                            "planu. Dlatego oba terminy GK/P są na każdej siatce.",
+                         self.w - 80, REGULAR, 9):
+            c.drawString(40, y, line)
+            y -= 12
+        c.showPage()
+
     def comparison(self, rows):
         """Tabela: które laboratoria ma która podgrupa GL."""
         c = self.c
@@ -283,10 +381,10 @@ class Calendar:
             y -= 11
         c.showPage()
 
-    def grid(self, title, subtitle, entries):
+    def grid(self, title, subtitles, entries):
         c = self.c
         left, right = 34, self.w - 20
-        top = self.h - 74
+        top = self.h - 74 - 11 * (len(subtitles) - 1)
         bottom = 40
         hour_col = 34
         col_w = (right - left - hour_col) / len(DAYS)
@@ -296,7 +394,8 @@ class Calendar:
         c.setFont(BOLD, 15)
         c.drawString(left, self.h - 42, title)
         c.setFont(REGULAR, 9)
-        c.drawString(left, self.h - 56, subtitle)
+        for i, line in enumerate(subtitles):
+            c.drawString(left, self.h - 56 - i * 11, line)
 
         # nagłówki dni
         c.setFont(BOLD, 10)
@@ -462,7 +561,8 @@ def build(group, gl_variants, out_path):
         entry["parity"] = classify(entry)
         entry["irregular"] = not is_regular(entry, entry["parity"], teaching_weeks)
         entry["choice"] = choice_label(entry)
-        entry["headline"] = " ".join(x for x in [entry["form"], entry["room"]] if x)
+        entry["headline"] = " · ".join(
+            x for x in [FORM_LABEL.get(entry["form"], entry["form"]), entry["room"]] if x)
         entry["note"] = entry["choice"] or (entry["subgroups"][0] if entry["subgroups"] else "")
         if entry["irregular"] or len(entry["dates"]) == 1:
             entry["note"] = "tylko " * (len(entry["dates"]) == 1) + ", ".join(
@@ -497,21 +597,47 @@ def build(group, gl_variants, out_path):
                 lab_hours[name][sub] = lab_hours[name].get(sub, 0) + slots
     comparison_rows = sorted(lab_hours.items())
 
+    goes_to = collections.defaultdict(list)
+    for gl, halves in PROJECT_HALVES.items():
+        for half in halves:
+            goes_to[half].append(gl if len(halves) == 1 else f"połowa {gl}")
+
+    projects = collections.defaultdict(list)
+    for entry in sorted(main, key=lambda e: (DAYS.index(e["day"]), minutes_of(e["start"]))):
+        if entry["form"] != "P":
+            continue
+        sub = entry["choice"] or (entry["subgroups"][0] if entry["subgroups"] else "—")
+        projects[(SHORT.get(entry["subject"], entry["subject"]), entry["code"])].append((
+            sub,
+            f"{DAY_NAMES[entry['day']].lower()} {entry['start']}-{entry['end']}",
+            entry["room"],
+            ", ".join(w.title() for w in entry["lecturers"]) or "prowadzący nieprzypisany",
+            f"{len(entry['dates'])} spotkań, "
+            + ("co tydzień" if entry["parity"] == "AB" else f"tydzień {entry['parity']}"),
+            f"idzie na to: {', '.join(goes_to[sub])}" if sub in goes_to else "",
+        ))
+    project_page = [(name, code, options) for (name, code), options in projects.items()]
+
     cal = Calendar(out_path, group, gl_variants)
     cal.cover(weeks_a, weeks_b, choices, subjects)
+    cal.projects(project_page)
     cal.comparison(comparison_rows)
 
     for gl in gl_variants:
+        halves = PROJECT_HALVES.get(gl, tuple(HALF_NAME))
         for parity, label in (("A", "TYDZIEŃ A"), ("B", "TYDZIEŃ B")):
-            visible = [e for e in main
-                       if (not e["subgroups"]
-                           or gl in e["subgroups"]
-                           or any(s.startswith(CHOICE_FAMILIES) for s in e["subgroups"]))
-                       and e["parity"] in (parity, "AB")]
+            visible = [dict(e, note=variant_note(e, gl))
+                       for e in main
+                       if e["parity"] in (parity, "AB") and shows_in(e, gl, halves)]
             example = weeks_a if parity == "A" else weeks_b
             cal.grid(f"{group} · podgrupa {gl} · {label}",
-                     "tygodnie zaczynające się: "
-                     + ", ".join(short_date(d) for d in example),
+                     ["tygodnie zaczynające się: "
+                      + ", ".join(short_date(d) for d in example),
+                      "projekt Metody komputerowe mechaniki: "
+                      + " albo ".join(f"{s} ({HALF_NAME[s]})" for s in halves)
+                      + (f" — {gl} dzieli się na pół" if len(halves) > 1 else ""),
+                      "projekt Podstawy niezawodności: GK/P02 albo GK/P03 "
+                      "(przydziału nie widać w planie)"],
                      visible)
 
     irregular = []
