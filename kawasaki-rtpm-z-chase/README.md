@@ -16,12 +16,18 @@ ani jednego `BREAK` w części wydajnościowej.
 | Plik | Rola |
 | --- | --- |
 | `as/plate.as` | **rozwiązanie właściwe**: adaptacyjna wysokość pobrania bez zatrzymań, z symulatorem dalmierza |
+| `as/plate_min.as` | ten sam kod bez komentarzy, do wczytania do sterownika |
 | `as/zchase.as` | wcześniejszy test funkcji RTPM (generator, logger, raport) |
 | `as/zstack.as` | pomiar wysokości stosu dalmierzem na postoju + test powtarzalności |
 | `tools/zc_analyze.py` | analiza logu CSV ze starego testu RTPM; do `plate.as` niepotrzebna |
 
 `plate.as` sprawdza się w całości w neoROSET — wynik wychodzi na terminal jako
 gotowa tabela, bez żadnych narzędzi zewnętrznych.
+
+`plate_min.as` zawiera dokładnie ten sam kod, tylko bez komentarzy. Nazwy
+programów i zmiennych są identyczne, więc **nie wczytuj obu plików do jednego
+kontrolera** — drugi nadpisze pierwszy. Opis, co robi który program i jak
+strojić parametry, jest w `plate.as` oraz w tym dokumencie.
 
 ---
 
