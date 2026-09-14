@@ -11,29 +11,34 @@
 ;       z_szczytu = DZ(HERE) + pl.hoff - odleglosc
 ; pl.hoff to jedyna stala do skalibrowania (raz, na wzorcu).
 ;
-; ZASADA DZIALANIA - bez opcji RTPM i bez ani jednego BREAK
-;   1. Robot zjezdza nad stos jednym dlugim ruchem. Przez caly ten czas
-;      zadanie PC probkuje dalmierz i uaktualnia estymate szczytu.
-;   2. Gdy odleglosc do stosu spadnie do pl.zcom (domyslnie 500 mm),
-;      estymata jest zamrazana - ponizej nic sie juz nie zmienia.
-;   3. Ostatnie pl.zcom milimetrow jest podzielone na pl.nseg krotkich
-;      segmentow sklejanych przez CP ON + ACCURACY. Kazdy segment jest
-;      wystawiany z aktualna estymata, wiec punkt docelowy jest wiazany
-;      tak pozno, jak pozwala wyprzedzenie planera. Nawet jesli planer
-;      zdazyl juz zaplanowac pierwszy segment ze stara wartoscia, kolejne
-;      segmenty scia go do wlasciwej wysokosci.
+; ZASADA DZIALANIA - zjazd na pelnej predkosci, pomiar az do chwytu
+;   1. Robot podjezdza nad stos i zjezdza w dol lancuchem krotkich
+;      segmentow LMOVE sklejanych przez CP ON + ACCURACY. Bufor planera
+;      ma skonczenie miejsc: gdy jest pelny, zadanie ruchu czeka na
+;      zwolnienie slotu, ale robot jedzie dalej. Wlasnie wtedy
+;      wywolywane jest pl_target ze SWIEZA estymata - punkt pobrania
+;      wiaze sie tak pozno, jak pozwala interpolator, bez RTPM.
+;   2. Zadanie PC caly czas czyta dalmierz. Probka jest wazna dopoki
+;      czujnik jest w zakresie i TCP jest nad stosem. Nie ma zamrazania
+;      na 500 mm. Pomiar milknie sam, gdy odleglosc spadnie ponizej
+;      pl.dmin (czujnik traci zakres) - ostatnie milimetry daja sie
+;      z estymaty, a chwytak zalacza sie, gdy TCP wejdzie w okno chwytu.
+;   3. Chwytak (wyjscie pl.vac) zalacza zadanie PC po rzeczywistej
+;      pozycji, nie po przeplywie programu. SIG w zadaniu ruchu poszedlby
+;      za wczesnie, bo program wyprzedza robota.
 ;
-;   W calym cyklu nie ma BREAK, SWAIT ani TWAIT. Zadanie ruchu nigdy nie
-;   czeka na czujnik - czyta gotowa estymate, ktora zadanie PC liczy
-;   rownolegle. Dlatego planer nigdy sie nie oprozni i robot nie zwalnia.
+;   W czesci wydajnosciowej nie ma BREAK, SWAIT ani TWAIT. Zadanie ruchu
+;   nigdy nie czeka na czujnik - czyta gotowa estymate liczona rownolegle.
 ;
 ; PROGRAMY
 ;   pl_init    - parametry; jedyne miejsce do edycji przy strojeniu
 ;   pl_read    - JEDYNE miejsce zalezne od sprzetu: ustawia pl.d
 ;   pl_sim     - PC 2: wirtualny stos i wirtualny dalmierz (tylko symulacja)
 ;   pl_probe   - PC 3: bramkowanie, filtr, estymata szczytu
-;   pl_watch   - PC 4: predkosc TCP, wykrycie chwili pobrania, statystyka
+;   pl_watch   - PC 4: predkosc TCP, chwytak, statystyka
 ;   pl_target  - estymata -> punkt pobrania, z ogranicznikami
+;   pl_grab    - zalaczenie chwytaka (z zadania PC, po pozycji TCP)
+;   pl_drop    - wylaczenie chwytaka nad odkladaniem
 ;   pl_cycle   - test: pl.ncyc cykli pobierz-odloz
 ;   pl_report  - wynik na terminal
 ;   pl_stop    - awaryjne zatrzymanie zadan PC
@@ -66,12 +71,24 @@
 ;                           ; podatnej przyssawce.
 ;
 ; ---- adaptacja wysokosci -------------------------------------------
-  pl.zcom = 500             ; wysokosc zamrozenia estymaty nad stosem [mm]
-  pl.nseg = 5               ; liczba segmentow zjazdu ponizej zamrozenia
-;                           ; 500 mm / 5 = 100 mm na segment; przy zbyt
-;                           ; krotkich segmentach planer zglosi E1117
+  pl.freeze = 0             ; 0 = pomiar az do utraty zakresu czujnika
+;                           ;     (to jest wlasciwy tryb aplikacji)
+;                           ; 1 = stare zamrozenie estymaty na pl.zcom
+  pl.zcom = 500             ; uzywane TYLKO gdy pl.freeze = 1 [mm]
+  pl.seglen = 80            ; dlugosc segmentu zjazdu [mm]. Bufor planera
+;                           ; przyjmuje kilka LMOVE do przodu; im krotszy
+;                           ; segment, tym pozniej wiaze sie punkt chwytu.
+;                           ; Za krotki (ponizej ~40 mm przy 1500 mm/s)
+;                           ; konczy sie bledem E1117 (process time over)
+  pl.nmax = 25              ; twardy limit segmentow na zjazd
   pl.tol = 200              ; maks. korekta wzgledem modelu [mm] - poza tym
 ;                           ; zakresem pomiar jest uznany za bledny
+  pl.pre = 40               ; zalaczenie chwytaka tyle mm NAD plyta.
+;                           ; Przy przyssawce trzeba dmuchnac przed
+;                           ; kontaktem; przy chwytaku mechanicznym
+;                           ; ustaw 0 i polegaj na zawrocie w Z
+  pl.vac = 0                ; nr wyjscia chwytaka; 0 = tylko symulacja
+;                           ; (nie rusza zadnym SIG)
 ;
 ; ---- predkosci i zlewanie segmentow --------------------------------
   pl.vfast = 1500           ; predkosc [mm/s]; ZAWSZE z jednostka MM/S -
@@ -83,6 +100,8 @@
 ;                           ; robot hamuje na zawrocie - to jest ten kompromis
 ;
 ; ---- dalmierz ------------------------------------------------------
+  pl.sig = 1001             ; pierwsze wejscie slowa 16-bit z odlegloscia
+;                           ; (uzywane w pl_read po podpieciu czujnika)
   pl.hoff = 0               ; offset czujnika wzgledem TCP [mm] (0 = w osi TCP)
   pl.dmin = 40              ; dolny kraniec zakresu pomiarowego [mm]
   pl.dmax = 1200            ; gorny kraniec zakresu pomiarowego [mm]
@@ -122,6 +141,8 @@
   pl.zpick = 0
   pl.zmod = 0
   pl.zmin = 0
+  pl.xp = 0
+  pl.yp = 0
   pl.n = 0
   pl.nrej = 0
   pl.ok = 0
@@ -129,6 +150,7 @@
   pl.tlast = 0
   pl.hit = 0
   pl.hitf = 0
+  pl.held = 0
   pl.inz = 0
   pl.vmin = 99999
   pl.tslow = 0
@@ -193,7 +215,7 @@
     END
 ;   Stos nie moze urosnac tak, zeby wysokosc zamrozenia estymaty wyszla
 ;   ponad poze startowa, ani zjechac poza zasieg czujnika.
-    pl.zstack = MINVAL(pl.zstack,pl.zref-pl.zcom-150)
+    pl.zstack = MINVAL(pl.zstack,pl.zref-200)
     pl.zstack = MAXVAL(pl.zstack,pl.zref-pl.dmax+100)
 ;   Pomiar idealny.
     .d = DZ(HERE)+pl.hoff-pl.zstack
@@ -229,8 +251,10 @@
 ; Trzy bramki:
 ;   - odleglosc w zakresie pomiarowym czujnika,
 ;   - TCP nad stosem (w promieniu pl.rz od srodka stosu),
-;   - odleglosc wieksza niz pl.zcom - to jest zadana wysokosc zamrozenia
-;     estymaty; ponizej 500 mm nad stosem nic sie juz nie zmienia.
+;   - opcjonalnie pl.freeze = 1: odrzucenie probek blizej niz pl.zcom
+;     (stary tryb). Przy pl.freeze = 0 pomiar zyje az czujnik wyjdzie
+;     poza pl.dmin - wtedy TCP jest juz w oknie chwytu i ostatnie
+;     milimetry ida z estymaty.
 ; --------------------------------------------------------------------
   pl.zprev = DZ(HERE)
   WHILE pl.run == 1 DO
@@ -247,8 +271,10 @@
     IF pl.d > pl.dmax THEN
       .good = 0
     END
-    IF pl.d < pl.zcom THEN
-      .good = 0
+    IF pl.freeze == 1 THEN
+      IF pl.d < pl.zcom THEN
+        .good = 0
+      END
     END
     IF ABS(DX(HERE)-pl.xs) > pl.rz THEN
       .good = 0
@@ -320,6 +346,36 @@
   pl.zpick = MAXVAL(.z+pl.grip,pl.zmin)
 .END
 
+.PROGRAM pl_grab()
+; --------------------------------------------------------------------
+; Zalaczenie chwytaka. Wolane z pl_watch, czyli z rzeczywistej pozycji
+; TCP, a nie z zadania ruchu (to wyprzedza robota o bufor planera).
+; --------------------------------------------------------------------
+  IF pl.hitf == 1 THEN
+    RETURN
+  END
+  IF pl.vac <> 0 THEN
+    SIG pl.vac
+  END
+  pl.hitf = 1
+  pl.held = 1
+  pl.ztru = pl.zstack
+  pl.zstack = pl.zstack-pl.thick
+.END
+
+.PROGRAM pl_drop()
+; --------------------------------------------------------------------
+; Wylaczenie chwytaka nad stanowiskiem odkladania.
+; --------------------------------------------------------------------
+  IF pl.held == 0 THEN
+    RETURN
+  END
+  IF pl.vac <> 0 THEN
+    SIG -pl.vac
+  END
+  pl.held = 0
+.END
+
 .PROGRAM pl_watch()
 ; --------------------------------------------------------------------
 ; PC task: nadzor predkosci i wykrycie chwili pobrania.
@@ -329,10 +385,13 @@
 ; ponizej pl.vslow w kazdym cyklu. Jesli w raporcie v_min jest wyraznie
 ; wieksze od zera, a t_wolno bliskie zeru, to w cyklu nie ma postoju.
 ;
-; Chwila pobrania = dolny punkt zawrotu w Z, wykryty po zmianie znaku
-; predkosci pionowej, gdy TCP jest nad stosem. Nie trzeba do tego BREAK
-; ani zadnej synchronizacji z zadaniem ruchu. W wersji na stanowisko
-; wlasnie tutaj trafia zalaczenie chwytaka (SIGNAL pl.vac).
+; Chwytak zalacza sie po rzeczywistej pozycji TCP, nie po programie:
+;   - okno chwytu: TCP jest nad stosem i nie wyzej niz pl.pre nad plyta
+;     (albo dalmierz sam wpadl w to okno, jesli jeszcze mierzy),
+;   - awaryjnie: zawrot predkosci pionowej, gdyby okno zostalo
+;     przegapione (czujnik wyszedl poza zakres wczesniej).
+;
+; Wylaczenie chwytaka: TCP nad stanowiskiem odkladania.
 ;
 ; Osiagnieta glebokosc jest brana jako minimum Z z calego przejscia nad
 ; stosem, a nie jako pozycja w chwili wykrycia zawrotu - detekcja z
@@ -365,16 +424,33 @@
     IF .inz == 1 THEN
       pl.zlow = MINVAL(pl.zlow,DZ(pl.pn))
       IF pl.hitf == 0 THEN
+        .zg = pl.zmod
+        IF pl.ok == 1 THEN
+          .zg = pl.ztop
+        END
+;       Okno chwytu: TCP jest juz na tyle nisko, ze chwytak siega plyty.
+        IF (DZ(pl.pn)-.zg) <= (pl.grip+pl.pre) THEN
+          CALL pl_grab
+        END
+      END
+      IF pl.hitf == 0 THEN
         IF pl.vzprev < -pl.vturn THEN
           IF .vz > -pl.vturn THEN
-;           TUTAJ w wersji na stanowisko:  SIGNAL pl.vac
-            pl.hitf = 1
-            pl.ztru = pl.zstack
-;           Symulacja: plyta zdjeta ze stosu.
-            pl.zstack = pl.zstack-pl.thick
+            CALL pl_grab
           END
         END
       END
+    END
+;   Odlozenie: TCP nad stanowiskiem odkladania.
+    .inp = 1
+    IF ABS(DX(pl.pn)-pl.xp) > pl.rz THEN
+      .inp = 0
+    END
+    IF ABS(DY(pl.pn)-pl.yp) > pl.rz THEN
+      .inp = 0
+    END
+    IF .inp == 1 THEN
+      CALL pl_drop
     END
 ;   Wyjscie ze strefy nad stosem = koniec cyklu.
     IF .inz == 0 THEN
@@ -418,8 +494,9 @@
 ; symulator umieszcza pl.h0 milimetrow nizej. Zadnej pozy nie trzeba
 ; uczyc.
 ;
-; W tym programie nie ma ani jednego BREAK - to jest celowe i to jest
-; warunek, ktory ma byc spelniony.
+; W czesci wydajnosciowej nie ma ani jednego BREAK - robot nie czeka
+; na czujnik, nie hamuje na pomiar i nie stoi nad stosem. Jedyny BREAK
+; jest po ostatnim cyklu, zeby doczekac konca ruchu przed ubiciem PC.
 ; --------------------------------------------------------------------
   CALL pl_init
   POINT pl.home = HERE
@@ -435,6 +512,8 @@
   pl.zmin = pl.zref-pl.dmax+50
 ;
   POINT pl.pplace = SHIFT(pl.home BY pl.xpl,0,0)
+  pl.xp = DX(pl.pplace)
+  pl.yp = DY(pl.pplace)
   POINT pl.plow = SHIFT(pl.home BY 0,0,pl.zmin-pl.zref)
   IF INRANGE(pl.pplace) <> 0 THEN
     TYPE "Punkt odkladania poza zakresem - zmniejsz pl.xpl."
@@ -458,40 +537,49 @@
   TWAIT 0.5
 ;
   FOR .c = 1 TO pl.ncyc
-;   Zjazd nad stos do wysokosci zamrozenia estymaty. Dlugi segment -
-;   w jego trakcie estymator zbiera probki i konczy prace.
-    CALL pl_target
-    .z0 = pl.ztgt+pl.zcom
-    POINT pl.pc = SHIFT(pl.home BY -pl.thru,0,.z0-pl.zref)
-    LMOVE pl.pc
-;
-;   Ostatnie pl.zcom mm: lancuch segmentow, kazdy wystawiany z aktualna
-;   estymata. Segmenty leza na jednej prostej, wiec ACCURACY niczego tu
-;   nie scina i robot nie zwalnia miedzy nimi - jedyne, co sie zmienia,
-;   to koniec ostatniego segmentu. Ostatni ma zaostrzone ACCURACY, zeby
-;   robot faktycznie doszedl do punktu pobrania.
-    FOR .i = 1 TO pl.nseg
+;   Zjazd nad stos lancuchem segmentow. Kazdy LMOVE jest wystawiany
+;   z aktualna estymata. Gdy bufor planera jest pelny, ten WHILE czeka
+;   na slot - robot jedzie dalej, a kolejny segment dostaje juz swiezszy
+;   pomiar. To jest "zjezdza i caly czas sprawdza wysokosc" bez RTPM
+;   i bez zwalniania.
+    .zcmd = pl.zref
+    .desc = 1
+    .n = 0
+    WHILE .desc == 1 DO
       CALL pl_target
-      .f = .i/pl.nseg
-      .z = .z0+(pl.zpick-.z0)*.f
-      .x = -pl.thru*(1-.f)
-      POINT pl.pd = SHIFT(pl.home BY .x,0,.z-pl.zref)
-      IF .i == pl.nseg THEN
-;       Zatrzasniecie wartosci, ktora faktycznie poszla do ostatniego
-;       segmentu - zadanie glowne biegnie przed robotem, wiec w chwili
-;       pobrania pl.ztgt moze byc juz z nastepnego cyklu.
+      .n = .n+1
+      .next = .zcmd-pl.seglen
+      IF .next <= pl.zpick THEN
+        .next = pl.zpick
+        .desc = 0
         pl.zused = pl.ztgt
         ACCURACY pl.accp
       END
+      IF .n >= pl.nmax THEN
+        .next = pl.zpick
+        .desc = 0
+        pl.zused = pl.ztgt
+        ACCURACY pl.accp
+      END
+      IF pl.zpick >= .zcmd THEN
+        .next = pl.zpick
+        .desc = 0
+        pl.zused = pl.ztgt
+        ACCURACY pl.accp
+      END
+      .zcmd = .next
+      .den = pl.zref-pl.zpick
+      IF .den < 1 THEN
+        .den = 1
+      END
+      .x = -pl.thru*(.zcmd-pl.zpick)/.den
+      POINT pl.pd = SHIFT(pl.home BY .x,0,.zcmd-pl.zref)
       LMOVE pl.pd
     END
+    ACCURACY pl.acc ALWAYS
 ;
-;   Chwytak zalacza pl_watch w chwili wykrycia zawrotu - tutaj nie ma
-;   BREAK, wiec zadanie glowne nie wie i nie musi wiedziec, gdzie jest
-;   robot.
-;
-;   Podniesienie i odlozenie. Wszystko zlewane przez ACCURACY.
-    POINT pl.pu = SHIFT(pl.home BY pl.thru,0,pl.zpick+pl.zlift-pl.zref)
+;   Chwytak zalacza pl_watch po pozycji TCP. Zadanie glowne nie czeka.
+    POINT pl.pu = SHIFT(pl.home BY pl.thru,0,pl.zused+pl.grip+pl.zlift-pl.zref)
     LMOVE pl.pu
     LMOVE pl.pplace
     LMOVE pl.home

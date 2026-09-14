@@ -4,7 +4,9 @@
 ; Robot: Kawasaki serii CP (paletyzator), neoROSET
 ; Plik ASCII - AS nie przyjmuje polskich znakow diakrytycznych.
 ;
-; Wariant bez zadnych opcji: robot zjezdza powoli w dol, a zadanie PC
+; UWAGA: to NIE jest aplikacja produkcyjna. Wolny zjazd + BRAKE sluzy
+; do pomiaru powtarzalnosci czujnika. Cykl pobierania plyt na pelnej
+; predkosci jest w plate.as (EXECUTE pl_cycle).
 ; pilnuje sygnalu z dalmierza i w momencie zadzialania zatrzymuje ruch
 ; instrukcja BRAKE (jedyna instrukcja ruchu dozwolona w zadaniu PC).
 ;

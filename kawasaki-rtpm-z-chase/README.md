@@ -1,15 +1,38 @@
 # Adaptacyjna wysokość pobierania płyt ze stosu (Kawasaki CP, neoROSET)
 
-Robot pobiera płyty ze stosu, którego wysokość zmienia się w trakcie produkcji, bo
-w różnych momentach dokładane są nowe płyty. Dalmierz siedzi na kiści, w osi TCP.
-Wymaganie klienta: maksymalna wydajność, więc **żadnych zatrzymań** — ani `BREAK`,
-ani dwelli, ani czekania na czujnik. Wysokość punktu pobrania ma się dopasowywać
-w trakcie ruchu i być ustalona najpóźniej na 50 cm nad stosem.
+Robot ma na kiści dalmierz i **tylko na jego podstawie** określa wysokość stosu.
+Stos zmienia się w trakcie produkcji (dokładane płyty), więc punkt chwytu nie
+może być nauczony na stałe. Wymaganie: **żadnych spowolnień**, zjazd na
+maksymalnej prędkości. Cykl wygląda tak: robot podjeżdża nad stos i zjeżdżając
+**cały czas sprawdza wysokość**, aż chwytak sięgnie płyty.
 
-Testy na stanowisku pokazały, że **włączenie opcji RTPM działa jak `BREAK`** —
-robot przystaje. To zresztą i tak było niewłaściwe narzędzie do tego zadania,
-o czym niżej. Rozwiązanie w `as/plate.as` nie używa żadnej opcji i nie zawiera
-ani jednego `BREAK` w części wydajnościowej.
+To jest `as/plate.as`. Uruchomienie: ustaw robota wysoko nad środkiem stosu i
+
+```
+>EXECUTE pl_cycle
+```
+
+RTPM nie jest do tego potrzebny i na stanowisku zachowywał się jak `BREAK`
+(robot przystawał). Poniższy program nie używa żadnej opcji.
+
+## Jak to spełnia „zjazd + ciągły pomiar + chwyt bez zwalniania”
+
+Bez RTPM nie da się podmienić celu *w środku* już zaplanowanego segmentu.
+Da się natomiast wystawiać zjazd **łańcuchem krótkich `LMOVE`** sklejanych
+przez `CP ON` + duże `ACCURACY`. Bufor planera ma skończoną liczbę miejsc:
+gdy jest pełny, zadanie ruchu czeka na zwolnienie slotu, **ale robot jedzie
+dalej**. Kolejny segment dostaje wtedy już świeższy odczyt dalmierza. To jest
+właśnie „zjeżdża i cały czas sprawdza wysokość” — punkt chwytu wiąże się tak
+późno, jak interpolator pozwala, bez postoju i bez opcji.
+
+Dalmierz milknie sam, gdy odległość spadnie poniżej `pl.dmin` (typowe 40 mm —
+czujnik wychodzi z zakresu). Ostatnie milimetry do `pl.grip` idą z estymaty.
+Chwytak załącza zadanie PC **po rzeczywistej pozycji TCP** (`pl_grab`), a nie
+z programu ruchu: program wyprzedza robota o bufor planera, więc `SIG`
+wstawiony obok `LMOVE` strzeliłby za wcześnie.
+
+W części wydajnościowej nie ma `BREAK`, `SWAIT` ani `TWAIT`. Jedyny `BREAK`
+jest po ostatnim cyklu, żeby zdążyć z raporem zanim padną zadania PC.
 
 ## Zawartość
 
@@ -29,34 +52,30 @@ gotowa tabela, bez żadnych narzędzi zewnętrznych.
 
 ## Dlaczego bez RTPM
 
-To nie jest zadanie śledzenia ruchomego celu, tylko **późnego wiązania punktu**.
-Stos nie rusza się podczas zjazdu robota — płyta zostaje dołożona *między*
-cyklami, a nie w ciągu tych kilkuset milisekund, kiedy robot schodzi. Wystarczy
-więc, żeby współrzędna Z punktu docelowego została ustalona najpóźniej jak się da,
-ale wciąż zanim planer zatwierdzi ostatni segment ruchu. To jest czysty AS.
+To nie jest śledzenie celu, który ucieka w milisekundach (przenośnik, spoina).
+Płyta zostaje dołożona *między* cyklami albo w trakcie zjazdu, ale wolniej niż
+jedzie paletyzator. Wystarczy, żeby współrzędna Z była poprawiana **na każdym
+kolejnym segmencie** zjazdu. To jest czysty AS.
 
-RTPM zarabia na siebie tam, gdzie cel ucieka *w trakcie* ruchu: śledzenie
-przenośnika, spoiny, kompensacja ruchomego podłoża. Tutaj byłoby armatą na wróbla
-— i jeszcze taką, która zatrzymuje robota.
+RTPM zarabia na siebie tam, gdzie interpolator musi dostać korektę *wewnątrz*
+segmentu. Na tym stanowisku opcja przy włączeniu zatrzymywała robota, więc
+nawet gdyby była składniowo dostępna, psułaby wymaganie „max prędkość”.
 
 ## Trzy kroki cyklu
 
-1. **Pomiar w locie.** Robot zjeżdża nad stos jednym długim ruchem. Przez cały ten
-   czas zadanie PC `pl_probe` próbkuje dalmierz co 10 ms i uaktualnia estymatę
-   szczytu. Zadanie ruchu nigdy na nic nie czeka — czyta gotową liczbę.
-2. **Zamrożenie na 50 cm.** Gdy zmierzona odległość spadnie do `pl.zcom`
-   (domyślnie 500 mm), próbki przestają być przyjmowane. Poniżej tej wysokości
-   punkt pobrania jest już ustalony, dokładnie tak, jak wymaga tego aplikacja.
-3. **Łańcuch segmentów zamiast jednego ruchu.** Ostatnie 500 mm jest podzielone na
-   `pl.nseg` segmentów sklejanych przez `CP ON` + `ACCURACY`, z których każdy jest
-   wystawiany z aktualną estymatą. Segmenty leżą na jednej prostej, więc nic tu nie
-   jest ścinane i robot nie zwalnia między nimi — a punkt docelowy jest wiązany tak
-   późno, jak pozwala wyprzedzenie planera. Nawet gdyby planer zdążył zaplanować
-   pierwszy segment ze starą wartością, kolejne ściągają tor do właściwej wysokości.
+1. **Podjazd nad stos.** Bieżąca poza robota jest środkiem stosu i punktem
+   odniesienia — niczego nie trzeba uczyć.
+2. **Zjazd z ciągłym pomiarem.** `pl_probe` próbkuje dalmierz co 10 ms przez
+   cały zjazd. `pl_cycle` wystawia segmenty `pl.seglen` (domyślnie 80 mm).
+   Dopóki czujnik jest w zakresie, każdy nowy segment leci na świeższej
+   estymacie. Gdy odległość spadnie poniżej `pl.dmin`, pomiar milknie i
+   ostatnie milimetry idą z tego, co już wiadomo.
+3. **Chwyt.** Gdy TCP wejdzie w okno `pl.grip + pl.pre` nad płytą, `pl_watch`
+   załącza chwytak (`SIG pl.vac` na stanowisku). Potem podniesienie, odłożenie,
+   powrót — wszystko zlewane przez `ACCURACY`, bez postoju nad stosem.
 
-Nigdzie w cyklu nie ma `BREAK`, `SWAIT` ani `TWAIT`. Dlatego bufor planera nigdy
-się nie opróżnia i robot nie zwalnia. Jedyny `BREAK` w pliku jest po ostatnim
-cyklu, żeby doczekać końca ruchu przed ubiciem zadań PC.
+`pl.freeze = 1` przywraca stary tryb (zamrożenie estymaty 500 mm nad stosem).
+Do tej aplikacji zostaw `0`.
 
 ## Uruchomienie w neoROSET
 
@@ -113,7 +132,8 @@ obniża `v_min` — i to jest właśnie ten kompromis, który trzeba świadomie 
 | `pl.tau = 0` | błąd rośnie wprost z prędkością zjazdu — to najłatwiejsza do przeoczenia pułapka całego układu (patrz niżej) |
 | `pl.adapt = 0` | punkt pobrania stały, błąd rośnie z każdą dołożoną płytą; czas cyklu do porównania |
 | `pl.vfast` 1000 / 2000 / 3000 | przy poprawnym `pl.tau` błąd nie powinien zależeć od prędkości |
-| `pl.nseg` 1 vs 5 | przy 1 segmencie punkt jest wiązany wcześniej; jeśli wynik się pogarsza, znaczy, że planer wyprzedza głębiej niż o jeden ruch |
+| `pl.seglen` 40 / 80 / 160 | krótszy segment = późniejsze wiązanie punktu; za krótki → E1117 |
+| `pl.freeze` 1 | stary tryb: estymata zamrożona 500 mm nad stosem |
 | `pl.accp` 1 / 3 / 20 | wymiana dokładności na `v_min` |
 | `pl.thru` > 0 | pobranie w przelocie: zawrót zamienia się w płaskie U i `v_min` przestaje siadać, kosztem ruchu poziomego w chwili zetknięcia z płytą |
 | `pl.nadd`, `pl.tadd` | jak szybko stos może rosnąć, zanim estymator przestanie nadążać |
@@ -143,9 +163,9 @@ pl.d = BITS(pl.sig,16)/10.0
 ```
 
 Wyjście analogowe wymagałoby karty ADC (osobna opcja), więc jeśli będzie wybór,
-warto celować w wariant z wartością na magistrali. Poza `pl_read` zmienia się tylko
-tyle, że `pl_sim` przestaje być uruchamiany, a w `pl_watch`, w miejscu wykrycia
-zawrotu, wchodzi `SIGNAL` załączający chwytak.
+warto celować w wariant z wartością na magistrali. Poza `pl_read` wyłącz `pl_sim`
+(`PCEXECUTE 2` w `pl_cycle`) i ustaw `pl.vac` na numer wyjścia chwytaka —
+załączeniem steruje `pl_grab` po pozycji TCP.
 
 Trzy stałe do skalibrowania na stanowisku: `pl.hoff` (offset czujnika względem TCP,
 raz, na wzorcu o znanej wysokości), `pl.tau` (jak wyżej) oraz `pl.dmin` / `pl.dmax`
@@ -154,19 +174,24 @@ z karty katalogowej czujnika.
 ## Ograniczenia, o których trzeba wiedzieć
 
 - **Okno pomiarowe musi być dość długie.** Liczba próbek na zjazd to
-  `(wysokość startu nad stosem − pl.zcom) / pl.vfast / pl.pdt`. Przy domyślnych
-  wartościach wychodzi około 20. Poniżej mniej więcej 10 estymata przestaje być
-  wiarygodna — wtedy albo zacznij zjazd wyżej, albo obniż `pl.zcom`.
+  `(wysokość startu nad stosem − pl.dmin) / pl.vfast / pl.pdt`. Przy 800 mm,
+  1500 mm/s i 10 ms wychodzi około 50. Poniżej mniej więcej 10 estymata przestaje
+  być wiarygodna — wtedy zacznij zjazd wyżej.
 - **Pomiar jest korektą modelu, nie jedynym źródłem prawdy.** Odchyłka większa niż
   `pl.tol` (200 mm) jest odrzucana, a przy braku świeżych próbek robot jedzie na
   modelu. Zły odczyt może pogorszyć pozycję o `pl.tol`, ale nie wbije robota w stos.
-- **Płyty dokładane w trakcie zjazdu to problem kolizyjny, którego ten program nie
-  rozwiąże.** Estymata jest zamrażana 500 mm nad stosem; jeśli w tym czasie stos
-  urośnie, robot uderzy. Na to potrzebna jest blokada po stronie podajnika.
+- **Płyty dokładane w ostatnich milimetrach zjazdu.** Dopóki dalmierz jeszcze
+  mierzy, kolejny segment to uwzględni. Gdy czujnik wyjdzie poniżej `pl.dmin`,
+  zostaje ślepy odcinek rzędu kilkudziesięciu milimetrów — jeśli w tym oknie
+  stos podskoczy o całą płytę, robot uderzy. Na skrajnie dynamiczny podajnik
+  potrzebna jest blokada dokładania na czas zjazdu albo RTPM wewnątrz segmentu
+  (który na tym stanowisku i tak zatrzymywał robota).
 - **Zawrót o 180 stopni oznacza, że pionowa składowa prędkości musi przejść przez
   zero.** To nie jest postój i nie kosztuje czasu cyklu, ale `v_min` będzie małe.
   Jeśli ma być inaczej, trzeba pobierać w przelocie (`pl.thru`), a to wymaga
   podatnej przyssawki.
+- **`zstack.as` nie jest tą aplikacją.** To wolny zjazd z `BRAKE` do testu
+  powtarzalności czujnika. Do produkcji używaj `pl_cycle`.
 - Symulator neoROSET nie odwzorowuje twardych gwarancji czasu rzeczywistego.
   Wyniki traktuj jako charakterystykę jakościową i porównanie wariantów.
 
@@ -175,8 +200,10 @@ z karty katalogowej czujnika.
 | Zmienna | Domyślnie | Znaczenie |
 | --- | --- | --- |
 | `pl.adapt` | 1 | 1 = wysokość z dalmierza, 0 = stały punkt (przebieg odniesienia) |
-| `pl.zcom` | 500 mm | wysokość zamrożenia estymaty nad stosem |
-| `pl.nseg` | 5 | liczba segmentów zjazdu poniżej zamrożenia |
+| `pl.freeze` | 0 | 0 = pomiar aż do utraty zakresu czujnika; 1 = zamrożenie na `pl.zcom` |
+| `pl.seglen` | 80 mm | długość segmentu zjazdu — im krótszy, tym później wiąże się chwyt |
+| `pl.pre` | 40 mm | załączenie chwytaka tyle nad płytą (przyssawka) |
+| `pl.vac` | 0 | numer wyjścia chwytaka; 0 = tylko symulacja |
 | `pl.tol` | 200 mm | maksymalna korekta względem modelu |
 | `pl.vfast` | 1500 mm/s | prędkość; zawsze z jednostką `MM/S`, inaczej AS czyta procenty (E0106) |
 | `pl.acc` | 150 mm | `ACCURACY` na trasie |
