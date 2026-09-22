@@ -191,6 +191,16 @@ ani sponsora w żadnym kraju UE/EOG, Szwajcarii, Norwegii ani Islandii.
 - Ta sama rola Simulation Engineer, ale w wariancie niemieckim/zdalnym
 - **Link:** https://www.griddynamics.com/careers/discover-openings
 
+### 15. Szwajcaria - Bazylea i region trójstyku (osobne zestawienie)
+- **Pełna lista firm i ofert:** `artifacts/job-search/bazylea-roles.md`
+- **Dlaczego warto:** Szwajcaria jest objęta swobodą przepływu osób z UE, więc jako obywatel
+  Polski nie potrzebujesz tam wizy ani sponsora - w przeciwieństwie do UK. Pensje inżynierskie
+  startują ok. CHF 80 000 brutto
+- **Najlepszy trop:** Kaiser engineering w Möhlin, oficjalny partner Kawasaki Robotics
+  w Szwajcarii, buduje cele zrobotyzowane i robi symulacje - szwajcarski odpowiednik ASTOR-a
+- **Główna bariera:** niemiecki. Role hands-on prawie zawsze go wymagają; po angielsku
+  rekrutują pharma, startupy i zespoły R&D
+
 ### Gdzie jeszcze szukać w UE
 - **Irlandia** - angielski jako język pracy, brak wizy, duży sektor tech (Dublin)
 - **Holandia, Niemcy, Dania, Szwecja** - dużo robotyki, angielski w firmach tech
