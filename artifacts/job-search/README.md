@@ -107,6 +107,10 @@ Do tego Unity/Unreal. Tego nie da się zagadać na rozmowie technicznej.
 **Wniosek:** aplikuj, ale wynik zależy wyłącznie od tego, czy pokażesz cokolwiek własnego
 w Isaac Sim. Zobacz sekcję "Projekt, który decyduje" poniżej.
 
+- **CV i list:** `artifacts/griddynamics-cv/` (osobny wariant, przepisany pod obowiązki
+  z ogłoszenia; praca w ASTOR ustawiona jako argument sim-to-real - budujesz cyfrowego
+  bliźniaka i jednocześnie fizycznie stawiasz i uruchamiasz stanowisko)
+
 ---
 
 ## TIER 2 - dobre dopasowanie, warto aplikować

@@ -22,6 +22,7 @@ OUT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "softserve-cv"
 REDSKY_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "redsky-cv"
 INBOLT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "inbolt-cv"
 UNIVERSAL_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "universal-cv"
+GRID_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "griddynamics-cv"
 FONT_REGULAR = "DejaVuSans"
 FONT_BOLD = "DejaVuSans-Bold"
 
@@ -662,6 +663,257 @@ CV_UNIVERSAL_PL["sidebar"]["Słowa kluczowe"] = [
 ]
 
 
+# Flip to True once the Isaac Sim / USD port of the SCARA arm has actually been started,
+# then regenerate. Until then the CV describes it as a planned next step, not work in progress.
+ISAAC_PORT_STARTED = False
+
+GRID_ISAAC_PROFILE_EN = (
+    "I am learning the USD/Isaac Sim pipeline and porting that SCARA arm into it."
+    if ISAAC_PORT_STARTED
+    else "My next project is rebuilding that SCARA arm inside a USD-based simulator to compare "
+    "simulated and real behaviour."
+)
+
+GRID_ISAAC_PROFILE_PL = (
+    "uczę się pipeline'u USD/Isaac Sim i przenoszę do niego to ramię SCARA."
+    if ISAAC_PORT_STARTED
+    else "moim kolejnym projektem jest odtworzenie tego ramienia SCARA w symulatorze opartym na "
+    "USD, aby porównać zachowanie symulowane i rzeczywiste."
+)
+
+GRID_ISAAC_SKILL_EN = (
+    "Simulation stack in progress: self-directed learning of NVIDIA Isaac Sim / Omniverse and the USD asset pipeline, with my own SCARA arm as the porting target; ROS from personal robotics projects; MATLAB from university."
+    if ISAAC_PORT_STARTED
+    else "Simulation stack roadmap: moving into NVIDIA Isaac Sim / Omniverse and the USD asset pipeline, with my own SCARA arm as the planned porting target; ROS from personal robotics projects; MATLAB from university."
+)
+
+GRID_ISAAC_SKILL_PL = (
+    "Stack symulacyjny w budowie: samodzielna nauka NVIDIA Isaac Sim / Omniverse i pipeline'u USD, z własnym ramieniem SCARA jako celem migracji; ROS z projektów własnych; MATLAB ze studiów."
+    if ISAAC_PORT_STARTED
+    else "Kierunek rozwoju stacku: wejście w NVIDIA Isaac Sim / Omniverse i pipeline USD, z własnym ramieniem SCARA jako planowanym celem migracji; ROS z projektów własnych; MATLAB ze studiów."
+)
+
+GRID_ISAAC_PROJECT_EN = (
+    "Currently using this arm as the subject of a USD/Isaac Sim port, to compare simulated and real behaviour on the same motion sequences."
+    if ISAAC_PORT_STARTED
+    else "Planned next step: porting this arm into a USD-based simulator to run identical motion sequences in simulation and on the physical machine and compare the results."
+)
+
+GRID_ISAAC_PROJECT_PL = (
+    "Obecnie to ramię jest przedmiotem migracji do USD/Isaac Sim, w celu porównania zachowania symulowanego i rzeczywistego na tych samych sekwencjach ruchu."
+    if ISAAC_PORT_STARTED
+    else "Planowany kolejny krok: przeniesienie ramienia do symulatora opartego na USD, aby uruchomić identyczne sekwencje ruchu w symulacji i na fizycznej maszynie oraz porównać wyniki."
+)
+
+GRID_ISAAC_STACK_EN = (
+    ["Isaac Sim / Omniverse (learning)", "USD asset pipeline (learning)"]
+    if ISAAC_PORT_STARTED
+    else ["Isaac Sim / Omniverse (next step)", "USD asset pipeline (next step)"]
+)
+
+GRID_ISAAC_STACK_PL = (
+    ["Isaac Sim / Omniverse - w nauce", "Pipeline USD - w nauce"]
+    if ISAAC_PORT_STARTED
+    else ["Isaac Sim / Omniverse - kolejny krok", "Pipeline USD - kolejny krok"]
+)
+
+PROFILE_GRID_EN = (
+    "Simulation engineer profile built on commercial physics-based simulation of mechanical and "
+    "robotic systems - and on building the physical machines those simulations describe. "
+    "Currently a Robotics Engineer at ASTOR, building digital twins of production lines and robot "
+    "simulations, programming Kawasaki and Epson robots, and designing and commissioning robot "
+    "demonstration stations, so I see both the model and the machine it is supposed to match. "
+    "Previously an Application Engineer at AIAutomation for a year and a half: digital twins of "
+    "production workcells for automotive clients, validating and tuning kinematics, joint limits, "
+    "reach and motion constraints, integrating customer CAD models into the simulation "
+    "environment, and writing Python scripts that automate simulation logic and improve "
+    "simulation performance. Mechanical Engineering student at Cracow University of Technology "
+    "(dynamic systems modelling, control, analytical mechanics) and certified Software Technician, "
+    "so the physics side and the scripting side come from the same background. I also designed "
+    "and built a SCARA robotic arm end-to-end, which gives me a machine of my own to validate "
+    "simulated behaviour against. My simulation stack so far is Visual Components rather than "
+    "Omniverse. " + GRID_ISAAC_PROFILE_EN + " Based in Krakow, available full-time."
+)
+
+PROFILE_GRID_PL = (
+    "Profil inżyniera symulacji oparty na komercyjnej pracy z symulacją fizyczną układów "
+    "mechanicznych i robotycznych - oraz na budowaniu maszyn, które te symulacje opisują. "
+    "Obecnie Inżynier Robotyk w ASTOR: buduję cyfrowe bliźniaki linii produkcyjnych i symulacje "
+    "robotów, programuję roboty Kawasaki i Epson oraz projektuję i uruchamiam stanowiska "
+    "demonstracyjne, więc widzę jednocześnie model i maszynę, z którą ma się zgadzać. Wcześniej "
+    "przez półtora roku Application Engineer w AIAutomation: cyfrowe bliźniaki gniazd "
+    "produkcyjnych dla klientów Automotive, walidacja i strojenie kinematyki, limitów przegubów, "
+    "zasięgów i ograniczeń ruchu, integracja modeli CAD klienta do środowiska symulacyjnego oraz "
+    "skrypty w Pythonie automatyzujące logikę symulacji i poprawiające jej wydajność. Student "
+    "Mechaniki i Budowy Maszyn na Politechnice Krakowskiej (modelowanie układów dynamicznych, "
+    "automatyka, mechanika analityczna) i Technik Programista - strona fizyczna i skryptowa "
+    "pochodzą u mnie z tego samego przygotowania. Zaprojektowałem i zbudowałem też end-to-end "
+    "ramię robota SCARA, czyli mam własną maszynę do weryfikowania zachowania symulacji. Mój "
+    "dotychczasowy stack to Visual Components, nie Omniverse; " + GRID_ISAAC_PROFILE_PL
+    + " Baza w Krakowie, dostępność w pełnym wymiarze."
+)
+
+GRID_SKILLS_EN = [
+    "Python for simulation: scripting simulation logic and behaviour, process-optimization scripts, automation of repetitive simulation tasks, calculation and data-processing tools; C++ and Arduino/C for hardware-level control.",
+    "Physics-based simulation of mechanical systems: validating and tuning kinematics, joint limits, reach, collisions and motion constraints; university coursework in dynamic systems modelling, control, mechatronics and analytical mechanics.",
+    "CAD models inside simulation environments: preparing, cleaning and optimizing 3D geometry from SolidWorks, Autodesk Inventor, Fusion 360 and AutoCAD for use in simulation, balancing visual fidelity against simulation performance.",
+    "Robotics simulation & digital twins: digital twins of production lines and workcells - robot paths, process logic, collision checking, cycle flows, layout optimization and virtual validation before physical implementation; Visual Components used commercially for automotive clients.",
+    "Sim-to-real grounding: I program, build and commission the physical robot cells I also model, and I designed and built a SCARA arm I control in Python/C++ - a direct reference for simulated kinematics, gear ratios, joint limits and actuator behaviour.",
+    GRID_ISAAC_SKILL_EN,
+    "Engineering practice: version control with Git, technical documentation of simulation workflows, assumptions and constraints, and work with customer documentation and engineering standards.",
+    "Industrial robots: Kawasaki and Epson programming - certified courses, teach pendant workflows, application cycles and robot cell testing.",
+]
+
+GRID_SKILLS_PL = [
+    "Python w symulacji: skryptowanie logiki i zachowania symulacji, skrypty optymalizujące procesy, automatyzacja powtarzalnych zadań symulacyjnych, narzędzia obliczeniowe i do przetwarzania danych; C++ i Arduino/C do sterowania hardware'em.",
+    "Symulacja fizyczna układów mechanicznych: walidacja i strojenie kinematyki, limitów przegubów, zasięgów, kolizji i ograniczeń ruchu; na studiach modelowanie układów dynamicznych, automatyka, mechatronika i mechanika analityczna.",
+    "Modele CAD w środowiskach symulacyjnych: przygotowanie, czyszczenie i optymalizacja geometrii 3D z SolidWorks, Autodesk Inventor, Fusion 360 i AutoCAD pod użycie w symulacji, z równoważeniem wierności wizualnej i wydajności.",
+    "Symulacje robotyczne i cyfrowe bliźniaki: bliźniaki linii produkcyjnych i gniazd - ścieżki robotów, logika procesu, wykrywanie kolizji, cykle pracy, optymalizacja layoutu i wirtualna walidacja przed wdrożeniem fizycznym; Visual Components wykorzystywany komercyjnie dla klientów Automotive.",
+    "Odniesienie sim-to-real: programuję, buduję i uruchamiam te same stanowiska, które modeluję, a dodatkowo zaprojektowałem i zbudowałem ramię SCARA sterowane w Pythonie/C++ - bezpośredni punkt odniesienia dla symulowanej kinematyki, przełożeń, limitów przegubów i zachowania napędów.",
+    GRID_ISAAC_SKILL_PL,
+    "Warsztat inżynierski: wersjonowanie w Git, dokumentacja techniczna workflow symulacyjnego, założeń i ograniczeń, praca z dokumentacją klienta i standardami inżynieryjnymi.",
+    "Roboty przemysłowe: programowanie robotów Kawasaki i Epson - kursy z certyfikatami, praca na teach pendancie, cykle aplikacyjne i testy stanowisk.",
+]
+
+GRID_ASTOR_EN = [
+    "Build digital twins of production lines and robot simulations, validating reach, motion sequences and process behaviour before physical implementation.",
+    "Program Kawasaki and Epson industrial robots, so the motion I model in simulation is motion I also implement and verify on the physical machine.",
+    "Design, build and commission robot demonstration stations presenting Kawasaki and Epson robots in different applications - mechanical assembly, hardware-software integration, programming and bring-up.",
+    "Work across mechanics, electrics and robot software when testing and troubleshooting robot cells, which is where simulated and real behaviour get compared in practice.",
+]
+
+GRID_ASTOR_PL = [
+    "Budowa cyfrowych bliźniaków linii produkcyjnych i symulacji robotów, weryfikacja zasięgów, sekwencji ruchu i zachowania procesu przed wdrożeniem fizycznym.",
+    "Programowanie robotów przemysłowych Kawasaki i Epson - ruch, który modeluję w symulacji, wdrażam i weryfikuję również na fizycznej maszynie.",
+    "Projektowanie, budowa i uruchamianie stanowisk demonstracyjnych prezentujących roboty Kawasaki i Epson w różnych aplikacjach - montaż mechaniczny, integracja hardware-software, programowanie i rozruch.",
+    "Praca na styku mechaniki, elektryki i oprogramowania robotów przy testach i diagnostyce stanowisk - tam w praktyce porównuje się zachowanie symulowane z rzeczywistym.",
+]
+
+GRID_AIA_EN = [
+    "Built and maintained physics-based simulations and digital twins of production workcells in Visual Components for automotive clients.",
+    "Validated and tuned robot kinematics, reach, joint limits, motion constraints and collision behaviour so that simulated cells matched real production requirements.",
+    "Integrated customer CAD models from SolidWorks and Autodesk Inventor into the simulation environment, preparing and optimizing 3D geometry for simulation use and performance.",
+    "Developed Python scripts to automate simulation logic, optimize processes and improve simulation behaviour and performance.",
+    "Implemented robot logic, motion sequences, robot paths, cycle flows and virtual process validation, and optimized workcell layouts.",
+    "Documented simulation assumptions, constraints and workflows, and analyzed customer documentation and engineering standards to keep simulated behaviour aligned with the physical process.",
+]
+
+GRID_AIA_PL = [
+    "Budowa i utrzymanie symulacji fizycznych oraz cyfrowych bliźniaków gniazd produkcyjnych w Visual Components dla klientów Automotive.",
+    "Walidacja i strojenie kinematyki robotów, zasięgów, limitów przegubów, ograniczeń ruchu i zachowań kolizyjnych, tak aby symulowane gniazda odpowiadały rzeczywistym wymaganiom produkcyjnym.",
+    "Integracja modeli CAD klienta z SolidWorks i Autodesk Inventor do środowiska symulacyjnego, przygotowanie i optymalizacja geometrii 3D pod użycie w symulacji i jej wydajność.",
+    "Pisanie skryptów w Pythonie automatyzujących logikę symulacji, optymalizujących procesy oraz poprawiających działanie i wydajność symulacji.",
+    "Implementacja logiki pracy robotów, sekwencji ruchu, ścieżek, cykli produkcyjnych i wirtualnej walidacji procesu oraz optymalizacja layoutów gniazd.",
+    "Dokumentowanie założeń, ograniczeń i workflow symulacyjnego oraz analiza dokumentacji klienta i standardów inżynieryjnych pod kątem zgodności symulacji z procesem fizycznym.",
+]
+
+GRID_SCARA_EN = [
+    "Designed and built an end-to-end SCARA robotic arm: mechanical concept, CAD modelling, kinematic layout, gear ratios, selection of NEMA stepper actuators and TMC/DRV drivers, microcontroller electronics and wiring.",
+    "Defined and verified the physical parameters that drive simulated behaviour - link geometry, joint limits, gear ratios and actuator torque - against the assembled machine.",
+    "Developed Python/C++ control software implementing forward and inverse kinematics, giving a real measurement point for comparing modelled and physical motion.",
+    "Optimized components for 3D printing, including PET-G and carbon-fibre reinforced materials, with focus on stiffness, assembly constraints and rapid iteration.",
+    GRID_ISAAC_PROJECT_EN,
+]
+
+GRID_SCARA_PL = [
+    "Zaprojektowanie i budowa end-to-end ramienia robota SCARA: koncepcja mechaniczna, modelowanie CAD, układ kinematyczny, przełożenia, dobór napędów krokowych NEMA i sterowników TMC/DRV, elektronika mikrokontrolerowa i okablowanie.",
+    "Zdefiniowanie i weryfikacja parametrów fizycznych decydujących o zachowaniu w symulacji - geometrii członów, limitów przegubów, przełożeń i momentów napędów - na zmontowanej maszynie.",
+    "Oprogramowanie sterujące w Pythonie/C++ z kinematyką prostą i odwrotną, co daje realny punkt pomiarowy do porównywania ruchu modelowanego i fizycznego.",
+    "Optymalizacja części pod druk 3D, w tym PET-G i materiały wzmacniane włóknem węglowym, z naciskiem na sztywność, montaż i szybkie iteracje.",
+    GRID_ISAAC_PROJECT_PL,
+]
+
+GRID_STACK_EN = [
+    "Python",
+    "C++ / Arduino C",
+    "Visual Components",
+    "Physics-based simulation",
+    *GRID_ISAAC_STACK_EN,
+    "ROS (personal projects)",
+    "MATLAB basics",
+    "SolidWorks",
+    "Autodesk Inventor",
+    "Fusion 360",
+    "AutoCAD",
+    "Git",
+    "Kawasaki & Epson robots",
+]
+
+GRID_STACK_PL = [
+    "Python",
+    "C++ / Arduino C",
+    "Visual Components",
+    "Symulacja fizyczna",
+    *GRID_ISAAC_STACK_PL,
+    "ROS - projekty własne",
+    "Podstawy MATLAB",
+    "SolidWorks",
+    "Autodesk Inventor",
+    "Fusion 360",
+    "AutoCAD",
+    "Git",
+    "Roboty Kawasaki i Epson",
+]
+
+CV_GRID_EN = copy.deepcopy(CV_EN)
+CV_GRID_EN.update(
+    {
+        "filename": "Maciej_Tkacz_CV_GridDynamics_EN",
+        "outdir": GRID_DIR,
+        "title": "Simulation Engineer - Robotics & Physics-Based Simulation",
+        "profile": PROFILE_GRID_EN,
+    }
+)
+CV_GRID_EN["sections"][0]["items"] = GRID_SKILLS_EN
+CV_GRID_EN["sections"][1]["title"] = "Selected Simulation & Robotics Project"
+CV_GRID_EN["sections"][1]["subtitle"] = (
+    "SCARA Robotic Arm - Physical Prototype and Kinematic Model | Personal R&D Project"
+)
+CV_GRID_EN["sections"][1]["items"] = GRID_SCARA_EN
+CV_GRID_EN["sections"][2]["jobs"][0]["items"] = GRID_ASTOR_EN
+CV_GRID_EN["sections"][2]["jobs"][1]["items"] = GRID_AIA_EN
+CV_GRID_EN["sidebar"]["Technical Stack"] = GRID_STACK_EN
+CV_GRID_EN["sidebar"]["Robotics Keywords"] = [
+    "Physics-based simulation",
+    "Kinematics & constraints",
+    "CAD-to-simulation pipeline",
+    "Digital twins",
+    "Python simulation scripting",
+    "Sim-to-real validation",
+    "Simulation workflow documentation",
+    "Version-controlled assets",
+]
+
+CV_GRID_PL = copy.deepcopy(CV_PL)
+CV_GRID_PL.update(
+    {
+        "filename": "Maciej_Tkacz_CV_GridDynamics_PL",
+        "outdir": GRID_DIR,
+        "title": "Simulation Engineer - robotyka i symulacja fizyczna",
+        "profile": PROFILE_GRID_PL,
+    }
+)
+CV_GRID_PL["sections"][0]["items"] = GRID_SKILLS_PL
+CV_GRID_PL["sections"][1]["title"] = "Wybrany projekt symulacyjno-robotyczny"
+CV_GRID_PL["sections"][1]["subtitle"] = (
+    "Ramię robota SCARA - fizyczny prototyp i model kinematyczny | Projekt własny R&D"
+)
+CV_GRID_PL["sections"][1]["items"] = GRID_SCARA_PL
+CV_GRID_PL["sections"][2]["jobs"][0]["items"] = GRID_ASTOR_PL
+CV_GRID_PL["sections"][2]["jobs"][1]["items"] = GRID_AIA_PL
+CV_GRID_PL["sidebar"]["Stack techniczny"] = GRID_STACK_PL
+CV_GRID_PL["sidebar"]["Słowa kluczowe"] = [
+    "Symulacja fizyczna",
+    "Kinematyka i ograniczenia",
+    "CAD w symulacji",
+    "Cyfrowe bliźniaki",
+    "Skrypty Python w symulacji",
+    "Walidacja sim-to-real",
+    "Dokumentacja workflow",
+    "Wersjonowanie assetów",
+]
+
+
 def set_doc_defaults(doc: Document) -> None:
     section = doc.sections[0]
     section.top_margin = Cm(1.3)
@@ -1248,6 +1500,213 @@ maciek01110@gmail.com | 881 912 125
     return path
 
 
+def write_grid_application_message() -> Path:
+    path = GRID_DIR / "application_message_griddynamics.md"
+    path.write_text(
+        """# Grid Dynamics - Simulation Engineer (NVIDIA Omniverse, Python, Robotics)
+
+Rola jest oznaczona jako Mid-Senior i wisi od trzech miesięcy przy bardzo małej liczbie
+aplikacji, a jej lista wymagań jest odwrócona: narzędzia (Isaac Sim, Omniverse, Unity,
+Unreal) są twarde, a domena (symulacje robotyczne, ROS, CAD) jest "nice to have".
+Dlatego wiadomość jest zbudowana tak, żeby najpierw uderzyć w obowiązki - bo tam masz
+realne pokrycie - a lukę narzędziową postawić samemu, zanim zrobi to rekruter.
+
+**Nie pisz, że znasz Omniverse ani Isaac Sim.** Rozmowę techniczną prowadzą inżynierowie
+robotyki i to jest jedyne pytanie, które na pewno padnie.
+
+## Wersja pełna (EN) - formularz aplikacyjny, e-mail lub InMail
+
+Hello,
+
+I am applying for the Simulation Engineer position in your Robotics Lab in Krakow.
+
+Your list of responsibilities describes what I do commercially. I currently work as a
+Robotics Engineer at ASTOR, where I build digital twins of production lines and robot
+simulations, program Kawasaki and Epson industrial robots, and design, build and
+commission demonstration stations that show those robots in real applications. Before
+that I spent a year and a half as an Application Engineer at AIAutomation building
+digital twins of production workcells in Visual Components for automotive clients:
+validating and tuning kinematics, reach, joint limits and motion constraints so the
+simulated cell matched the real process; integrating customer CAD models from SolidWorks
+and Inventor into the simulation environment and optimizing that geometry for simulation
+performance; writing Python scripts to automate simulation logic; and documenting
+simulation assumptions and workflows for engineers and stakeholders.
+
+The part I would emphasise is that I am on both sides of the model. I build the digital
+twin and I also physically build, program and commission the cell, so I routinely see
+where a simulation stops matching the machine - which is exactly the "validate and tune
+physical parameters, kinematics, and constraints" part of your posting.
+
+I want to be direct about the gap, because it is the one in your job title: my simulation
+work has been in Visual Components, not in Omniverse or Isaac Sim, and I have not used
+Unity or Unreal professionally. What I bring instead is the part that takes longer to
+learn than a tool - understanding how a mechanical system behaves, why a simulated
+kinematic chain diverges from the real one, and how to make CAD geometry usable inside a
+simulator. I am a Mechanical Engineering student at Cracow University of Technology, so
+dynamic systems modelling, control and analytical mechanics are coursework rather than
+something I picked up from documentation.
+
+I am also closing that gap with something concrete rather than a course. I designed and
+built a SCARA robotic arm from scratch - CAD, 3D printing, NEMA steppers and TMC/DRV
+drivers, microcontroller electronics, and Python/C++ control code with forward and inverse
+kinematics - and I am porting it into a USD-based simulator so I can run the same motion
+sequence in simulation and on the physical arm and compare the results. Very few
+candidates for simulation roles have both the model and the machine, and I would rather
+show you that than claim tool experience I do not have.
+
+I am based in Krakow, native Polish, English C1. I would be glad to walk you through the
+SCARA project and the simulation work behind it.
+
+Best regards,
+Maciej Tkacz
+maciek01110@gmail.com | +48 881 912 125
+
+## Krótka notka na LinkedIn (EN, limit 300 znaków)
+
+Hello, I'm applying for the Simulation Engineer role in your Krakow Robotics Lab. I build
+digital twins of production lines and program Kawasaki/Epson robots at ASTOR; previously
+physics-based robot simulation in Visual Components. Learning Isaac Sim via my own SCARA
+arm. Maciej Tkacz
+
+## Wersja pełna (PL)
+
+Dzień dobry,
+
+składam aplikację na stanowisko Simulation Engineer w Państwa Robotics Lab w Krakowie.
+
+Lista obowiązków w ogłoszeniu opisuje to, co robię komercyjnie. Obecnie pracuję jako
+Inżynier Robotyk w ASTOR, gdzie buduję cyfrowe bliźniaki linii produkcyjnych i symulacje
+robotów, programuję roboty przemysłowe Kawasaki i Epson oraz projektuję, buduję
+i uruchamiam stanowiska demonstracyjne pokazujące te roboty w realnych aplikacjach.
+Wcześniej przez półtora roku jako Application Engineer w AIAutomation budowałem cyfrowe
+bliźniaki gniazd produkcyjnych w Visual Components dla klientów Automotive: walidacja
+i strojenie kinematyki, zasięgów, limitów przegubów i ograniczeń ruchu, tak aby symulowane
+gniazdo odpowiadało rzeczywistemu procesowi; integracja modeli CAD klienta z SolidWorks
+i Inventora do środowiska symulacyjnego oraz optymalizacja tej geometrii pod wydajność
+symulacji; skrypty w Pythonie automatyzujące logikę symulacji; dokumentowanie założeń
+i workflow symulacyjnego.
+
+Rzecz, którą chciałbym podkreślić: jestem po obu stronach modelu. Buduję cyfrowego
+bliźniaka i jednocześnie fizycznie buduję, programuję i uruchamiam stanowisko, więc na
+bieżąco widzę, w którym miejscu symulacja przestaje zgadzać się z maszyną - a to dokładnie
+punkt "validate and tune physical parameters, kinematics, and constraints" z ogłoszenia.
+
+Chcę powiedzieć wprost o luce, bo jest nią tytuł stanowiska: pracowałem w Visual
+Components, a nie w Omniverse czy Isaac Sim, i nie używałem zawodowo Unity ani Unreal.
+To, co wnoszę, to część, której nauka trwa dłużej niż nauka narzędzia - rozumienie, jak
+zachowuje się układ mechaniczny, dlaczego symulowany łańcuch kinematyczny rozjeżdża się
+z rzeczywistym i jak przygotować geometrię CAD do użycia w symulatorze. Jestem studentem
+Mechaniki i Budowy Maszyn na Politechnice Krakowskiej, więc modelowanie układów
+dynamicznych, automatyka i mechanika analityczna to u mnie program studiów.
+
+Tę lukę zamykam czymś konkretnym, a nie kursem. Od zera zaprojektowałem i zbudowałem
+ramię robota SCARA - CAD, druk 3D, silniki NEMA i sterowniki TMC/DRV, elektronika
+mikrokontrolerowa oraz kod sterujący w Pythonie/C++ z kinematyką prostą i odwrotną -
+i przenoszę je do symulatora opartego na USD, żeby uruchomić tę samą sekwencję ruchu
+w symulacji i na fizycznym ramieniu, a następnie porównać wyniki.
+
+Mieszkam w Krakowie, polski ojczysty, angielski C1. Chętnie opowiem o projekcie SCARA
+i o pracy symulacyjnej, która za nim stoi.
+
+Pozdrawiam,
+Maciej Tkacz
+maciek01110@gmail.com | 881 912 125
+
+## Zanim wyślesz - dwie rzeczy do sprawdzenia
+
+1. **Zdania o migracji SCARA do USD/Isaac Sim.** W liście powyżej brzmią jak działanie
+   w toku i są prawdziwe dopiero wtedy, gdy projekt ruszył. W samym CV domyślnie są
+   sformułowane ostrożniej ("planowany kolejny krok"), bo CV czyta się dosłownie.
+   Jeśli zaczniesz projekt, w `scripts/generate_softserve_cv.py` ustaw
+   `ISAAC_PORT_STARTED = True` i wygeneruj pakiet ponownie - CV samo przejdzie na wersję
+   "w nauce". Jeśli nie zaczniesz, usuń te zdania z listu.
+2. **Czy w AIAutomation robiłeś analizy czasu cyklu i weryfikację zasięgów robota jako
+   osobne zadanie?** Jeśli tak, to materiał na mocny dodatkowy punkt - pytałem o to
+   wcześniej i nie mam odpowiedzi, dlatego tego nie dopisuję.
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
+def write_grid_readme() -> Path:
+    path = GRID_DIR / "README.md"
+    path.write_text(
+        """# CV pod Grid Dynamics - Simulation Engineer (NVIDIA Omniverse, Python, Robotics)
+
+Osobny wariant CV pod tę ofertę. Różni się od pozostałych pakietów nie kosmetycznie, tylko
+kolejnością i słownictwem: całość jest przepisana pod obowiązki z ogłoszenia, bo tam masz
+realne pokrycie, a nie pod tytuł stanowiska, w którym masz lukę.
+
+## Pliki
+
+| Plik | Kiedy używać |
+|---|---|
+| `Maciej_Tkacz_CV_GridDynamics_EN_ATS.pdf` | domyślny wybór - formularz aplikacyjny, ATS |
+| `Maciej_Tkacz_CV_GridDynamics_EN_Visual.pdf` | wysyłka bezpośrednio do człowieka |
+| `Maciej_Tkacz_CV_GridDynamics_PL_*` | gdyby rekrutacja szła po polsku (Robotics Lab jest w Krakowie) |
+| `application_message_griddynamics.md` | list aplikacyjny EN/PL + krótka notka na LinkedIn |
+
+Wersje `.docx` są obok, jeśli chcesz coś dopisać ręcznie.
+
+## Co zostało zmienione względem CV uniwersalnego
+
+1. **Tytuł: Simulation Engineer.** Słowo "junior" nie pada nigdzie - oferta jest oznaczona
+   jako Mid-Senior i nie ma sensu podpowiadać rekruterowi odrzucenia.
+2. **Python na pierwszym miejscu w umiejętnościach**, bo jest pierwszym wymaganiem oferty.
+   Opisany jako "Python for simulation", nie jako ogólne programowanie.
+3. **Nowa kategoria "Physics-based simulation of mechanical systems"** - dokładnie pierwszy
+   punkt ich obowiązków ("validate and tune physical parameters, kinematics, and
+   constraints"). Podpięte pod nią przedmioty ze studiów: modelowanie układów dynamicznych,
+   automatyka, mechanika analityczna.
+4. **Osobna kategoria "CAD models inside simulation environments"** - u nich to samodzielny
+   punkt obowiązków, a u Ciebie była to codzienność w AIAutomation.
+5. **Doświadczenie przepisane ich językiem.** Te same fakty, inne nagłówki: walidacja
+   i strojenie kinematyki, zasięgów i ograniczeń; integracja modeli CAD do symulacji;
+   skrypty Python automatyzujące logikę symulacji; dokumentowanie założeń i workflow.
+6. **Obecna praca w ASTOR ustawiona jako argument sim-to-real.** Budujesz cyfrowego
+   bliźniaka i jednocześnie fizycznie stawiasz i uruchamiasz stanowisko - to rzadkie
+   połączenie i w tej ofercie jest to Twój najmocniejszy pojedynczy argument.
+7. **Projekt SCARA przestawiony z "budowy robota" na "prototyp fizyczny + model
+   kinematyczny"**, z naciskiem na parametry fizyczne: geometria członów, przełożenia,
+   limity przegubów, momenty.
+8. **Git i dokumentacja workflow** dodane jawnie, bo oferta wymienia wersjonowanie assetów
+   i dokumentowanie logiki symulacji.
+
+## Czego celowo NIE ma w tym CV
+
+Nie ma Omniverse, Isaac Sim, Unity ani Unreal jako umiejętności. Jest tylko jasno
+oznaczona pozycja opisująca, że to kolejny krok w nauce.
+
+To nie jest ostrożność na wszelki wypadek. To jedyne twarde wymaganie tej oferty i jest
+w tytule stanowiska, więc pytanie o nie padnie w pierwszych minutach rozmowy technicznej
+z inżynierami z Robotics Lab. Wpisanie tego do CV zamienia aplikację, w której masz
+przewagę domenową i uczciwą lukę, w aplikację, która wypada z gry na jednym pytaniu -
+i zamyka firmę na przyszłość, bo Grid Dynamics ma w Krakowie więcej ról.
+
+Prawdziwe wzmocnienie tej aplikacji nie jest w CV, tylko w projekcie: import SCARA do
+Isaac Sim przez USD, przeguby i limity, skrypt w Pythonie z tą samą kinematyką co na
+fizycznym robocie, jedno porównanie sim-to-real i repozytorium na GitHubie. Wtedy
+"kolejny krok" w CV staje się linkiem do działającego rezultatu. Zakres jest opisany
+w `artifacts/job-search/README.md`, sekcja "Projekt, który decyduje".
+
+Gdy projekt ruszy, ustaw `ISAAC_PORT_STARTED = True` w `scripts/generate_softserve_cv.py`
+i wygeneruj pakiet ponownie - sformułowania w CV zmienią się z "planowany krok" na "w nauce".
+
+## Gdzie aplikować
+
+- justjoin.it: https://justjoin.it/job-offer/grid-dynamics-poland-simulation-engineer-nvidia-omniverse-python-robotics--krakow-ai
+- LinkedIn: https://www.linkedin.com/jobs/view/4418163132/
+- Wariant Dresden / Central Europe Remote: https://www.griddynamics.com/careers/discover-openings
+
+Warto złożyć aplikację również na wariant zdalny/Dresden - to ta sama rola, inny rynek
+kandydatów.
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
 def write_universal_outreach_message() -> Path:
     path = UNIVERSAL_DIR / "outreach_message.md"
     path.write_text(
@@ -1397,6 +1856,7 @@ def main() -> None:
     REDSKY_DIR.mkdir(parents=True, exist_ok=True)
     INBOLT_DIR.mkdir(parents=True, exist_ok=True)
     UNIVERSAL_DIR.mkdir(parents=True, exist_ok=True)
+    GRID_DIR.mkdir(parents=True, exist_ok=True)
     created = []
     for cv in (
         CV_UNIVERSAL_EN,
@@ -1407,6 +1867,8 @@ def main() -> None:
         CV_REDSKY_PL,
         CV_INBOLT_EN,
         CV_INBOLT_PL,
+        CV_GRID_EN,
+        CV_GRID_PL,
     ):
         created.append(build_ats_docx(cv))
         created.append(build_visual_docx(cv))
@@ -1417,6 +1879,8 @@ def main() -> None:
     created.append(write_inbolt_linkedin_message())
     created.append(write_universal_outreach_message())
     created.append(write_universal_readme())
+    created.append(write_grid_application_message())
+    created.append(write_grid_readme())
     for path in created:
         print(path.relative_to(OUT_DIR.parents[1]))
 

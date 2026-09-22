@@ -182,7 +182,9 @@ wprost, a Omniverse potraktuj jako narzędzie do nauki, nie jako coś, co znasz.
 > Maciej Tkacz
 > maciek01110@gmail.com | +48 881 912 125
 
-CV: `artifacts/softserve-cv/Maciej_Tkacz_CV_SoftServe_EN_ATS.pdf` (profil symulacyjny)
+CV: `artifacts/griddynamics-cv/Maciej_Tkacz_CV_GridDynamics_EN_ATS.pdf`
+Pełny list EN/PL i notka na LinkedIn: `artifacts/griddynamics-cv/application_message_griddynamics.md`
+(dłuższa i mocniej dopasowana wersja niż szkic powyżej - użyj jej, jeśli masz pole na list)
 
 ---
 
@@ -318,7 +320,7 @@ Uzupełniaj datę wysłania i status. Follow-up wysyłaj po 7-10 dniach ciszy.
 | 2 | SoftServe | Junior Robotics Eng. 88707 | SoftServe EN ATS | | | |
 | 3 | SoftServe | Junior Robotics Eng. 88766 | SoftServe EN ATS | | | |
 | 4 | SoftServe | Junior Robotics Eng. 88754 | SoftServe EN ATS | | | |
-| 5 | Grid Dynamics | Simulation Engineer | SoftServe EN ATS | | | |
+| 5 | Grid Dynamics | Simulation Engineer | GridDynamics EN ATS | | | |
 | 6 | Sopra Steria | Associate Engineer (students) | RedSky PL ATS | | | |
 | 7 | Visual Components | Application Engineer | Inbolt EN ATS | | | |
 | 8 | AIUT | Inżynier Automatyk-Robotyk | Inbolt PL ATS | | | |
