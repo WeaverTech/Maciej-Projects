@@ -16,6 +16,9 @@ projekcie lub innych inicjatywach Red Sky jest też przestrzeń dla ambitnego in
 na poziomie junior/mid.
 
 W skrócie o mnie:
+- obecnie Inżynier Robotyk w ASTOR (od 07.2026) - programowanie robotów Kawasaki i Epson,
+  cyfrowe bliźniaki linii produkcyjnych oraz projektowanie, budowa i uruchamianie stanowisk
+  demonstracyjnych prezentujących te roboty w różnych aplikacjach,
 - komercyjne doświadczenie w symulacjach robotycznych i cyfrowych bliźniakach
   (Visual Components, klienci Automotive; 01.2025-05.2026) - ścieżki robotów, kolizje,
   cykle produkcyjne, optymalizacja layoutów,
@@ -35,9 +38,9 @@ maciek01110@gmail.com | 881 912 125
 ## Wersja krótka (PL) - notatka do zaproszenia (limit 300 znaków)
 
 Dzień dobry, piszę ws. roli Robotic Engineer (startup z Red Sky). Jestem na etapie
-junior/mid, ale to profil typowego buildera: komercyjne symulacje robotyczne (Visual
-Components), Python/C++, własnoręcznie zbudowane ramię SCARA. Czy jest przestrzeń dla
-juniora? Chętnie prześlę CV. Maciej Tkacz
+junior/mid, ale to profil buildera: w ASTOR programuję roboty Kawasaki/Epson i buduję
+stanowiska demo, wcześniej symulacje w Visual Components, do tego własne ramię SCARA.
+Czy jest miejsce dla juniora? Maciej Tkacz
 
 ## Full version (EN)
 
@@ -51,6 +54,9 @@ to ask whether there is room in this project, or other Red Sky initiatives, for 
 ambitious junior/mid-level engineer.
 
 Briefly about me:
+- currently a Robotics Engineer at ASTOR (since Jul 2026) - programming Kawasaki and
+  Epson robots, building digital twins of production lines, and designing, building and
+  commissioning demonstration stations that show those robots in different applications,
 - commercial experience creating robotics simulations and digital twins
   (Visual Components, automotive clients; Jan 2025 - May 2026) - robot paths, collision
   checks, production cycles, layout optimization,

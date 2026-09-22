@@ -1041,7 +1041,7 @@ def write_recruiter_messages() -> Path:
 
 Dzień dobry,
 
-przesyłam aplikację na stanowisko Junior Robotics Engineer. Jako student Mechaniki i Budowy Maszyn oraz Technik Programista łączę praktyczne projektowanie mechaniczne z programowaniem i symulacjami robotycznymi. Mam komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych bliźniaków w Visual Components, w tym pracy ze ścieżkami ruchu robotów, logiką procesu, wykrywaniem kolizji i optymalizacją layoutu.
+przesyłam aplikację na stanowisko Junior Robotics Engineer. Jako student Mechaniki i Budowy Maszyn oraz Technik Programista łączę praktyczne projektowanie mechaniczne z programowaniem i symulacjami robotycznymi. Obecnie pracuję jako Inżynier Robotyk w ASTOR, gdzie programuję roboty Kawasaki i Epson, buduję cyfrowe bliźniaki linii produkcyjnych oraz projektuję i buduję stanowiska demonstracyjne z robotami. Wcześniej zdobyłem komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych bliźniaków w Visual Components, w tym pracy ze ścieżkami ruchu robotów, logiką procesu, wykrywaniem kolizji i optymalizacją layoutu.
 
 W projektach własnych zaprojektowałem i zbudowałem prototyp ramienia robota SCARA, obejmujący CAD, druk 3D, dobór napędów i sterowników, elektronikę oraz kod sterujący w Pythonie/C++. Chętnie rozwinę te kompetencje w zespole Robotics Group przy projektach z zakresu symulacji, prototypowania i integracji systemów robotycznych.
 
@@ -1054,7 +1054,7 @@ Maciej Tkacz
 
 Hello,
 
-I would like to apply for the Junior Robotics Engineer position. As a Mechanical Engineering student and certified Software Technician, I combine hands-on mechanical design with programming and robotics simulation. I have commercial experience creating robotic simulations and digital twins in Visual Components, including robot paths, process logic, collision checking and layout optimization.
+I would like to apply for the Junior Robotics Engineer position. As a Mechanical Engineering student and certified Software Technician, I combine hands-on mechanical design with programming and robotics simulation. I currently work as a Robotics Engineer at ASTOR, programming Kawasaki and Epson robots, building digital twins of production lines and designing and building robot demonstration stations. Earlier I gained commercial experience creating robotic simulations and digital twins in Visual Components, including robot paths, process logic, collision checking and layout optimization.
 
 In my personal projects, I designed and built a SCARA robotic arm prototype covering CAD, 3D printing, actuator and driver selection, electronics, and Python/C++ control software. I would be glad to further develop these skills within the Robotics Group, especially in simulation, prototyping and hardware-software integration of robotic systems.
 
@@ -1089,6 +1089,9 @@ projekcie lub innych inicjatywach Red Sky jest też przestrzeń dla ambitnego in
 na poziomie junior/mid.
 
 W skrócie o mnie:
+- obecnie Inżynier Robotyk w ASTOR (od 07.2026) - programowanie robotów Kawasaki i Epson,
+  cyfrowe bliźniaki linii produkcyjnych oraz projektowanie, budowa i uruchamianie stanowisk
+  demonstracyjnych prezentujących te roboty w różnych aplikacjach,
 - komercyjne doświadczenie w symulacjach robotycznych i cyfrowych bliźniakach
   (Visual Components, klienci Automotive; 01.2025-05.2026) - ścieżki robotów, kolizje,
   cykle produkcyjne, optymalizacja layoutów,
@@ -1108,9 +1111,9 @@ maciek01110@gmail.com | 881 912 125
 ## Wersja krótka (PL) - notatka do zaproszenia (limit 300 znaków)
 
 Dzień dobry, piszę ws. roli Robotic Engineer (startup z Red Sky). Jestem na etapie
-junior/mid, ale to profil typowego buildera: komercyjne symulacje robotyczne (Visual
-Components), Python/C++, własnoręcznie zbudowane ramię SCARA. Czy jest przestrzeń dla
-juniora? Chętnie prześlę CV. Maciej Tkacz
+junior/mid, ale to profil buildera: w ASTOR programuję roboty Kawasaki/Epson i buduję
+stanowiska demo, wcześniej symulacje w Visual Components, do tego własne ramię SCARA.
+Czy jest miejsce dla juniora? Maciej Tkacz
 
 ## Full version (EN)
 
@@ -1124,6 +1127,9 @@ to ask whether there is room in this project, or other Red Sky initiatives, for 
 ambitious junior/mid-level engineer.
 
 Briefly about me:
+- currently a Robotics Engineer at ASTOR (since Jul 2026) - programming Kawasaki and
+  Epson robots, building digital twins of production lines, and designing, building and
+  commissioning demonstration stations that show those robots in different applications,
 - commercial experience creating robotics simulations and digital twins
   (Visual Components, automotive clients; Jan 2025 - May 2026) - robot paths, collision
   checks, production cycles, layout optimization,
@@ -1162,13 +1168,17 @@ as a fallback. The short note fits LinkedIn's 300-character connection-request l
 Hello,
 
 I am reaching out about the Robotics Application Engineer (Poland) role at Inbolt.
-The position maps closely to what I have been doing commercially: I worked as an
-Application Engineer at AIAutomation, building robotics simulations and digital twins
-in Visual Components for automotive clients - robot paths, collision checking, cycle
-flows and layout optimization - and writing Python scripts for process optimization
-and improving simulation behaviour.
+The position maps closely to what I do day to day. I currently work as a Robotics
+Engineer at ASTOR, programming Kawasaki and Epson industrial robots, building digital
+twins of production lines, and designing, building and commissioning demonstration
+stations that show those robots in different applications - which is essentially
+application engineering: making a robot work for a specific use case and presenting it.
+Before that I was an Application Engineer at AIAutomation, building robotics simulations
+and digital twins in Visual Components for automotive clients - robot paths, collision
+checking, cycle flows and layout optimization - and writing Python scripts for process
+optimization and improving simulation behaviour.
 
-Beyond simulation, I am hands-on with industrial robots and hardware:
+Beyond that, I am hands-on with robot hardware:
 - certified courses in industrial robot programming (Kawasaki integrator course at
   ASTOR Robotics Center, and Epson robot programming),
 - a SCARA robotic arm designed and built from scratch (CAD, 3D printing, stepper
@@ -1192,23 +1202,27 @@ maciek01110@gmail.com | +48 881 912 125
 
 ## Short connection note (EN, max 300 characters)
 
-Hello, I'm reaching out about the Robotics Application Engineer (Poland) role.
-Ex-Application Engineer: Visual Components digital twins for automotive plus Python
-optimization scripts; certified Kawasaki and Epson robot programming; CAD/3D printing.
-Based in PL, open to travel. Maciej Tkacz
+Hello, I'm reaching out about the Robotics Application Engineer (Poland) role. I program
+Kawasaki and Epson robots at ASTOR and build robot demo stations; previously Visual
+Components digital twins for automotive plus Python scripting. Based in PL, open to
+travel. Maciej Tkacz
 
 ## Wersja pełna (PL)
 
 Dzień dobry,
 
 piszę w sprawie roli Robotics Application Engineer (Poland) w Inbolt. To stanowisko
-mocno pokrywa się z tym, co robiłem komercyjnie: jako Application Engineer w
-AIAutomation tworzyłem symulacje robotyczne i cyfrowe bliźniaki w Visual Components
-dla klientów Automotive - ścieżki robotów, kontrola kolizji, cykle produkcyjne,
-optymalizacja layoutów - oraz pisałem skrypty w Pythonie do optymalizacji procesów
-i usprawniania działania symulacji.
+mocno pokrywa się z moją codzienną pracą. Obecnie jestem Inżynierem Robotykiem w ASTOR,
+gdzie programuję roboty przemysłowe Kawasaki i Epson, buduję cyfrowe bliźniaki linii
+produkcyjnych oraz projektuję, buduję i uruchamiam stanowiska demonstracyjne pokazujące
+te roboty w różnych aplikacjach - czyli w praktyce robię application engineering:
+doprowadzam robota do działania w konkretnym zastosowaniu i prezentuję to rozwiązanie.
+Wcześniej jako Application Engineer w AIAutomation tworzyłem symulacje robotyczne
+i cyfrowe bliźniaki w Visual Components dla klientów Automotive - ścieżki robotów,
+kontrola kolizji, cykle produkcyjne, optymalizacja layoutów - oraz pisałem skrypty
+w Pythonie do optymalizacji procesów i usprawniania działania symulacji.
 
-Poza symulacjami pracuję praktycznie z robotami przemysłowymi i hardware'em:
+Poza tym pracuję praktycznie z hardware'em robotów:
 - certyfikowane kursy programowania robotów przemysłowych (kurs integratorski
   Kawasaki w ASTOR Robotics Center oraz programowanie robotów Epson),
 - ramię SCARA zaprojektowane i zbudowane od zera (CAD, druk 3D, napędy krokowe,
@@ -1224,6 +1238,93 @@ kierunek, w którym chcę się rozwijać.
 
 Chętnie prześlę CV i porozmawiam o tym, jak mógłbym wesprzeć wdrożenia Inbolt
 w Polsce i Europie.
+
+Pozdrawiam,
+Maciej Tkacz
+maciek01110@gmail.com | 881 912 125
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
+def write_universal_outreach_message() -> Path:
+    path = UNIVERSAL_DIR / "outreach_message.md"
+    path.write_text(
+        """# Wiadomość otwierająca do rekrutera - wersja uniwersalna
+
+Do wysyłki, gdy nie odpowiadasz na konkretne ogłoszenie, tylko pytasz o wakaty: InMail na
+LinkedIn, mail na adres rekrutacyjny firmy, kontakt na targach. Załącz
+`Maciej_Tkacz_CV_EN_ATS.pdf` albo wersję PL, zależnie od języka rozmowy.
+
+Podmień tylko nazwę firmy i jedno zdanie o tym, dlaczego akurat ona - reszta jest gotowa.
+
+## E-mail / InMail (EN)
+
+Subject: Robotics engineer (Kawasaki/Epson, simulation) - open to opportunities
+
+Hello,
+
+I am reaching out to ask whether you currently have openings for a robotics or simulation
+engineer at [FIRMA].
+
+I work as a Robotics Engineer at ASTOR, where I program Kawasaki and Epson industrial
+robots, build digital twins of production lines and robot simulations, and design and
+build demonstration stations that present those robots in different applications - so I
+cover the path from a simulated cell to a physically built and commissioned one. Before
+that I was an Application Engineer at AIAutomation, creating robotics simulations and
+digital twins of production workcells in Visual Components for automotive clients,
+including Python scripts for process optimization.
+
+My background is unusual in that the mechanical and the software side come from the same
+place: I am a Mechanical Engineering student at Cracow University of Technology and a
+certified Software Technician. Outside work I designed and built a SCARA robotic arm
+end-to-end - CAD, 3D printing, NEMA steppers and TMC/DRV drivers, microcontroller
+electronics, and Python/C++ control software with forward and inverse kinematics.
+
+I am based in Krakow and available full-time, as I can arrange my study schedule around
+work. Polish is my native language and my English is C1, and I am open to travel and to
+relocation within the EU.
+
+I am attaching my CV. If there is anything open now or coming up, I would be glad to talk.
+
+Best regards,
+Maciej Tkacz
+maciek01110@gmail.com | +48 881 912 125
+
+## Krótka notka do zaproszenia na LinkedIn (EN, limit 300 znaków)
+
+Hello, I'm a robotics engineer at ASTOR - Kawasaki/Epson programming, digital twins of
+production lines and building robot demo stations. Previously robot simulation in Visual
+Components for automotive. I'd like to connect and ask about openings at [FIRMA]. Maciej Tkacz
+
+## E-mail / InMail (PL)
+
+Temat: Inżynier robotyk (Kawasaki/Epson, symulacje) - pytanie o możliwości współpracy
+
+Dzień dobry,
+
+piszę z pytaniem, czy w [FIRMA] są obecnie otwarte rekrutacje na stanowiska związane
+z robotyką lub symulacjami.
+
+Pracuję jako Inżynier Robotyk w ASTOR, gdzie programuję roboty przemysłowe Kawasaki
+i Epson, buduję cyfrowe bliźniaki linii produkcyjnych i symulacje robotów oraz projektuję
+i buduję stanowiska demonstracyjne prezentujące te roboty w różnych aplikacjach - czyli
+przechodzę całą drogę od stanowiska w symulacji do fizycznie zbudowanego i uruchomionego.
+Wcześniej jako Application Engineer w AIAutomation tworzyłem symulacje robotyczne
+i cyfrowe bliźniaki gniazd produkcyjnych w Visual Components dla klientów Automotive,
+w tym skrypty w Pythonie do optymalizacji procesów.
+
+Moje przygotowanie jest o tyle nietypowe, że strona mechaniczna i programistyczna
+pochodzą z tego samego miejsca: jestem studentem Mechaniki i Budowy Maszyn na Politechnice
+Krakowskiej i Technikiem Programistą. Poza pracą zaprojektowałem i zbudowałem od zera
+ramię robota SCARA - CAD, druk 3D, silniki krokowe NEMA i sterowniki TMC/DRV, elektronika
+mikrokontrolerowa oraz kod sterujący w Pythonie/C++ z kinematyką prostą i odwrotną.
+
+Mieszkam w Krakowie i jestem dostępny w pełnym wymiarze, bo mam możliwość dostosowania
+toku studiów do pracy. Angielski C1, jestem otwarty na wyjazdy i na relokację w UE.
+
+Załączam CV. Jeśli jest coś otwartego teraz lub planowanego, chętnie porozmawiam.
 
 Pozdrawiam,
 Maciej Tkacz
@@ -1314,6 +1415,7 @@ def main() -> None:
     created.append(write_recruiter_messages())
     created.append(write_redsky_linkedin_message())
     created.append(write_inbolt_linkedin_message())
+    created.append(write_universal_outreach_message())
     created.append(write_universal_readme())
     for path in created:
         print(path.relative_to(OUT_DIR.parents[1]))

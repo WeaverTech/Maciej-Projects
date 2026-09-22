@@ -3,9 +3,18 @@
 Research: 21.08.2026. Wszystkie linki były aktywne w momencie sprawdzania (status HTTP 200),
 ale ogłoszenia szybko wygasają - **zweryfikuj link przed aplikacją**.
 
-Profil bazowy: student Mechaniki i Budowy Maszyn (PK), Technik Programista, Application
+Profil bazowy: student Mechaniki i Budowy Maszyn (PK), Technik Programista, **obecnie
+Inżynier Robotyk w ASTOR (od 07.2026)** - programowanie robotów Kawasaki i Epson, cyfrowe
+bliźniaki linii produkcyjnych, budowa stanowisk demonstracyjnych; wcześniej Application
 Engineer w AIAutomation (01.2025-05.2026, Visual Components, digital twins, skrypty Python),
 certyfikaty Kawasaki + Epson, prototyp SCARA od zera, CAD/druk 3D, angielski C1, Kraków.
+
+**Aktualizacja 22.09.2026:** zatrudnienie w ASTOR zmienia pozycję negocjacyjną. Do tej pory
+Twoim jedynym dowodem na pracę z fizycznymi robotami był kurs i praktyki; teraz programujesz
+Kawasaki i Epson zawodowo, w firmie, która jest w Polsce dystrybutorem Kawasaki. To wzmacnia
+przede wszystkim oferty typu application/deployment engineer (Inbolt, Mech-Mind, Sereact,
+AIUT) i ofertę Visual Components, gdzie liczy się umiejętność przeniesienia programu
+z modelu wirtualnego na fizyczne stanowisko. Nie zmienia natomiast luki ROS 2 / Isaac Sim.
 
 ---
 

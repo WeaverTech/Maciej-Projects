@@ -4,7 +4,7 @@
 
 Dzień dobry,
 
-przesyłam aplikację na stanowisko Junior Robotics Engineer. Jako student Mechaniki i Budowy Maszyn oraz Technik Programista łączę praktyczne projektowanie mechaniczne z programowaniem i symulacjami robotycznymi. Mam komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych bliźniaków w Visual Components, w tym pracy ze ścieżkami ruchu robotów, logiką procesu, wykrywaniem kolizji i optymalizacją layoutu.
+przesyłam aplikację na stanowisko Junior Robotics Engineer. Jako student Mechaniki i Budowy Maszyn oraz Technik Programista łączę praktyczne projektowanie mechaniczne z programowaniem i symulacjami robotycznymi. Obecnie pracuję jako Inżynier Robotyk w ASTOR, gdzie programuję roboty Kawasaki i Epson, buduję cyfrowe bliźniaki linii produkcyjnych oraz projektuję i buduję stanowiska demonstracyjne z robotami. Wcześniej zdobyłem komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych bliźniaków w Visual Components, w tym pracy ze ścieżkami ruchu robotów, logiką procesu, wykrywaniem kolizji i optymalizacją layoutu.
 
 W projektach własnych zaprojektowałem i zbudowałem prototyp ramienia robota SCARA, obejmujący CAD, druk 3D, dobór napędów i sterowników, elektronikę oraz kod sterujący w Pythonie/C++. Chętnie rozwinę te kompetencje w zespole Robotics Group przy projektach z zakresu symulacji, prototypowania i integracji systemów robotycznych.
 
@@ -17,7 +17,7 @@ Maciej Tkacz
 
 Hello,
 
-I would like to apply for the Junior Robotics Engineer position. As a Mechanical Engineering student and certified Software Technician, I combine hands-on mechanical design with programming and robotics simulation. I have commercial experience creating robotic simulations and digital twins in Visual Components, including robot paths, process logic, collision checking and layout optimization.
+I would like to apply for the Junior Robotics Engineer position. As a Mechanical Engineering student and certified Software Technician, I combine hands-on mechanical design with programming and robotics simulation. I currently work as a Robotics Engineer at ASTOR, programming Kawasaki and Epson robots, building digital twins of production lines and designing and building robot demonstration stations. Earlier I gained commercial experience creating robotic simulations and digital twins in Visual Components, including robot paths, process logic, collision checking and layout optimization.
 
 In my personal projects, I designed and built a SCARA robotic arm prototype covering CAD, 3D printing, actuator and driver selection, electronics, and Python/C++ control software. I would be glad to further develop these skills within the Robotics Group, especially in simulation, prototyping and hardware-software integration of robotic systems.
 

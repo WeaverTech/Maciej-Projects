@@ -9,13 +9,17 @@ as a fallback. The short note fits LinkedIn's 300-character connection-request l
 Hello,
 
 I am reaching out about the Robotics Application Engineer (Poland) role at Inbolt.
-The position maps closely to what I have been doing commercially: I worked as an
-Application Engineer at AIAutomation, building robotics simulations and digital twins
-in Visual Components for automotive clients - robot paths, collision checking, cycle
-flows and layout optimization - and writing Python scripts for process optimization
-and improving simulation behaviour.
+The position maps closely to what I do day to day. I currently work as a Robotics
+Engineer at ASTOR, programming Kawasaki and Epson industrial robots, building digital
+twins of production lines, and designing, building and commissioning demonstration
+stations that show those robots in different applications - which is essentially
+application engineering: making a robot work for a specific use case and presenting it.
+Before that I was an Application Engineer at AIAutomation, building robotics simulations
+and digital twins in Visual Components for automotive clients - robot paths, collision
+checking, cycle flows and layout optimization - and writing Python scripts for process
+optimization and improving simulation behaviour.
 
-Beyond simulation, I am hands-on with industrial robots and hardware:
+Beyond that, I am hands-on with robot hardware:
 - certified courses in industrial robot programming (Kawasaki integrator course at
   ASTOR Robotics Center, and Epson robot programming),
 - a SCARA robotic arm designed and built from scratch (CAD, 3D printing, stepper
@@ -39,23 +43,27 @@ maciek01110@gmail.com | +48 881 912 125
 
 ## Short connection note (EN, max 300 characters)
 
-Hello, I'm reaching out about the Robotics Application Engineer (Poland) role.
-Ex-Application Engineer: Visual Components digital twins for automotive plus Python
-optimization scripts; certified Kawasaki and Epson robot programming; CAD/3D printing.
-Based in PL, open to travel. Maciej Tkacz
+Hello, I'm reaching out about the Robotics Application Engineer (Poland) role. I program
+Kawasaki and Epson robots at ASTOR and build robot demo stations; previously Visual
+Components digital twins for automotive plus Python scripting. Based in PL, open to
+travel. Maciej Tkacz
 
 ## Wersja pełna (PL)
 
 Dzień dobry,
 
 piszę w sprawie roli Robotics Application Engineer (Poland) w Inbolt. To stanowisko
-mocno pokrywa się z tym, co robiłem komercyjnie: jako Application Engineer w
-AIAutomation tworzyłem symulacje robotyczne i cyfrowe bliźniaki w Visual Components
-dla klientów Automotive - ścieżki robotów, kontrola kolizji, cykle produkcyjne,
-optymalizacja layoutów - oraz pisałem skrypty w Pythonie do optymalizacji procesów
-i usprawniania działania symulacji.
+mocno pokrywa się z moją codzienną pracą. Obecnie jestem Inżynierem Robotykiem w ASTOR,
+gdzie programuję roboty przemysłowe Kawasaki i Epson, buduję cyfrowe bliźniaki linii
+produkcyjnych oraz projektuję, buduję i uruchamiam stanowiska demonstracyjne pokazujące
+te roboty w różnych aplikacjach - czyli w praktyce robię application engineering:
+doprowadzam robota do działania w konkretnym zastosowaniu i prezentuję to rozwiązanie.
+Wcześniej jako Application Engineer w AIAutomation tworzyłem symulacje robotyczne
+i cyfrowe bliźniaki w Visual Components dla klientów Automotive - ścieżki robotów,
+kontrola kolizji, cykle produkcyjne, optymalizacja layoutów - oraz pisałem skrypty
+w Pythonie do optymalizacji procesów i usprawniania działania symulacji.
 
-Poza symulacjami pracuję praktycznie z robotami przemysłowymi i hardware'em:
+Poza tym pracuję praktycznie z hardware'em robotów:
 - certyfikowane kursy programowania robotów przemysłowych (kurs integratorski
   Kawasaki w ASTOR Robotics Center oraz programowanie robotów Epson),
 - ramię SCARA zaprojektowane i zbudowane od zera (CAD, druk 3D, napędy krokowe,

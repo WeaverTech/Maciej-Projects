@@ -17,8 +17,8 @@ zastanawiać się przy każdej aplikacji osobno.
 - zdalna rola senior w robotyce magazynowej (B2B): **do 145 zł/h**
 - Red Sky, founding engineer: **od 12 000 zł netto B2B**
 
-Jesteś między tymi punktami: masz 17 miesięcy komercyjnego doświadczenia, ale bez
-ukończonych studiów. Sensowna strategia to podawać **widełki, nie jedną liczbę**, i pytać
+Jesteś między tymi punktami: masz ok. 20 miesięcy komercyjnego doświadczenia (17 miesięcy
+w AIAutomation plus obecna praca w ASTOR od 07.2026), ale bez ukończonych studiów. Sensowna strategia to podawać **widełki, nie jedną liczbę**, i pytać
 o budżet stanowiska, gdy formularz na to pozwala. Jeśli musisz podać kwotę, użyj widełek
 i zaznacz elastyczność.
 - Twoja decyzja: `[DO UZUPEŁNIENIA - np. "8000-11000 zł brutto UoP / 70-90 zł/h B2B"]`
@@ -37,12 +37,14 @@ wprost i to bywa czynnikiem decydującym.
 ## Bank odpowiedzi na standardowe pytania z formularzy
 
 ### "Why do you want to work for us?" - szkielet do przerobienia
-> I have commercial experience in exactly the area this role focuses on: creating robotics
-> simulations and digital twins in Visual Components for automotive clients, including Python
-> scripting for process optimization. [JEDNO ZDANIE O TEJ KONKRETNEJ FIRMIE - patrz sekcje
-> poniżej]. I want to grow in this direction and I learn fast - I designed and built a SCARA
-> robotic arm from scratch, covering CAD, 3D printing, stepper drives, electronics and
-> Python/C++ control software.
+> I have commercial experience in exactly the area this role focuses on. I currently work as
+> a Robotics Engineer at ASTOR, programming Kawasaki and Epson robots, building digital twins
+> of production lines and building the demonstration stations that show those robots in real
+> applications; before that I created robotics simulations and digital twins in Visual
+> Components for automotive clients, including Python scripting for process optimization.
+> [JEDNO ZDANIE O TEJ KONKRETNEJ FIRMIE - patrz sekcje poniżej]. I want to grow in this
+> direction and I learn fast - I designed and built a SCARA robotic arm from scratch,
+> covering CAD, 3D printing, stepper drives, electronics and Python/C++ control software.
 
 ### "Tell us about your most significant project"
 > I designed and built a SCARA robotic arm end to end as a personal R&D project. I did the
@@ -58,7 +60,9 @@ wprost i to bywa czynnikiem decydującym.
 > I sit between mechanical engineering and software, which is unusual. I am a Mechanical
 > Engineering student and a certified Software Technician, so I can design a part in CAD,
 > print it, wire it up and then write the code that drives it. In simulation work this means
-> I understand both the geometry and the logic behind a workcell.
+> I understand both the geometry and the logic behind a workcell. In my current role I do
+> both ends of the same job: I build the digital twin of a line and I also physically build,
+> program and commission robot stations, so I see where a simulation stops matching reality.
 
 ### "Weakness / what do you want to develop?" - odpowiadaj szczerze, to działa lepiej
 > My simulation experience comes from Visual Components rather than ROS 2 and Isaac Sim,
@@ -73,6 +77,17 @@ wprost i to bywa czynnikiem decydującym.
 
 ### "Notice period"
 > `[DO UZUPEŁNIENIA]`
+
+---
+
+## CV uniwersalne - gdy nie ma osobnego wariantu
+
+Dla wszystkiego, co nie ma dedykowanego pakietu (Sii, ATMAT, Sereact, Mech-Mind, Lely,
+odpowiedzi na ogłoszenia z portali, kontakt na targach) używaj pakietu uniwersalnego:
+
+- CV: `artifacts/universal-cv/Maciej_Tkacz_CV_EN_ATS.pdf` albo `..._PL_ATS.pdf`
+- Wiadomość otwierająca do rekrutera (pytanie o wakaty, EN i PL):
+  `artifacts/universal-cv/outreach_message.md`
 
 ---
 
@@ -94,11 +109,14 @@ zmieniaj tylko zdanie oznaczone gwiazdką, zależnie od oferty.
 >
 > I am applying for the Junior Robotics Engineer position in the SoftServe Robotics Group.
 >
-> I bring commercial experience that maps directly onto this role: as an Application Engineer
-> at AIAutomation I built robotics simulations and digital twins of production workcells in
-> Visual Components for automotive clients, developing robot paths, motion logic, collision
-> checks and cycle flows, and writing Python scripts to optimize processes and improve
-> simulation performance.
+> I bring commercial experience that maps directly onto this role. I currently work as a
+> Robotics Engineer at ASTOR, where I program Kawasaki and Epson industrial robots, build
+> digital twins of production lines and robot simulations, and design and build demonstration
+> stations presenting those robots in different applications. Before that, as an Application
+> Engineer at AIAutomation, I built robotics simulations and digital twins of production
+> workcells in Visual Components for automotive clients, developing robot paths, motion logic,
+> collision checks and cycle flows, and writing Python scripts to optimize processes and
+> improve simulation performance.
 >
 > * [88707 - Modelling & Simulation] My university coursework covers dynamic systems
 >   modelling, control and mechatronics, and I have hands-on exposure to MATLAB and ROS,
@@ -129,7 +147,7 @@ CV: `artifacts/softserve-cv/Maciej_Tkacz_CV_SoftServe_EN_ATS.pdf`
 
 ### 5. Grid Dynamics - Simulation Engineer (NVIDIA Omniverse, Python, Robotics)
 
-Ich wymagania to Twoja praca w AIAutomation przeniesiona do nowszego stacku. Zagraj tym
+Ich wymagania to Twoja praca symulacyjna przeniesiona do nowszego stacku. Zagraj tym
 wprost, a Omniverse potraktuj jako narzędzie do nauki, nie jako coś, co znasz.
 
 > Hello,
@@ -138,10 +156,12 @@ wprost, a Omniverse potraktuj jako narzędzie do nauki, nie jako coś, co znasz.
 >
 > The core of this role - building simulations of mechanical systems, tuning physical
 > parameters and kinematics, integrating CAD models into simulation environments and writing
-> Python scripts for simulation logic - is what I did commercially for the past year and a
-> half. As an Application Engineer at AIAutomation I created robotics simulations and digital
-> twins of production workcells in Visual Components for automotive clients: robot paths,
-> collision checking, cycle flows, layout optimization, and Python scripts for process
+> Python scripts for simulation logic - is what I have been doing commercially for the past
+> two years. I currently work as a Robotics Engineer at ASTOR, building digital twins of
+> production lines and robot simulations, and programming Kawasaki and Epson robots.
+> Before that, as an Application Engineer at AIAutomation, I created robotics simulations and
+> digital twins of production workcells in Visual Components for automotive clients: robot
+> paths, collision checking, cycle flows, layout optimization, and Python scripts for process
 > optimization and simulation improvements. A large part of that work was preparing and
 > optimizing CAD geometry from SolidWorks and Inventor for use inside the simulation.
 >
@@ -151,7 +171,9 @@ wprost, a Omniverse potraktuj jako narzędzie do nauki, nie jako coś, co znasz.
 > geometry usable in a simulation, and scripting simulation logic in Python. I am actively
 > learning Isaac Sim and my next project is rebuilding my own SCARA robotic arm - which I
 > designed and built physically, including CAD, 3D printing, stepper drives, electronics and
-> Python/C++ control code - inside a simulator to compare simulated and real behaviour.
+> Python/C++ control code - inside a simulator to compare simulated and real behaviour. Since
+> I also build and commission physical robot cells at work, I get to see exactly where a
+> simulation stops matching the machine.
 >
 > I am based in Krakow, a Mechanical Engineering student and certified Software Technician,
 > available full-time thanks to a flexible study schedule. Polish native, English C1.
@@ -180,11 +202,13 @@ Zagraj tym, co masz: prototypowanie, elektronika, C++/Python, testy sprzętu.
 > Praktyczne doświadczenie: zaprojektowałem i zbudowałem od zera prototyp ramienia robota
 > SCARA. Obejmowało to modelowanie CAD, druk 3D, dobór silników krokowych NEMA i sterowników
 > TMC/DRV, elektronikę mikrokontrolerową, okablowanie oraz oprogramowanie sterujące w
-> Pythonie i C++. Komercyjnie pracowałem jako Application Engineer, tworząc symulacje
-> robotyczne i cyfrowe bliźniaki w Visual Components dla klientów z branży Automotive oraz
-> pisząc skrypty w Pythonie do optymalizacji procesów. Mam też certyfikowane kursy
-> programowania robotów przemysłowych Kawasaki i Epson oraz doświadczenie w testowaniu
-> działania robotów i stanowisk zrobotyzowanych.
+> Pythonie i C++. Zawodowo robię dokładnie to samo: obecnie jako Inżynier Robotyk w ASTOR
+> programuję roboty Kawasaki i Epson oraz projektuję, buduję i uruchamiam stanowiska
+> demonstracyjne prezentujące te roboty w różnych aplikacjach - od montażu mechanicznego,
+> przez integrację hardware-software, po testy. Wcześniej jako Application Engineer tworzyłem
+> symulacje robotyczne i cyfrowe bliźniaki w Visual Components dla klientów z branży
+> Automotive oraz pisałem skrypty w Pythonie do optymalizacji procesów. Mam też certyfikowane
+> kursy programowania robotów przemysłowych Kawasaki i Epson.
 >
 > Uczciwie zaznaczę, gdzie mam luki: nie pracowałem dotąd z MAVLink, PX4 ani ArduPilot.
 > Znam natomiast C++ i Pythona, podstawy ROS/ROS2 z projektów własnych, Linuksa, elektronikę
@@ -214,7 +238,10 @@ komercyjnie. Powiedz to w pierwszym zdaniu.
 >
 > I am writing because I am on the other side of your product: I used Visual Components
 > commercially as an Application Engineer at AIAutomation, building simulations and digital
-> twins of production workcells for automotive clients. My daily work was robot paths, motion
+> twins of production workcells for automotive clients, and I now work as a Robotics Engineer
+> at ASTOR, where I program Kawasaki and Epson robots, build digital twins of production lines
+> and build the demonstration stations that present those robots to customers. My daily work
+> at AIAutomation was robot paths, motion
 > logic, collision checking, cycle flows and layout optimization, along with preparing and
 > optimizing CAD geometry from SolidWorks and Inventor for the simulation environment, and
 > writing Python scripts to optimize processes and improve how the simulations ran. I also
@@ -253,14 +280,15 @@ CV: `artifacts/inbolt-cv/Maciej_Tkacz_CV_Inbolt_EN_ATS.pdf` (profil application 
 > składam aplikację na stanowisko Inżyniera Automatyka-Robotyka.
 >
 > Łączę praktyczne doświadczenie z robotami przemysłowymi z pracą projektową i programowaniem.
-> Posiadam certyfikowane kursy programowania robotów Kawasaki (kurs dla integratorów w ASTOR
-> Robotics Center) oraz Epson, a w ASTOR Robotics Center montowałem osprzęt do robotów
-> Kawasaki i testowałem działanie stanowisk. Komercyjnie pracowałem jako Application Engineer,
-> przygotowując symulacje robotyczne i cyfrowe bliźniaki gniazd produkcyjnych w Visual
-> Components dla klientów z branży Automotive - z uwzględnieniem ścieżek ruchu robotów,
-> kontroli kolizji, cykli pracy i optymalizacji layoutów - oraz pisząc skrypty w Pythonie do
-> optymalizacji procesów. To doświadczenie obejmowało też analizę dokumentacji i standardów
-> inżynieryjnych klientów.
+> Obecnie pracuję jako Inżynier Robotyk w ASTOR, gdzie programuję roboty przemysłowe Kawasaki
+> i Epson, buduję cyfrowe bliźniaki linii produkcyjnych oraz projektuję, buduję i uruchamiam
+> stanowiska demonstracyjne prezentujące te roboty w różnych aplikacjach. Posiadam
+> certyfikowane kursy programowania robotów Kawasaki (kurs dla integratorów) oraz Epson.
+> Wcześniej jako Application Engineer przygotowywałem symulacje robotyczne i cyfrowe bliźniaki
+> gniazd produkcyjnych w Visual Components dla klientów z branży Automotive - z uwzględnieniem
+> ścieżek ruchu robotów, kontroli kolizji, cykli pracy i optymalizacji layoutów - oraz pisałem
+> skrypty w Pythonie do optymalizacji procesów. To doświadczenie obejmowało też analizę
+> dokumentacji i standardów inżynieryjnych klientów.
 >
 > W projektach własnych zaprojektowałem i zbudowałem prototyp ramienia robota SCARA: CAD,
 > druk 3D, dobór napędów krokowych i sterowników, elektronika oraz sterowanie w Pythonie i C++.
@@ -294,11 +322,11 @@ Uzupełniaj datę wysłania i status. Follow-up wysyłaj po 7-10 dniach ciszy.
 | 6 | Sopra Steria | Associate Engineer (students) | RedSky PL ATS | | | |
 | 7 | Visual Components | Application Engineer | Inbolt EN ATS | | | |
 | 8 | AIUT | Inżynier Automatyk-Robotyk | Inbolt PL ATS | | | |
-| 9 | Sii Poland | Robotics / Simulation Engineer | SoftServe EN ATS | | | |
-| 10 | ATMAT | Inżynier robotyk | Inbolt PL ATS | | | |
-| 11 | Sereact | Deployment Robotics Engineer | Inbolt EN ATS | | | |
-| 12 | Mech-Mind | Robotics Applications Engineer | Inbolt EN ATS | | | |
-| 13 | Lely | Robotics Software Engineer | SoftServe EN ATS | | | |
+| 9 | Sii Poland | Robotics / Simulation Engineer | Universal EN ATS | | | |
+| 10 | ATMAT | Inżynier robotyk | Universal PL ATS | | | |
+| 11 | Sereact | Deployment Robotics Engineer | Universal EN ATS | | | |
+| 12 | Mech-Mind | Robotics Applications Engineer | Universal EN ATS | | | |
+| 13 | Lely | Robotics Software Engineer | Universal EN ATS | | | |
 | 14 | Red Sky | Robotic Engineer (long shot) | RedSky PL ATS | | | |
 
 ### Szablon follow-up (po 7-10 dniach)
@@ -306,8 +334,9 @@ Uzupełniaj datę wysłania i status. Follow-up wysyłaj po 7-10 dniach ciszy.
 >
 > I applied for the [STANOWISKO] position on [DATA] and I wanted to follow up briefly in case
 > my application needs anything from my side. I remain very interested in the role - my
-> commercial experience in robotics simulation and digital twins, plus my hands-on SCARA robot
-> project, map closely onto what you are looking for.
+> current work programming Kawasaki and Epson robots and building digital twins of production
+> lines, my earlier experience in robotics simulation for automotive, and my hands-on SCARA
+> robot project all map closely onto what you are looking for.
 >
 > Happy to provide any additional information.
 >
