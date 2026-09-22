@@ -21,6 +21,7 @@ from reportlab.pdfgen import canvas
 OUT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "softserve-cv"
 REDSKY_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "redsky-cv"
 INBOLT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "inbolt-cv"
+UNIVERSAL_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "universal-cv"
 FONT_REGULAR = "DejaVuSans"
 FONT_BOLD = "DejaVuSans-Bold"
 
@@ -31,8 +32,10 @@ pdfmetrics.registerFont(TTFont(FONT_BOLD, "/usr/share/fonts/truetype/dejavu/Deja
 PROFILE_EN = (
     "Mechanical Engineering student at Cracow University of Technology and certified Software "
     "Technician combining CAD/mechanical design with Python/C++ programming, robotic simulation "
-    "and hands-on prototyping. Commercial experience creating robotics simulations and digital "
-    "twins in Visual Components for automotive production environments. Built an end-to-end "
+    "and hands-on prototyping. Currently a Robotics Engineer at ASTOR, programming Kawasaki and "
+    "Epson robots, building digital twins of production lines and designing and building robot "
+    "demonstration stations. Earlier commercial experience creating robotics simulations and "
+    "digital twins in Visual Components for automotive production environments. Built an end-to-end "
     "SCARA robotic arm prototype covering CAD, FDM printing, actuator/driver selection, "
     "electronics, control software and hardware-software integration. Interested in automation, "
     "mobile/industrial robotics, drones and simulation-driven development."
@@ -41,9 +44,11 @@ PROFILE_EN = (
 PROFILE_PL = (
     "Student Mechaniki i Budowy Maszyn na Politechnice Krakowskiej oraz Technik Programista, "
     "łączący projektowanie CAD/mechaniczne z programowaniem w Pythonie/C++, symulacjami robotycznymi "
-    "i praktycznym prototypowaniem. Posiadam komercyjne doświadczenie w tworzeniu symulacji "
-    "robotycznych i cyfrowych bliźniaków w Visual Components dla środowisk produkcyjnych branży "
-    "Automotive. Zrealizowałem end-to-end prototyp robota SCARA obejmujący CAD, druk FDM, dobór "
+    "i praktycznym prototypowaniem. Obecnie pracuję jako Inżynier Robotyk w ASTOR, gdzie programuję "
+    "roboty Kawasaki i Epson, buduję cyfrowe bliźniaki linii produkcyjnych oraz projektuję i buduję "
+    "stanowiska demonstracyjne z robotami. Wcześniej zdobyłem komercyjne doświadczenie w tworzeniu "
+    "symulacji robotycznych i cyfrowych bliźniaków w Visual Components dla środowisk produkcyjnych "
+    "branży Automotive. Zrealizowałem end-to-end prototyp robota SCARA obejmujący CAD, druk FDM, dobór "
     "napędów i sterowników, elektronikę, oprogramowanie sterujące oraz integrację hardware-software. "
     "Interesuję się automatyką, robotyką mobilną/przemysłową, dronami i rozwojem systemów z użyciem symulacji."
 )
@@ -90,6 +95,17 @@ CV_EN = {
         {
             "title": "Professional Experience",
             "jobs": [
+                {
+                    "role": "Robotics Engineer",
+                    "company": "ASTOR, Krakow",
+                    "date": "Jul 2026 - present",
+                    "items": [
+                        "Program Kawasaki and Epson industrial robots, from motion programs and teach pendant work to complete application cycles.",
+                        "Build digital twins of production lines and robot simulations, validating reach, motion sequences and process behaviour before physical implementation.",
+                        "Design, prepare and build demonstration stations presenting Kawasaki and Epson robots across different applications - mechanical assembly, hardware-software integration, programming and commissioning.",
+                        "Test and troubleshoot robot cells end to end, working across mechanics, electrics and robot software.",
+                    ],
+                },
                 {
                     "role": "Application Engineer",
                     "company": "AIAutomation",
@@ -230,6 +246,17 @@ CV_PL = {
             "title": "Doświadczenie zawodowe",
             "jobs": [
                 {
+                    "role": "Inżynier Robotyk",
+                    "company": "ASTOR, Kraków",
+                    "date": "07.2026 - obecnie",
+                    "items": [
+                        "Programowanie robotów przemysłowych Kawasaki i Epson - od programów ruchu i pracy na teach pendancie po kompletne cykle aplikacyjne.",
+                        "Budowa cyfrowych bliźniaków linii produkcyjnych i symulacji robotów, weryfikacja zasięgów, sekwencji ruchu i zachowania procesu przed wdrożeniem fizycznym.",
+                        "Projektowanie, przygotowanie i budowa stanowisk demo prezentujących roboty Kawasaki i Epson w różnych aplikacjach - montaż mechaniczny, integracja hardware-software, programowanie i uruchomienie.",
+                        "Testowanie i diagnostyka stanowisk zrobotyzowanych end-to-end, na styku mechaniki, elektryki i oprogramowania robotów.",
+                    ],
+                },
+                {
                     "role": "Application Engineer",
                     "company": "AIAutomation",
                     "date": "01.2025 - 05.2026",
@@ -330,8 +357,11 @@ CV_PL = {
 PROFILE_REDSKY_EN = (
     "Hands-on robotics builder: Mechanical Engineering student at Cracow University of Technology "
     "and certified Software Technician who takes electromechanical systems from concept to working "
-    "prototype. Commercial experience creating robotics simulations and digital twins in Visual "
-    "Components for automotive production. Independently designed and built a SCARA robotic arm - "
+    "prototype. Currently a Robotics Engineer at ASTOR, where I program Kawasaki and Epson robots "
+    "and design, build and commission robot demonstration stations showing those robots in "
+    "different applications. Earlier commercial experience creating robotics simulations and "
+    "digital twins in Visual Components for automotive production. Independently designed and "
+    "built a SCARA robotic arm - "
     "CAD, 3D-printed structure, NEMA stepper actuators with TMC/DRV drivers, microcontroller "
     "electronics and Python/C++ control software. Pragmatic, fast-iteration prototyping mindset "
     "and strong interest in physical AI and robotics automation. Fluent Polish, English C1; "
@@ -341,8 +371,10 @@ PROFILE_REDSKY_EN = (
 PROFILE_REDSKY_PL = (
     "Praktyczny inżynier-konstruktor robotyki: student Mechaniki i Budowy Maszyn na Politechnice "
     "Krakowskiej oraz Technik Programista, prowadzący układy elektromechaniczne od koncepcji do "
-    "działającego prototypu. Komercyjne doświadczenie w tworzeniu symulacji robotycznych i cyfrowych "
-    "bliźniaków w Visual Components dla produkcji Automotive. Samodzielnie zaprojektowałem i "
+    "działającego prototypu. Obecnie Inżynier Robotyk w ASTOR, gdzie programuję roboty Kawasaki i "
+    "Epson oraz projektuję, buduję i uruchamiam stanowiska demonstracyjne pokazujące te roboty w "
+    "różnych aplikacjach. Wcześniej komercyjne doświadczenie w tworzeniu symulacji robotycznych i "
+    "cyfrowych bliźniaków w Visual Components dla produkcji Automotive. Samodzielnie zaprojektowałem i "
     "zbudowałem ramię robota SCARA - CAD, konstrukcja drukowana 3D, napędy krokowe NEMA ze "
     "sterownikami TMC/DRV, elektronika mikrokontrolerowa oraz oprogramowanie sterujące w "
     "Pythonie/C++. Pragmatyczne, szybkie prototypowanie i silne zainteresowanie physical AI oraz "
@@ -412,8 +444,11 @@ CV_REDSKY_PL["sidebar"]["Słowa kluczowe"] = [
 
 PROFILE_INBOLT_EN = (
     "Robotics application engineering profile: Mechanical Engineering student at Cracow University "
-    "of Technology and certified Software Technician with commercial Application Engineer experience "
-    "in robotics simulation and digital twins (Visual Components) for automotive clients, including "
+    "of Technology and certified Software Technician. Currently a Robotics Engineer at ASTOR, "
+    "programming Kawasaki and Epson robots, building digital twins of production lines and "
+    "deploying robot demonstration stations across different applications. Earlier Application "
+    "Engineer experience in robotics simulation and digital twins (Visual Components) for "
+    "automotive clients, including "
     "Python scripting for process optimization and simulation improvements. Certified courses in "
     "industrial robot programming (Kawasaki, Epson). Built a SCARA robotic arm from scratch - CAD, "
     "3D printing, stepper drives, microcontroller electronics and Python/C++ control software. "
@@ -423,7 +458,9 @@ PROFILE_INBOLT_EN = (
 
 PROFILE_INBOLT_PL = (
     "Profil inżyniera aplikacyjnego robotyki: student Mechaniki i Budowy Maszyn na Politechnice "
-    "Krakowskiej oraz Technik Programista z komercyjnym doświadczeniem na stanowisku Application "
+    "Krakowskiej oraz Technik Programista. Obecnie Inżynier Robotyk w ASTOR - programowanie robotów "
+    "Kawasaki i Epson, budowa cyfrowych bliźniaków linii produkcyjnych oraz uruchamianie stanowisk "
+    "demonstracyjnych z robotami w różnych aplikacjach. Wcześniej doświadczenie na stanowisku Application "
     "Engineer w symulacjach robotycznych i cyfrowych bliźniakach (Visual Components) dla klientów "
     "Automotive, w tym pisanie skryptów w Pythonie do optymalizacji procesów i usprawniania "
     "symulacji. Certyfikowane kursy programowania robotów przemysłowych (Kawasaki, Epson). Od "
@@ -493,6 +530,135 @@ CV_INBOLT_PL["sidebar"]["Słowa kluczowe"] = [
     "CAD i druk 3D",
     "Standardy Automotive",
     "Współpraca z klientem",
+]
+
+
+PROFILE_UNIVERSAL_EN = (
+    "Robotics engineer combining industrial robot programming with simulation and hands-on machine "
+    "building. Currently a Robotics Engineer at ASTOR, where I program Kawasaki and Epson robots, "
+    "build digital twins of production lines and robot simulations, and design and build "
+    "demonstration stations presenting those robots across different applications. Previously an "
+    "Application Engineer at AIAutomation, creating robotics simulations and digital twins of "
+    "production workcells in Visual Components for automotive clients, including Python scripts for "
+    "process optimization. Mechanical Engineering student at Cracow University of Technology and "
+    "certified Software Technician, so mechanics, electronics and code come from the same "
+    "background. Designed and built a SCARA robotic arm end-to-end - CAD, 3D printing, stepper "
+    "drives, microcontroller electronics and Python/C++ control software with forward and inverse "
+    "kinematics. Based in Krakow, available full-time, Polish native, English C1."
+)
+
+PROFILE_UNIVERSAL_PL = (
+    "Inżynier robotyk łączący programowanie robotów przemysłowych z symulacją i praktyczną budową "
+    "maszyn. Obecnie Inżynier Robotyk w ASTOR, gdzie programuję roboty Kawasaki i Epson, buduję "
+    "cyfrowe bliźniaki linii produkcyjnych i symulacje robotów oraz projektuję i buduję stanowiska "
+    "demonstracyjne prezentujące te roboty w różnych aplikacjach. Wcześniej Application Engineer w "
+    "AIAutomation - symulacje robotyczne i cyfrowe bliźniaki gniazd produkcyjnych w Visual "
+    "Components dla klientów Automotive, w tym skrypty w Pythonie do optymalizacji procesów. "
+    "Student Mechaniki i Budowy Maszyn na Politechnice Krakowskiej i Technik Programista - "
+    "mechanika, elektronika i kod pochodzą u mnie z tego samego przygotowania. Zaprojektowałem i "
+    "zbudowałem end-to-end ramię robota SCARA: CAD, druk 3D, napędy krokowe, elektronika "
+    "mikrokontrolerowa i oprogramowanie sterujące w Pythonie/C++ z kinematyką prostą i odwrotną. "
+    "Baza w Krakowie, dostępność w pełnym wymiarze, polski ojczysty, angielski C1."
+)
+
+UNIVERSAL_SKILLS_EN = [
+    "Industrial robot programming: Kawasaki and Epson robots - teach pendant workflows, motion programs, complete application cycles, cell testing and commissioning; certified integrator course (ASTOR Robotics Center) and Epson programming course.",
+    "Robotics simulation & digital twins: digital twins of production lines and workcells, robot paths and motion sequences, process logic, collision checking, cycle flows, layout optimization and virtual validation before physical implementation; Visual Components used commercially for automotive clients.",
+    "Programming: Python (automation, process optimization, simulation scripting, calculations, data processing), C++ and Arduino/C for hardware control, JavaScript basics; iterative debugging and technical troubleshooting.",
+    "Robot cells & demonstration systems: design, assembly, integration, programming and commissioning of robot stations presenting industrial robots in different applications, across mechanics, electrics and robot software.",
+    "Mechanical design & CAD: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; design for manufacturing and additive manufacturing, reverse engineering, geometry preparation for simulation.",
+    "Prototyping & electromechanics: FDM, SLA and MJF 3D printing including PET-G and carbon-fibre reinforced materials; NEMA stepper motors, TMC/DRV drivers, Arduino/ESP32-class microcontrollers, wiring and bring-up testing.",
+    "Engineering fundamentals: kinematics, control systems, dynamic systems modelling, mechatronics and analytical mechanics from university; MATLAB from coursework and ROS from personal robotics projects.",
+    "Working style: technical documentation, communication with engineers, customers and stakeholders, and independent problem solving in interdisciplinary teams; Polish native, English C1, driving licence category B.",
+]
+
+UNIVERSAL_SKILLS_PL = [
+    "Programowanie robotów przemysłowych: roboty Kawasaki i Epson - praca na teach pendancie, programy ruchu, kompletne cykle aplikacyjne, testy i uruchomienia stanowisk; kurs integratorski z certyfikatem (ASTOR Robotics Center) oraz kurs programowania robotów Epson.",
+    "Symulacje robotyczne i cyfrowe bliźniaki: cyfrowe bliźniaki linii produkcyjnych i gniazd, ścieżki i sekwencje ruchu robotów, logika procesu, wykrywanie kolizji, cykle pracy, optymalizacja layoutu i wirtualna walidacja przed wdrożeniem fizycznym; Visual Components wykorzystywany komercyjnie dla klientów Automotive.",
+    "Programowanie: Python (automatyzacja, optymalizacja procesów, skrypty symulacyjne, obliczenia, przetwarzanie danych), C++ i Arduino/C do sterowania hardware'em, podstawy JavaScript; iteracyjne debugowanie i diagnostyka techniczna.",
+    "Stanowiska zrobotyzowane i demonstracyjne: projektowanie, montaż, integracja, programowanie i uruchamianie stanowisk prezentujących roboty przemysłowe w różnych aplikacjach, na styku mechaniki, elektryki i oprogramowania robotów.",
+    "Projektowanie mechaniczne i CAD: SolidWorks, Autodesk Inventor, Fusion 360, AutoCAD; projektowanie pod produkcję i technologie przyrostowe, inżynieria odwrotna, przygotowanie geometrii pod symulację.",
+    "Prototypowanie i elektromechanika: druk 3D FDM, SLA i MJF, w tym PET-G i materiały wzmacniane włóknem węglowym; silniki krokowe NEMA, sterowniki TMC/DRV, mikrokontrolery klasy Arduino/ESP32, okablowanie i testy uruchomieniowe.",
+    "Podstawy inżynierskie: kinematyka, układy sterowania, modelowanie układów dynamicznych, mechatronika i mechanika analityczna ze studiów; MATLAB z zajęć i ROS z projektów własnych.",
+    "Styl pracy: dokumentacja techniczna, komunikacja z inżynierami, klientami i interesariuszami oraz samodzielne rozwiązywanie problemów w zespołach interdyscyplinarnych; polski ojczysty, angielski C1, prawo jazdy kat. B.",
+]
+
+UNIVERSAL_STACK_EN = [
+    "Kawasaki robots",
+    "Epson robots",
+    "Visual Components",
+    "Digital twins",
+    "Python",
+    "C++ / Arduino C",
+    "SolidWorks",
+    "Autodesk Inventor",
+    "Fusion 360",
+    "AutoCAD",
+    "FDM / SLA / MJF",
+    "MATLAB basics",
+    "ROS (personal projects)",
+    "Hardware-software integration",
+]
+
+UNIVERSAL_STACK_PL = [
+    "Roboty Kawasaki",
+    "Roboty Epson",
+    "Visual Components",
+    "Cyfrowe bliźniaki",
+    "Python",
+    "C++ / Arduino C",
+    "SolidWorks",
+    "Autodesk Inventor",
+    "Fusion 360",
+    "AutoCAD",
+    "FDM / SLA / MJF",
+    "Podstawy MATLAB",
+    "ROS - projekty własne",
+    "Integracja hardware-software",
+]
+
+CV_UNIVERSAL_EN = copy.deepcopy(CV_EN)
+CV_UNIVERSAL_EN.update(
+    {
+        "filename": "Maciej_Tkacz_CV_EN",
+        "outdir": UNIVERSAL_DIR,
+        "title": "Robotics Engineer - Industrial Robot Programming, Simulation & Digital Twins",
+        "profile": PROFILE_UNIVERSAL_EN,
+    }
+)
+CV_UNIVERSAL_EN["sections"][0]["items"] = UNIVERSAL_SKILLS_EN
+CV_UNIVERSAL_EN["sidebar"]["Technical Stack"] = UNIVERSAL_STACK_EN
+CV_UNIVERSAL_EN["sidebar"]["Robotics Keywords"] = [
+    "Industrial robot programming",
+    "Digital twins of production lines",
+    "Robot simulation",
+    "Robot cell commissioning",
+    "Demonstration stations",
+    "Kinematics & robot paths",
+    "Hardware-software integration",
+    "Rapid prototyping",
+]
+
+CV_UNIVERSAL_PL = copy.deepcopy(CV_PL)
+CV_UNIVERSAL_PL.update(
+    {
+        "filename": "Maciej_Tkacz_CV_PL",
+        "outdir": UNIVERSAL_DIR,
+        "title": "Inżynier Robotyk - programowanie robotów, symulacje i cyfrowe bliźniaki",
+        "profile": PROFILE_UNIVERSAL_PL,
+    }
+)
+CV_UNIVERSAL_PL["sections"][0]["items"] = UNIVERSAL_SKILLS_PL
+CV_UNIVERSAL_PL["sidebar"]["Stack techniczny"] = UNIVERSAL_STACK_PL
+CV_UNIVERSAL_PL["sidebar"]["Słowa kluczowe"] = [
+    "Programowanie robotów przemysłowych",
+    "Cyfrowe bliźniaki linii produkcyjnych",
+    "Symulacje robotów",
+    "Uruchamianie stanowisk",
+    "Stanowiska demonstracyjne",
+    "Kinematyka i ścieżki robotów",
+    "Integracja hardware-software",
+    "Rapid prototyping",
 ]
 
 
@@ -1068,12 +1234,79 @@ maciek01110@gmail.com | 881 912 125
     return path
 
 
+def write_universal_readme() -> Path:
+    path = UNIVERSAL_DIR / "README.md"
+    path.write_text(
+        """# CV uniwersalne - Maciej Tkacz
+
+Wersja bazowa, nieprzypisana do żadnej konkretnej oferty. Używaj jej wszędzie tam, gdzie
+nie ma sensu robić osobnego wariantu: szybka aplikacja, wiadomość do rekrutera, portale
+pracy, targi, prośba znajomego o CV.
+
+## Które pliki wysyłać
+
+| Plik | Kiedy |
+|---|---|
+| `Maciej_Tkacz_CV_EN_ATS.pdf` | domyślny wybór: formularze aplikacyjne, systemy ATS, firmy międzynarodowe |
+| `Maciej_Tkacz_CV_EN_Visual.pdf` | wysyłka bezpośrednio do człowieka (rekruter, hiring manager) |
+| `Maciej_Tkacz_CV_PL_ATS.pdf` | polskie oferty, pracuj.pl, rekrutacje prowadzone po polsku |
+| `Maciej_Tkacz_CV_PL_Visual.pdf` | polska rekrutacja, kontakt bezpośredni |
+
+Wersje `.docx` leżą obok - użyj ich, jeśli chcesz coś dopisać ręcznie.
+
+Jeśli nie wiesz, którą wybrać: **`Maciej_Tkacz_CV_EN_ATS.pdf`**. Wersja ATS jest prosta
+jednokolumnowa i nigdy nie rozsypie się w parserze, a wersja Visual ma dwie kolumny i lepiej
+wygląda, gdy czyta ją człowiek.
+
+## Co nowego w tej wersji
+
+Dodane obecne stanowisko: **Inżynier Robotyk, ASTOR, Kraków, od 07.2026** - programowanie
+robotów Kawasaki i Epson, cyfrowe bliźniaki linii produkcyjnych i symulacje robotów oraz
+projektowanie i budowa stanowisk demonstracyjnych prezentujących roboty w różnych
+aplikacjach. To stanowisko trafiło też do wszystkich wcześniejszych wariantów CV
+(SoftServe, Red Sky, Inbolt), bo zmienia się fakt, a nie dopasowanie do oferty.
+
+Kolejność umiejętności w tej wersji jest inna niż w wariantach pod konkretne oferty:
+na pierwszym miejscu jest programowanie robotów przemysłowych, na drugim symulacje i
+cyfrowe bliźniaki. To dwie rzeczy, za które rynek płaci najwięcej w Twoim profilu i które
+teraz robisz jednocześnie.
+
+## Dwie rzeczy do sprawdzenia przed wysłaniem
+
+1. **Nazwa stanowiska w ASTOR.** Wpisałem "Inżynier Robotyk" / "Robotics Engineer", bo nie
+   znam Twojego tytułu z umowy. Jeśli w dokumentach masz inaczej (np. "Inżynier Aplikacyjny",
+   "Specjalista ds. robotyki"), popraw to w pliku `.docx` albo napisz, a wygeneruję ponownie.
+2. **Czy AIAutomation faktycznie skończyło się w 05.2026?** W CV jest przerwa czerwiec 2026,
+   a ASTOR zaczyna się w lipcu. Jeden miesiąc nikogo nie zdziwi, ale jeśli daty są inne, daj znać.
+
+## Jak z tego robić wersje pod oferty
+
+Nie nadpisuj tego pliku pod konkretną ofertę - lepiej zrobić osobny wariant, tak jak
+w katalogach `softserve-cv`, `redsky-cv` i `inbolt-cv`. Wszystko generuje jeden skrypt:
+`scripts/generate_softserve_cv.py`. Nowy wariant to kopia CV bazowego z podmienionym
+profilem, listą umiejętności i słowami kluczowymi.
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     REDSKY_DIR.mkdir(parents=True, exist_ok=True)
     INBOLT_DIR.mkdir(parents=True, exist_ok=True)
+    UNIVERSAL_DIR.mkdir(parents=True, exist_ok=True)
     created = []
-    for cv in (CV_EN, CV_PL, CV_REDSKY_EN, CV_REDSKY_PL, CV_INBOLT_EN, CV_INBOLT_PL):
+    for cv in (
+        CV_UNIVERSAL_EN,
+        CV_UNIVERSAL_PL,
+        CV_EN,
+        CV_PL,
+        CV_REDSKY_EN,
+        CV_REDSKY_PL,
+        CV_INBOLT_EN,
+        CV_INBOLT_PL,
+    ):
         created.append(build_ats_docx(cv))
         created.append(build_visual_docx(cv))
         created.append(build_ats_pdf(cv))
@@ -1081,6 +1314,7 @@ def main() -> None:
     created.append(write_recruiter_messages())
     created.append(write_redsky_linkedin_message())
     created.append(write_inbolt_linkedin_message())
+    created.append(write_universal_readme())
     for path in created:
         print(path.relative_to(OUT_DIR.parents[1]))
 
