@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass
 from datetime import date, timedelta
 
-from .parser import SUBGROUP_RE, parse_page
+from .parser import ELEARNING, SUBGROUP_RE, parse_page
 
 DAY_ORDER = ["pon.", "wt.", "śr.", "czw.", "pt.", "sob.", "niedz."]
 DAY_NAMES = {
@@ -16,7 +16,7 @@ DAY_NAMES = {
 FORM_NAMES = {
     "W": "wykład", "C": "ćwiczenia", "L": "laboratorium", "P": "projekt",
     "S": "seminarium", "E": "egzamin", "K": "konwersatorium", "F": "lektorat",
-    "e-l": "e-learning",
+    ELEARNING: "e-learning",
 }
 ROMAN = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6,
          "VII": 7, "VIII": 8, "IX": 9, "X": 10, "XI": 11, "XII": 12}
@@ -42,6 +42,7 @@ class Block:
     subgroups: tuple[str, ...]
     dates: list[date]
     rhythm: str = ""
+    elearning: bool = False
 
     @property
     def form_name(self):
@@ -49,10 +50,14 @@ class Block:
 
     @property
     def time(self):
-        return f"{self.start}-{self.end}"
+        return ELEARNING if self.elearning else f"{self.start}-{self.end}"
 
     def occurrences(self):
         return len(self.dates)
+
+    def sort_minutes(self):
+        """E-learning nie ma godziny - w planie dnia idzie na koniec."""
+        return 24 * 60 if self.elearning else minutes_of(self.start)
 
 
 def minutes_of(label):
@@ -128,40 +133,16 @@ def subgroups_of(groups):
     return tuple(dict.fromkeys(found))
 
 
-def _family(subgroup):
+def family_of(subgroup):
     """'GL04' -> 'GL', 'GK/P03' -> 'GK/P'."""
     return re.sub(r"\d+$", "", subgroup.upper())
-
-
-def subject_name(code, legend):
-    if code in legend:
-        return legend[code]
-    for key, value in legend.items():
-        if "\n" not in key and key.startswith(code):
-            return value
-    return code
-
-
-def teachers_legend(legend):
-    """Skrot prowadzacego -> lista (nazwisko z tytulem, forma, liczba godzin)."""
-    out = collections.defaultdict(list)
-    for key, value in legend.items():
-        if "\n" not in key:
-            continue
-        short, tail = key.split("\n", 1)
-        parts = tail.split()
-        form = parts[0] if parts else ""
-        hours = int(parts[1]) if len(parts) > 1 and parts[1].isdigit() else 0
-        out[short].append((value, form, hours))
-    return dict(out)
 
 
 class GroupPlan:
     def __init__(self, path, first_year=2026):
         page = parse_page(path)
         self.name = page.name
-        self.legend = page.legend
-        self.teachers = teachers_legend(page.legend)
+        self.courses = page.courses
         self.blocks = _blocks_from_slots(page, first_year)
         self.days = [d for d in DAY_ORDER if any(b.day == d for b in self.blocks)]
 
@@ -181,18 +162,18 @@ class GroupPlan:
         danej rodziny nic nie podano, jej zajecia zostaja w planie w komplecie.
         """
         keep = {k.upper() for k in keep}
-        families = {_family(k) for k in keep}
+        families = {family_of(k) for k in keep}
         result = []
         for b in self.blocks:
-            relevant = [s for s in b.subgroups if _family(s) in families]
+            relevant = [s for s in b.subgroups if family_of(s) in families]
             if not relevant or keep.intersection(relevant):
                 result.append(b)
         return result
 
-    def subjects(self):
+    def subjects(self, blocks=None):
         """Kod -> {nazwa, formy, prowadzacy, liczba spotkan, minuty}."""
         out = {}
-        for b in self.blocks:
+        for b in self.blocks if blocks is None else blocks:
             entry = out.setdefault(b.code, {
                 "name": b.subject, "forms": collections.Counter(),
                 "lecturers": set(), "minutes": 0, "meetings": 0,
@@ -205,20 +186,28 @@ class GroupPlan:
         return dict(sorted(out.items(), key=lambda kv: kv[1]["name"].lower()))
 
 
+def _slot_key(slot):
+    return (slot.code, slot.form, " / ".join(slot.lecturers), " ".join(slot.rooms),
+            normalize_groups(slot.groups), subgroups_of(slot.groups))
+
+
 def _blocks_from_slots(page, first_year):
-    hours = sorted({s.hour for s in page.slots}, key=lambda h: slot_bounds(h)[0])
+    hours = sorted({s.hour for s in page.slots if not s.elearning},
+                   key=lambda h: slot_bounds(h)[0])
     index = {h: i for i, h in enumerate(hours)}
 
     day_dates = collections.defaultdict(set)
     occupied = collections.defaultdict(set)
+    online = collections.defaultdict(list)
     for s in page.slots:
         if not s.week:
             continue
         when = week_to_date(s.week, first_year)
         day_dates[s.day].add(when)
-        key = (s.code, s.kind, " / ".join(s.lecturers), " ".join(s.rooms),
-               normalize_groups(s.groups), subgroups_of(s.groups))
-        occupied[(s.day, key, when)].add(index[s.hour])
+        if s.elearning:
+            online[(s.day, _slot_key(s))].append(when)
+        else:
+            occupied[(s.day, _slot_key(s), when)].add(index[s.hour])
 
     merged = collections.defaultdict(list)
     for (day, key, when), slots in occupied.items():
@@ -233,16 +222,28 @@ def _blocks_from_slots(page, first_year):
     blocks = []
     for (day, key, span), dates in merged.items():
         code, form, lecturer, room, groups, subgroups = key
-        start = hours[span[0]].split("-")[0]
-        end = hours[span[1]].split("-")[1]
-        blocks.append(Block(
-            day=day, start=start, end=end,
-            minutes=slot_bounds(hours[span[1]])[1] - slot_bounds(hours[span[0]])[0],
-            code=code, subject=subject_name(code, page.legend), form=form,
-            lecturer=lecturer, room=room, groups=groups, subgroups=subgroups,
-            dates=sorted(dates),
-        ))
-    blocks.sort(key=lambda b: (DAY_ORDER.index(b.day), minutes_of(b.start), b.groups))
+        blocks.append(_block(page, day, key,
+                             start=hours[span[0]].split("-")[0],
+                             end=hours[span[1]].split("-")[1],
+                             minutes=(slot_bounds(hours[span[1]])[1]
+                                      - slot_bounds(hours[span[0]])[0]),
+                             dates=dates))
+    for (day, key), dates in online.items():
+        blocks.append(_block(page, day, key, start="", end="",
+                             minutes=45, dates=dates, elearning=True))
+
+    blocks.sort(key=lambda b: (DAY_ORDER.index(b.day), b.sort_minutes(), b.groups))
     for b in blocks:
         b.rhythm = describe_dates(b.dates, sorted(day_dates[b.day]))
     return blocks
+
+
+def _block(page, day, key, start, end, minutes, dates, elearning=False):
+    code, form, lecturer, room, groups, subgroups = key
+    course = page.course_of(code)
+    return Block(
+        day=day, start=start, end=end, minutes=minutes,
+        code=code, subject=course.name if course else code, form=form,
+        lecturer=lecturer, room=room, groups=groups, subgroups=subgroups,
+        dates=sorted(dates), elearning=elearning,
+    )

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Audyt kalendarza PDF: czy siatki pokazują dokładnie to, co jest w planie.
 
-`plan.py sprawdz` pilnuje odczytu HTML-a (każda kolorowa komórka = odczytany slot).
-Ten skrypt idzie o krok dalej i sprawdza gotowe strony kalendarza:
+`plan.py sprawdz` pilnuje odczytu HTML-a (każda kolorowa komórka = odczytany slot),
+`plan.py godziny` pilnuje form zajęć. Ten skrypt idzie o krok dalej i sprawdza
+gotowe strony kalendarza:
 
-  1. każdy termin ze źródła trafia na siatkę właściwej podgrupy albo na spis wyjątków,
+  1. każdy termin z planu własnych podgrup trafia na siatkę albo na spis wyjątków,
   2. żadna kratka nie obiecuje zajęć w tygodniu, w którym ich nie ma,
   3. nic nie ginie po scaleniu wpisów (suma godzin się zgadza).
 
@@ -19,12 +20,6 @@ import kalendarz_pdf as K
 from planpk.model import DAY_NAMES, minutes_of
 
 
-def as_entry(block):
-    """Blok ze źródła w postaci, którą rozumieją filtry kalendarza."""
-    stub = {"subgroups": block.subgroups}
-    return {"subgroups": block.subgroups, "choice": K.choice_label(stub)}
-
-
 def covers(entry, block, day):
     return (entry["day"] == block.day
             and entry["code"] == block.code
@@ -35,16 +30,15 @@ def covers(entry, block, day):
             and day in entry["dates"])
 
 
-def audit(group, gl_variants):
-    data = K.prepare(group, gl_variants)
-    plan, last_day_of = data["plan"], data["last_day_of"]
+def audit(group, subgroups):
+    data = K.prepare(group, subgroups)
+    blocks, last_day_of = data["blocks"], data["last_day_of"]
     problems = []
 
-    grids = {(gl, parity): visible
-             for gl, parity, _, _, _, visible in K.pages(data, gl_variants)}
+    grids = {parity: visible for parity, _, _, visible in K.pages(data)}
 
     # 0. Siatka rysuje tylko dni pon-pt i godziny 7.30-21.15; nic nie może wypaść poza.
-    for block in plan.blocks:
+    for block in blocks:
         if block.day not in K.DAYS:
             problems.append(f"dzień poza siatką: {block.day} {block.start} {block.code}")
         if (minutes_of(block.start) < K.DAY_START
@@ -52,43 +46,38 @@ def audit(group, gl_variants):
             problems.append(f"godzina poza siatką: {block.day} {block.start}-"
                             f"{block.end} {block.code}")
 
-    # 1. Każde zajęcia ze źródła muszą być widoczne na siatce swojej podgrupy.
+    # 1. Każde zajęcia z planu podgrup muszą być widoczne na siatce.
     checked = 0
-    for gl in gl_variants:
-        halves = K.PROJECT_HALVES.get(gl, tuple(K.HALF_NAME))
-        for block in plan.blocks:
-            if not K.shows_in(as_entry(block), gl, halves):
-                continue
-            for day in block.dates:
-                if day == last_day_of.get(block.day):
-                    continue  # ostatni tydzień ma własny spis, sprawdzany niżej
-                parity = "A" if K.week_index(day) % 2 == 0 else "B"
-                checked += 1
-                if not any(covers(e, block, day) for e in grids[(gl, parity)]):
-                    problems.append(
-                        f"brak na siatce {gl}/{parity}: {block.day} {block.start}-"
-                        f"{block.end} {block.code} {block.form} {block.groups} "
-                        f"({day})")
+    for block in blocks:
+        for day in block.dates:
+            if day == last_day_of.get(block.day):
+                continue  # ostatni tydzień ma własny spis, sprawdzany niżej
+            parity = K.parity_of(day)
+            checked += 1
+            if not any(covers(e, block, day) for e in grids[parity]):
+                problems.append(
+                    f"brak na siatce {parity}: {block.day} {block.start}-"
+                    f"{block.end} {block.code} {block.form} {block.groups} ({day})")
 
     # 2. Kratka rysowana na stronie tygodnia A/B sugeruje, że zajęcia są w każdym
     #    takim tygodniu. Jeśli tak nie jest, musi mieć wypisane daty.
     teaching = collections.defaultdict(set)
     for entry in data["main"]:
         teaching[entry["day"]].update(entry["dates"])
-    for (gl, parity), visible in grids.items():
+    for parity, visible in grids.items():
         for entry in visible:
             same = {d for d in teaching[entry["day"]] if K.parity_of(d) == parity}
             missing = same - set(entry["dates"])
             says_when = any(K.short_date(d) in entry["note"] for d in entry["dates"])
             if missing and not says_when:
                 problems.append(
-                    f"kratka bez adnotacji o terminach {gl}/{parity}: {entry['day']} "
+                    f"kratka bez adnotacji o terminach {parity}: {entry['day']} "
                     f"{entry['start']} {entry['code']} (napis „{entry['note']}”) — "
                     "nie ma zajęć "
                     + ", ".join(K.short_date(d) for d in sorted(missing)))
 
     # 3. Ostatni tydzień: każdy termin musi być w spisie na ostatniej stronie.
-    for block in plan.blocks:
+    for block in blocks:
         day = last_day_of.get(block.day)
         if day not in block.dates:
             continue
@@ -99,7 +88,7 @@ def audit(group, gl_variants):
             problems.append(f"brak w spisie ostatniego tygodnia: {block.day} "
                             f"{block.start}-{block.end} {block.code}")
 
-    # 4. Każdy skrócony termin i każdy obcy wpis musi być opisany na stronie wyjątków.
+    # 4. Każdy skrócony termin, obcy wpis i e-learning musi być opisany na stronie wyjątków.
     for entry in data["main"]:
         for day, (label, _) in entry["shortened"].items():
             if not any(K.format_date(day) in line and label in line
@@ -110,13 +99,18 @@ def audit(group, gl_variants):
         if entry["foreign"] and not any(entry["room"] in line
                                         for line in data["foreign_lines"]):
             problems.append(f"obcy wpis poza spisem: {entry['code']} {entry['day']}")
+    for block in data["online"]:
+        if not any(K.SHORT.get(block.subject, block.subject) in line
+                   and K.format_date(block.dates[0]) in line
+                   for line in data["online_lines"]):
+            problems.append(f"e-learning poza spisem: {block.code} {block.day}")
 
     # 5. Scalanie wpisów nie może gubić godzin: nadwyżka siatki musi się dokładnie
     #    tłumaczyć skróconymi terminami wypisanymi na stronie wyjątków.
     def slots(start, end, count=1):
         return (minutes_of(end) - minutes_of(start)) // 45 * count
 
-    source = sum(slots(b.start, b.end, len(b.dates)) for b in plan.blocks)
+    source = sum(slots(b.start, b.end, len(b.dates)) for b in blocks)
     shown = sum(slots(e["start"], e["end"], len(e["dates"])) for e in data["main"])
     shown += sum(slots(e["start"], e["end"]) for e in data["finale"])
     documented = 0
@@ -141,9 +135,9 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--grupa", default="13M5")
-    ap.add_argument("--gl", nargs="*", default=["GL02", "GL03", "GL04"])
+    ap.add_argument("--podgrupy", nargs="*", default=K.MY_SUBGROUPS)
     args = ap.parse_args()
-    raise SystemExit(1 if audit(args.grupa, args.gl) else 0)
+    raise SystemExit(1 if audit(args.grupa, args.podgrupy) else 0)
 
 
 if __name__ == "__main__":

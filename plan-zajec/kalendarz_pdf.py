@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Kalendarz zajęć 13M5 jako PDF: siatka tydzień A / tydzień B dla każdej podgrupy GL.
+"""Kalendarz zajęć jako PDF: siatka tydzień A / tydzień B dla własnych podgrup.
 
-    python kalendarz_pdf.py                 # wygenerowane/Plan_13M5_kalendarz.pdf
-    python kalendarz_pdf.py --grupa 13M5 --gl GL02 GL03 GL04
+    python kalendarz_pdf.py                       # wygenerowane/moj-plan-13M5.pdf
+    python kalendarz_pdf.py --podgrupy GL04 SL02 GK/P03 SP02
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 
-from planpk.model import (DAY_NAMES, GroupPlan, format_date, minutes_of)
+from planpk.model import DAY_NAMES, GroupPlan, format_date, minutes_of
 
 ROOT = Path(__file__).resolve().parent
 
@@ -35,6 +35,15 @@ ROMAN_MONTH = {9: "IX", 10: "X", 11: "XI", 12: "XII", 1: "I", 2: "II"}
 DAYS = ["pon.", "wt.", "śr.", "czw.", "pt."]
 DAY_START, DAY_END = 7 * 60 + 30, 21 * 60 + 15
 
+# podgrupy, do których został przypisany właściciel planu
+MY_SUBGROUPS = ["GL04", "SL02", "GK/P03", "SP02"]
+SUBGROUP_ROLE = {
+    "GL": "laboratoria całego rocznika 13M",
+    "GK/P": "projekt z podstaw niezawodności (podgrupy rocznika)",
+    "SL": "laboratorium wydzielone wewnątrz grupy 13M5",
+    "SP": "projekt wydzielony wewnątrz grupy 13M5",
+}
+
 SHORT = {
     "Programowanie obrabiarek CNC w systemach CAD/CAM": "Obrabiarki CNC (CAD/CAM)",
     "Systemy informatyczne do zarządzania i technicznego przygotowania produkcji":
@@ -47,15 +56,10 @@ SHORT = {
 PALETTE = ["#BFD8F2", "#CDEBC5", "#F7D9A8", "#E6CDEA", "#F9C9C4", "#C6E8E4",
            "#EBE3AC", "#D8D2C4", "#C9D6F0", "#F2CFE1", "#CFE7B8", "#F0D6B8",
            "#D5E3F7", "#E3D5F7", "#F7E3D5"]
-CHOICE_FAMILIES = ("GK/P", "SL", "SP")
+# rodziny podgrup: zajęcia z takim oznaczeniem ma tylko część rocznika albo grupy
+SPLIT_FAMILIES = ("GL", "GK/P", "SL", "SP")
 FORM_LABEL = {"W": "wykład", "C": "ćwicz.", "L": "lab.", "P": "PROJEKT",
               "S": "sem.", "F": "lektorat", "K": "konwers."}
-
-# Podgrupy projektowe 13M5 (SP01 = "P01", SP02 = "P02") przypisane do podgrup GL.
-# To nie wynika z planu - plan podaje same numery podgrup - tylko z zapowiedzianego
-# podziału: GL02 i połowa GL03 idzie na P01, druga połowa GL03 i GL04 na P02.
-PROJECT_HALVES = {"GL02": ("SP01",), "GL03": ("SP01", "SP02"), "GL04": ("SP02",)}
-HALF_NAME = {"SP01": "P01", "SP02": "P02"}
 
 
 def week_index(day):
@@ -137,9 +141,10 @@ def is_regular(entry, parity, teaching_weeks):
     return steps <= {1}
 
 
-def choice_label(entry):
+def subgroup_label(entry):
+    """Oznaczenie podgrupy, jeśli zajęcia są tylko dla części rocznika albo grupy."""
     for sub in entry["subgroups"]:
-        if sub.startswith(CHOICE_FAMILIES):
+        if sub.startswith(SPLIT_FAMILIES):
             return sub
     return ""
 
@@ -208,38 +213,12 @@ def span_note(entry, parity, teaching_dates):
     return f"{short_date(mine[0])} – {short_date(mine[-1])}"
 
 
-def shows_in(entry, gl, halves):
-    """Czy blok trafia na stronę danej podgrupy GL."""
-    subs = entry["subgroups"]
-    if not subs:
-        return True
-    project = [s for s in subs if s in HALF_NAME]
-    if project:
-        return bool(set(project) & set(halves))
-    return gl in subs or any(s.startswith(CHOICE_FAMILIES) for s in subs)
-
-
-def variant_note(entry, gl):
-    """Dopisek w kratce - dla projektów mówi wprost, czyj to termin."""
-    choice = entry["choice"]
-    if entry["note"] != choice:  # nierówny rytm - w kratce ważniejsze są daty
-        return entry["note"]
-    if choice in HALF_NAME:
-        half = HALF_NAME[choice]
-        if gl == "GL03":
-            return f"{choice} = {half}, połowa GL03"
-        return f"{choice} = {half}, czyli {gl}"
-    if choice.startswith("GK/P"):
-        return f"{choice} albo drugi termin"
-    return entry["note"]
-
-
 class Calendar:
-    def __init__(self, path, group, gl_variants):
+    def __init__(self, path, group, subgroups):
         self.c = canvas.Canvas(str(path), pagesize=A4)
         self.w, self.h = A4
         self.group = group
-        self.gl_variants = gl_variants
+        self.subgroups = subgroups
         self.colors = {}
         self.dropped = []  # teksty, które nie zmieściły się w kratce
 
@@ -253,12 +232,13 @@ class Calendar:
 
     # --- strony ---------------------------------------------------------
 
-    def cover(self, weeks_a, weeks_b, choices, subjects):
+    def cover(self, weeks_a, weeks_b, roles, subjects):
         c = self.c
         c.setFont(BOLD, 22)
         c.drawString(40, self.h - 60, f"Plan zajęć {self.group}")
         c.setFont(REGULAR, 11)
-        c.drawString(40, self.h - 80, "semestr zimowy 2026/2027, Wydział Mechaniczny PK")
+        c.drawString(40, self.h - 80, "semestr zimowy 2026/2027, Wydział Mechaniczny PK, "
+                                      "podgrupy " + ", ".join(self.subgroups))
 
         y = self.h - 115
         c.setFont(BOLD, 12)
@@ -266,16 +246,16 @@ class Calendar:
         y -= 16
         c.setFont(REGULAR, 9.5)
         for line in [
-            "Zajęcia idą w dwutygodniowym rytmie, dlatego każdy wariant ma dwie siatki:",
+            "W kalendarzu są tylko zajęcia dla podgrup wymienionych wyżej oraz zajęcia",
+            "wspólne dla całej grupy. Terminy pozostałych podgrup są pominięte.",
+            "",
+            "Zajęcia idą w dwutygodniowym rytmie, dlatego kalendarz ma dwie siatki:",
             "TYDZIEŃ A i TYDZIEŃ B. Wystarczy sprawdzić w spisie poniżej, którego typu",
             "jest bieżący tydzień, i patrzeć na odpowiednią stronę.",
             "",
-            "Każda podgrupa laboratoryjna GL ma własną parę stron - wybierz swoją, kiedy",
-            "już będziesz wiedział, w której jesteś. Reszta zajęć jest identyczna.",
-            "",
-            "Bloki obrysowane linią przerywaną to zajęcia do wyboru: chodzisz tylko na jeden",
-            "termin z danej rodziny (SP i GK/P - projekt, SL - laboratorium). Projekty mają",
-            "w kratce dopisek PROJEKT i osobną stronę ze wszystkimi terminami.",
+            "Bloki obrysowane linią przerywaną to zajęcia w podgrupie - reszta grupy ma",
+            "wtedy ten sam przedmiot w innym terminie. Projekty mają w kratce dopisek",
+            "PROJEKT i osobną stronę ze wszystkimi terminami.",
             "Wykrzyknik przy nazwie oznacza, że coś odbiega od reguły: nierówny rytm,",
             "termin skrócony do 45 minut albo wpis podpisany obcą grupą. Wszystkie takie",
             "przypadki są wypisane co do daty na końcu pliku.",
@@ -299,13 +279,17 @@ class Calendar:
 
         y -= 14
         c.setFont(BOLD, 12)
-        c.drawString(40, y, "Zajęcia do wyboru")
+        c.drawString(40, y, "Twoje podgrupy")
         y -= 16
         c.setFont(REGULAR, 9.5)
-        for family, options in choices.items():
-            c.drawString(40, y, f"{family}:")
-            for text in options:
-                c.drawString(110, y, text)
+        for subgroup, role, what in roles:
+            c.setFont(BOLD, 9.5)
+            c.drawString(40, y, subgroup)
+            c.setFont(REGULAR, 9.5)
+            c.drawString(110, y, role)
+            y -= 12
+            for i, line in enumerate(wrap(c, what, self.w - 165, REGULAR, 9.5)):
+                c.drawString(122, y, line)
                 y -= 12
             y -= 3
 
@@ -337,15 +321,14 @@ class Calendar:
         return y
 
     def projects(self, project_entries):
-        """Wszystkie projekty osobno - łatwo je przeoczyć w gęstej siatce."""
+        """Projekty osobno - łatwo je przeoczyć w gęstej siatce."""
         c = self.c
         c.setFont(BOLD, 15)
         c.drawString(40, self.h - 45, "Projekty")
         y = self.h - 68
         c.setFont(REGULAR, 9)
-        for line in wrap(c, "W planie 13M5 są dwa przedmioty z projektem i każdy z nich "
-                            "ma dwa terminy do wyboru — chodzi się tylko na jeden. "
-                            "W siatkach projekty są obrysowane linią przerywaną.",
+        for line in wrap(c, "Terminy projektów przypadające na Twoje podgrupy. "
+                            "W siatkach są obrysowane linią przerywaną.",
                          self.w - 80, REGULAR, 9):
             c.drawString(40, y, line)
             y -= 12
@@ -356,7 +339,7 @@ class Calendar:
             c.drawString(40, y, subject)
             y -= 15
             c.setFont(REGULAR, 9)
-            for sub, when, room, who, rhythm, who_goes in options:
+            for sub, when, room, who, rhythm in options:
                 c.setFillColor(self.color_for(code))
                 c.rect(40, y - 2, 8, 8, stroke=0, fill=1)
                 c.setFillColor(black)
@@ -367,88 +350,21 @@ class Calendar:
                 y -= 11
                 c.drawString(110, y, f"{who}, {rhythm}")
                 y -= 11
-                if who_goes:
-                    c.setFont(BOLD, 9)
-                    c.drawString(110, y, who_goes)
-                    c.setFont(REGULAR, 9)
-                    y -= 11
                 y -= 4
             y -= 6
 
         c.setFont(BOLD, 11)
-        c.drawString(40, y, "Który projekt jest Twój")
+        c.drawString(40, y, "Skąd wiadomo, że to Twoje terminy")
         y -= 15
         c.setFont(REGULAR, 9)
-        for line in wrap(c, "Zapowiedziany podział na połowy — GL02 i połowa GL03 na P01, "
-                            "druga połowa GL03 i GL04 na P02 — dotyczy podgrup SP01 i SP02, "
-                            "bo tylko one są wewnętrznymi podgrupami 13M5. Tak są "
-                            "poustawiane siatki: strona GL02 pokazuje sam SP01, strona GL04 "
-                            "sam SP02, a strona GL03 oba, bo GL03 dzieli się na pół.",
+        for line in wrap(c, "Plan podaje przy zajęciach same numery podgrup, bez informacji, "
+                            "kto do której należy. Kalendarz zakłada przydział podany przy "
+                            "generowaniu: " + ", ".join(self.subgroups) + ". Jeżeli któryś "
+                            "numer okaże się inny, wystarczy wygenerować plik ponownie z "
+                            "poprawionym numerem.",
                          self.w - 80, REGULAR, 9):
             c.drawString(40, y, line)
             y -= 12
-        y -= 6
-        for line in wrap(c, "Podgrup GK/P plan nie wiąże z numerami GL: GK/P01 to cała grupa "
-                            "13M4, a 13M5 dzieli się na GK/P02 i GK/P03. Jeżeli obowiązują "
-                            "te same połowy co przy SP, to razem z P01 idzie jeden z tych "
-                            "terminów, a z P02 drugi — najpewniej kolejno GK/P02 i GK/P03, "
-                            "ale to jedyna rzecz w tym pliku, której nie da się wyczytać z "
-                            "planu. Dlatego oba terminy GK/P są na każdej siatce.",
-                         self.w - 80, REGULAR, 9):
-            c.drawString(40, y, line)
-            y -= 12
-        c.showPage()
-
-    def comparison(self, rows):
-        """Tabela: które laboratoria ma która podgrupa GL."""
-        c = self.c
-        c.setFont(BOLD, 15)
-        c.drawString(40, self.h - 45, "Czym różnią się podgrupy GL")
-        c.setFont(REGULAR, 9)
-        y = self.h - 68
-        for line in wrap(c, "Podział na podgrupy nie jest jednakowy dla wszystkich "
-                            "przedmiotów: część laboratoriów prowadzona jest tylko dla "
-                            "jednej podgrupy. Poniżej widać, ile godzin lekcyjnych "
-                            "laboratorium przypada na daną podgrupę w każdym przedmiocie.",
-                         self.w - 80, REGULAR, 9):
-            c.drawString(40, y, line)
-            y -= 12
-        y -= 10
-
-        columns = [gl for gl in self.gl_variants]
-        x_name, x_first, col_w = 40, 330, 60
-        c.setFont(BOLD, 9)
-        c.drawString(x_name, y, "Laboratorium")
-        for i, gl in enumerate(columns):
-            c.drawCentredString(x_first + i * col_w + col_w / 2, y, gl)
-        y -= 4
-        c.setStrokeColor(HexColor("#9AA1AA"))
-        c.line(x_name, y, x_first + len(columns) * col_w, y)
-        y -= 13
-
-        c.setFont(REGULAR, 9)
-        for name, hours in rows:
-            c.drawString(x_name, y, name[:60])
-            for i, gl in enumerate(columns):
-                value = hours.get(gl)
-                c.drawCentredString(x_first + i * col_w + col_w / 2, y,
-                                    f"{value} godz." if value else "—")
-            y -= 13
-        y -= 8
-        c.setFont(REGULAR, 8.5)
-        for text in [
-            "„—” oznacza, że w planie 13M5 nie ma tego laboratorium dla tej podgrupy.",
-            "Liczby bywają bardzo nierówne i tak jest w źródle — np. Miernictwo to dla "
-            "GL02 tylko trzy spotkania po 45 minut (27 X, 10 XI, 24 XI), a dla GL03 "
-            "szesnaście godzin. Te wartości policzone są wprost z planu, ale przed "
-            "wyborem podgrupy warto je potwierdzić u starosty.",
-            "GL02 i GL03 występują wyłącznie w planie 13M5, natomiast GL04 jest wspólna "
-            "z grupą 13M4 — te same zajęcia widnieją w obu planach.",
-        ]:
-            for line in wrap(c, text, self.w - 80, REGULAR, 8.5):
-                c.drawString(40, y, line)
-                y -= 11
-            y -= 3
         c.showPage()
 
     def grid(self, title, subtitles, entries):
@@ -530,8 +446,8 @@ class Calendar:
 
         c.setFillColor(self.color_for(entry["code"]))
         c.setStrokeColor(HexColor("#5B6470"))
-        c.setLineWidth(0.9 if entry["choice"] else 0.5)
-        c.setDash([2.2, 1.6] if entry["choice"] else [])
+        c.setLineWidth(0.9 if entry["subgroup"] else 0.5)
+        c.setDash([2.2, 1.6] if entry["subgroup"] else [])
         c.rect(x + 1, y_top - height + 1, width - 2, height - 2, fill=1, stroke=1)
         c.setDash([])
 
@@ -586,6 +502,8 @@ class Calendar:
         c = self.c
         y = None
         for heading, intro, items in sections:
+            if not items:
+                continue
             needed = 30 + 12 * len(wrap(c, intro or "", self.w - 80, REGULAR, 9)) \
                 + 11.5 * sum(len(wrap(c, t, self.w - 90, REGULAR, 9)) + 0.2 for t in items)
             if y is None or y - needed < 40:
@@ -612,10 +530,14 @@ class Calendar:
         c.showPage()
 
 
-def prepare(group, gl_variants):
+def prepare(group, subgroups):
     """Wszystko, co trafia do PDF-u, bez rysowania - dzięki temu audyt sprawdza to samo."""
     plan = GroupPlan(ROOT / "dane" / f"{group}.htm")
-    entries = merge_blocks(plan.blocks)
+    blocks = plan.filtered(subgroups) if subgroups else plan.blocks
+    # e-learning nie ma godziny w planie, więc nie da się go wstawić do siatki
+    online = [b for b in blocks if b.elearning]
+    blocks = [b for b in blocks if not b.elearning]
+    entries = merge_blocks(blocks)
 
     # ostatni dzień zajęć w każdym dniu tygodnia jest w planie ściśnięty do 45-minutowych
     # slotów (dwa przedmioty dzielą jeden blok) - trzymamy go poza siatką
@@ -635,7 +557,7 @@ def prepare(group, gl_variants):
     # ostatni tydzień bierzemy z niescalonych wpisów, żeby zachować skrócone godziny
     finale = [{"day": b.day, "date": last_day_of[b.day], "start": b.start, "end": b.end,
                "subject": b.subject, "form": b.form, "groups": b.groups, "room": b.room}
-              for b in plan.blocks if last_day_of[b.day] in b.dates]
+              for b in blocks if last_day_of[b.day] in b.dates]
 
     teaching_dates = collections.defaultdict(set)
     for entry in main:
@@ -650,10 +572,10 @@ def prepare(group, gl_variants):
         # do 45 minut - takie wyjątki idą na ostatnią stronę, żeby ich nie zgubić.
         entry["shortened"] = shortened_dates(entry)
         entry["foreign"] = not covers_group(entry["groups"], group)
-        entry["choice"] = choice_label(entry)
+        entry["subgroup"] = subgroup_label(entry)
         entry["headline"] = " · ".join(
             x for x in [FORM_LABEL.get(entry["form"], entry["form"]), entry["room"]] if x)
-        entry["note"] = entry["choice"] or (entry["subgroups"][0] if entry["subgroups"] else "")
+        entry["note"] = entry["subgroup"]
         entry["note_short"] = entry["note"]
         if entry["foreign"]:
             entry["note"] = f"w źródle: {entry['groups']}"
@@ -668,49 +590,30 @@ def prepare(group, gl_variants):
     weeks_a = [ANCHOR + timedelta(weeks=w) for w in weeks if w % 2 == 0]
     weeks_b = [ANCHOR + timedelta(weeks=w) for w in weeks if w % 2 == 1]
 
-    choices = collections.defaultdict(list)
-    for entry in sorted(main, key=lambda e: (e["choice"], DAYS.index(e["day"]))):
-        if not entry["choice"]:
-            continue
-        family = entry["choice"].rstrip("0123456789")
-        label = (f"{entry['choice']} – {SHORT.get(entry['subject'], entry['subject'])}, "
-                 f"{DAY_NAMES[entry['day']].lower()} {entry['start']}-{entry['end']}, "
-                 f"sala {entry['room']}")
-        if label not in choices[family]:
-            choices[family].append(label)
+    roles = []
+    for subgroup in subgroups:
+        family = subgroup.rstrip("0123456789")
+        what = sorted({SHORT.get(e["subject"], e["subject"]) for e in main
+                       if subgroup in e["subgroups"]})
+        roles.append((subgroup, SUBGROUP_ROLE.get(family, "podgrupa"),
+                      ", ".join(what) or "brak zajęć w planie tej grupy"))
 
     subjects = []
-    for code, info in plan.subjects().items():
+    for code, info in plan.subjects(blocks + online).items():
         people = ", ".join(sorted(p.title() for p in info["lecturers"]))
         subjects.append((SHORT.get(info["name"], info["name"]), people))
-
-    lab_hours = collections.defaultdict(dict)
-    for b in plan.blocks:
-        for sub in b.subgroups:
-            if sub in gl_variants:
-                name = SHORT.get(b.subject, b.subject)
-                slots = round(b.minutes / 45) * len(b.dates)
-                lab_hours[name][sub] = lab_hours[name].get(sub, 0) + slots
-    comparison_rows = sorted(lab_hours.items())
-
-    goes_to = collections.defaultdict(list)
-    for gl, halves in PROJECT_HALVES.items():
-        for half in halves:
-            goes_to[half].append(gl if len(halves) == 1 else f"połowa {gl}")
 
     projects = collections.defaultdict(list)
     for entry in sorted(main, key=lambda e: (DAYS.index(e["day"]), minutes_of(e["start"]))):
         if entry["form"] != "P":
             continue
-        sub = entry["choice"] or (entry["subgroups"][0] if entry["subgroups"] else "—")
         projects[(SHORT.get(entry["subject"], entry["subject"]), entry["code"])].append((
-            sub,
+            entry["subgroup"] or "cała grupa",
             f"{DAY_NAMES[entry['day']].lower()} {entry['start']}-{entry['end']}",
             entry["room"],
             ", ".join(w.title() for w in entry["lecturers"]) or "prowadzący nieprzypisany",
             f"{len(entry['dates'])} spotkań, "
             + ("co tydzień" if entry["parity"] == "AB" else f"tydzień {entry['parity']}"),
-            f"idzie na to: {', '.join(goes_to[sub])}" if sub in goes_to else "",
         ))
     project_page = [(name, code, options) for (name, code), options in projects.items()]
 
@@ -753,53 +656,54 @@ def prepare(group, gl_variants):
                 f"{DAY_NAMES[entry['day']]} {entry['start']}-{entry['end']} · "
                 f"{SHORT.get(entry['subject'], entry['subject'])} (sala {entry['room']}) "
                 f"— w źródle podpisane grupami „{entry['groups']}”, a więc nie {group}. "
-                f"Ten sam wpis jest w planach 31 różnych grup, więc wygląda na zajęcia "
-                f"wydziałowe; warto potwierdzić, czy dotyczy Ciebie.")
+                f"Ten sam wpis jest w planach kilkudziesięciu grup, więc wygląda na "
+                f"zajęcia wydziałowe; warto potwierdzić, czy dotyczy Ciebie.")
 
-    return {"plan": plan, "main": main, "finale": finale, "last_day_of": last_day_of,
-            "weeks_a": weeks_a, "weeks_b": weeks_b, "choices": choices,
-            "subjects": subjects, "comparison_rows": comparison_rows,
-            "project_page": project_page, "irregular": irregular,
+    online_lines = []
+    for block in sorted(online, key=lambda b: b.dates[0]):
+        online_lines.append(
+            f"{', '.join(format_date(d) for d in block.dates)} "
+            f"({DAY_NAMES[block.day].lower()}) · {SHORT.get(block.subject, block.subject)} "
+            f"({block.form_name}, {block.groups or 'cała grupa'}, "
+            f"{block.lecturer.title() or 'prowadzący nieprzypisany'})")
+
+    return {"plan": plan, "blocks": blocks, "online": online, "main": main,
+            "finale": finale, "last_day_of": last_day_of,
+            "weeks_a": weeks_a, "weeks_b": weeks_b, "roles": roles,
+            "subjects": subjects, "project_page": project_page, "irregular": irregular,
             "squeezed_lines": squeezed_lines, "shortened_lines": shortened_lines,
-            "foreign_lines": foreign_lines, "teaching_dates": teaching_dates}
+            "foreign_lines": foreign_lines, "online_lines": online_lines,
+            "teaching_dates": teaching_dates}
 
 
-def pages(data, gl_variants):
+def pages(data):
     """(tytuł, podtytuły, widoczne bloki) dla każdej siatki kalendarza."""
-    for gl in gl_variants:
-        halves = PROJECT_HALVES.get(gl, tuple(HALF_NAME))
-        for parity, label in (("A", "TYDZIEŃ A"), ("B", "TYDZIEŃ B")):
-            visible = []
-            for entry in data["main"]:
-                if entry["parity"] not in (parity, "AB") or not shows_in(entry, gl, halves):
-                    continue
-                span = span_note(entry, parity, data["teaching_dates"])
-                note, short = variant_note(entry, gl), entry["note_short"]
-                if span and not entry["irregular"] and len(entry["dates"]) > 1:
-                    note = f"{note}, {span}" if note else span
-                    short = f"{short}, {span}" if short else span
-                visible.append(dict(entry, note=note, note_short=short))
-            example = data["weeks_a"] if parity == "A" else data["weeks_b"]
-            yield gl, parity, label, example, halves, visible
+    for parity, label in (("A", "TYDZIEŃ A"), ("B", "TYDZIEŃ B")):
+        visible = []
+        for entry in data["main"]:
+            if entry["parity"] not in (parity, "AB"):
+                continue
+            span = span_note(entry, parity, data["teaching_dates"])
+            note, short = entry["note"], entry["note_short"]
+            if span and not entry["irregular"] and len(entry["dates"]) > 1:
+                note = f"{note}, {span}" if note else span
+                short = f"{short}, {span}" if short else span
+            visible.append(dict(entry, note=note, note_short=short))
+        example = data["weeks_a"] if parity == "A" else data["weeks_b"]
+        yield parity, label, example, visible
 
 
-def build(group, gl_variants, out_path):
-    data = prepare(group, gl_variants)
+def build(group, subgroups, out_path):
+    data = prepare(group, subgroups)
 
-    cal = Calendar(out_path, group, gl_variants)
-    cal.cover(data["weeks_a"], data["weeks_b"], data["choices"], data["subjects"])
+    cal = Calendar(out_path, group, subgroups)
+    cal.cover(data["weeks_a"], data["weeks_b"], data["roles"], data["subjects"])
     cal.projects(data["project_page"])
-    cal.comparison(data["comparison_rows"])
 
-    for gl, parity, label, example, halves, visible in pages(data, gl_variants):
-        cal.grid(f"{group} · podgrupa {gl} · {label}",
+    for parity, label, example, visible in pages(data):
+        cal.grid(f"{group} · {' · '.join(subgroups)} · {label}",
                  ["tygodnie zaczynające się: "
-                  + ", ".join(short_date(d) for d in example),
-                  "projekt Metody komputerowe mechaniki: "
-                  + " albo ".join(f"{s} ({HALF_NAME[s]})" for s in halves)
-                  + (f" — {gl} dzieli się na pół" if len(halves) > 1 else ""),
-                  "projekt Podstawy niezawodności: GK/P02 albo GK/P03 "
-                  "(przydziału nie widać w planie)"],
+                  + ", ".join(short_date(d) for d in example)],
                  visible)
 
     cal.exceptions([
@@ -809,6 +713,10 @@ def build(group, gl_variants, out_path):
          "W tych terminach zajęcia trwają krócej, niż wynika z siatki.",
          data["shortened_lines"]),
         ("Wpisy nie podpisane naszą grupą (oznaczone „!”)", "", data["foreign_lines"]),
+        ("E-learning",
+         "Plan podaje te zajęcia bez godziny - w źródle stoją w osobnym wierszu "
+         "pod danym dniem, więc nie da się ich wstawić do siatki.",
+         data["online_lines"]),
         ("Ostatni tydzień semestru (26 I – 2 II)",
          "W ostatnim tygodniu plan jest ściśnięty: przedmioty, które normalnie idą co "
          "dwa tygodnie, dostają po 45 minut zamiast 90. Dlatego te terminy są wypisane "
@@ -826,12 +734,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--grupa", default="13M5")
-    ap.add_argument("--gl", nargs="*", default=["GL02", "GL03", "GL04"])
+    ap.add_argument("--podgrupy", nargs="*", default=MY_SUBGROUPS)
     ap.add_argument("--out", default=None)
     args = ap.parse_args()
-    out = Path(args.out or ROOT / "wygenerowane" / f"Plan_{args.grupa}_kalendarz.pdf")
+    out = Path(args.out or ROOT / "wygenerowane" / f"moj-plan-{args.grupa}.pdf")
     out.parent.mkdir(parents=True, exist_ok=True)
-    print("zapisano", build(args.grupa, args.gl, out))
+    print("zapisano", build(args.grupa, args.podgrupy, out))
 
 
 if __name__ == "__main__":
