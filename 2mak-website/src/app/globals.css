@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/*
+ * Paleta "2MaK" — industrialny grafit / antracyt / matowa stal
+ * + zgaszony, techniczny pomarańcz jako jedyny akcent (CTA, detale logo).
+ */
+@theme {
+  --color-graphite: #16181c;
+  --color-anthracite: #22262c;
+  --color-steel: #3a4048;
+  --color-steel-light: #8b939e;
+  --color-blueprint: #b7c2cc;
+  --color-accent: #d9742b;
+  --color-accent-dim: #a85a22;
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: auto; /* GSAP ScrollTrigger sam steruje scrollem (scrub) */
+}
+
+body {
+  background: var(--color-graphite);
+  color: var(--color-blueprint);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Pulsująca ikona scrolla "Eksploruj" (Scena 0) */
+@keyframes scroll-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(10px);
+    opacity: 0.35;
+  }
+}
+
+.animate-scroll-pulse {
+  animation: scroll-pulse 1.8s ease-in-out infinite;
+}
+
+/* Cienka techniczna linia pod nagłówkami sekcji */
+.tech-rule {
+  background: linear-gradient(
+    90deg,
+    var(--color-accent) 0%,
+    var(--color-accent) 32px,
+    var(--color-steel) 32px,
+    var(--color-steel) 100%
+  );
+  height: 1px;
+}
