@@ -57,19 +57,46 @@ def cmd_sprawdz(args):
     """Kontrola kompletności: każda kolorowa komórka planu musi trafić do wyniku."""
     from bs4 import BeautifulSoup
 
-    from planpk.parser import _build_grid, parse_page
+    from planpk.parser import _build_grid, class_cells, parse_page, timetable
 
     problems = 0
     files = _pages(args.grupy)
     for path in files:
         html = path.read_text(encoding="utf-8", errors="replace")
-        grid, _ = _build_grid(BeautifulSoup(html, "lxml").find("table"))
-        cells = sum(1 for cell, _ in grid.values() if cell.get("bgcolor"))
+        grid, _ = _build_grid(timetable(BeautifulSoup(html, "lxml")))
+        cells = sum(len(class_cells(cell)) for cell, _ in grid.values())
         parsed = len(parse_page(path).slots)
         if cells != parsed:
             problems += 1
             print(f"{path.stem}: komórek {cells}, odczytanych {parsed}")
     print(f"sprawdzono {len(files)} grup, niezgodności: {problems}")
+    return 1 if problems else 0
+
+
+def cmd_godziny(args):
+    """Kontrola form zajęć: liczba odczytanych slotów vs godziny z legendy."""
+    import collections
+
+    from planpk.parser import _plain_name, parse_page
+
+    problems = 0
+    files = _pages(args.grupy)
+    for path in files:
+        page = parse_page(path)
+        read = collections.Counter()
+        for slot in page.slots:
+            course = page.course_of(slot.code)
+            code = course.code if course else slot.code
+            for lecturer in slot.lecturers or [""]:
+                read[(code, _plain_name(lecturer), slot.form)] += 1
+        for course in page.courses:
+            for staff in course.staff:
+                got = read.pop((course.code, _plain_name(staff.name), staff.form), 0)
+                if got != staff.hours:
+                    problems += 1
+                    print(f"{page.name}: {course.code} {staff.name or '—'} "
+                          f"{staff.form}: odczytano {got} godz., legenda {staff.hours}")
+    print(f"sprawdzono {len(files)} grup, pozycji legendy bez pokrycia: {problems}")
     return 1 if problems else 0
 
 
@@ -104,7 +131,7 @@ def cmd_pokaz(args):
 def cmd_tydzien(args):
     from datetime import date, timedelta
 
-    from planpk.model import DAY_ORDER, format_date, minutes_of
+    from planpk.model import DAY_ORDER, format_date
 
     files = _pages([args.grupa])
     if not files:
@@ -118,7 +145,7 @@ def cmd_tydzien(args):
     for offset, name in enumerate(DAY_ORDER):
         when = monday + timedelta(days=offset)
         today = sorted([b for b in blocks if b.day == name and when in b.dates],
-                       key=lambda b: minutes_of(b.start))
+                       key=lambda b: b.sort_minutes())
         if not today:
             continue
         print(f"\n{DAY_NAMES[name]} {format_date(when)}")
@@ -148,6 +175,10 @@ def main():
     p = sub.add_parser("sprawdz", help="kontrola kompletności odczytu")
     p.add_argument("grupy", nargs="*")
     p.set_defaults(func=cmd_sprawdz)
+
+    p = sub.add_parser("godziny", help="kontrola form zajęć wg godzin z legendy")
+    p.add_argument("grupy", nargs="*")
+    p.set_defaults(func=cmd_godziny)
 
     p = sub.add_parser("pokaz", help="wypisuje plan grupy")
     p.add_argument("grupa")

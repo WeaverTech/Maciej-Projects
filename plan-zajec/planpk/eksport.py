@@ -2,17 +2,17 @@
 from __future__ import annotations
 
 import collections
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from .model import DAY_NAMES, FORM_NAMES, GroupPlan, format_date, minutes_of
+from .model import (DAY_NAMES, FORM_NAMES, GroupPlan, family_of, format_date,
+                    minutes_of)
 
 SUBGROUP_HELP = {
-    "GL": "podgrupa laboratoryjna całego rocznika (np. GL04)",
-    "GK/P": "podgrupa projektowa/ćwiczeniowa całego rocznika (np. GK/P03)",
-    "GK": "podgrupa ćwiczeniowa całego rocznika",
-    "SL": "podgrupa laboratoryjna wydzielona wewnątrz jednej grupy (np. 13M5 SL02)",
-    "SP": "podgrupa projektowa wydzielona wewnątrz jednej grupy (np. 13M5 SP01)",
-    "SK/P": "podgrupa projektowa wewnątrz jednej grupy",
+    "GL": "podgrupa laboratoryjna całego rocznika (np. `13M GL04`)",
+    "GK/P": "podgrupa konwersatoryjno-projektowa całego rocznika (np. `13M GK/P03`)",
+    "SL": "podgrupa laboratoryjna wydzielona wewnątrz jednej grupy (np. `13M5 SL02`)",
+    "SP": "podgrupa projektowa wydzielona wewnątrz jednej grupy (np. `13M5 SP02`)",
+    "SK": "podgrupa konwersatoryjna wydzielona wewnątrz jednej grupy",
 }
 
 
@@ -44,9 +44,12 @@ def markdown(plan: GroupPlan, blocks=None, title_suffix=""):
         if not day_blocks:
             continue
         total = sum(b.minutes * b.occurrences() for b in day_blocks) // 60
+        timed = [b for b in day_blocks if not b.elearning]
+        last = max((b.end for b in timed), key=minutes_of, default="")
+        hours = (f"Zajęcia od {timed[0].start} do {last}, łącznie"
+                 if timed else "Same zajęcia e-learningowe,")
         lines += [f"## {DAY_NAMES[day]}", "",
-                  f"Zajęcia od {day_blocks[0].start} do {day_blocks[-1].end}, "
-                  f"łącznie {total} godzin zegarowych w semestrze.", "",
+                  f"{hours} {total} godzin zegarowych w semestrze.", "",
                   "| Godziny | Przedmiot | Forma | Grupa / podgrupa | Sala | Prowadzący | Terminy |",
                   "| --- | --- | --- | --- | --- | --- | --- |"]
         for b in day_blocks:
@@ -59,9 +62,7 @@ def markdown(plan: GroupPlan, blocks=None, title_suffix=""):
     lines += ["## Przedmioty", "",
               "| Przedmiot | Kod | Formy (liczba spotkań) | Prowadzący |",
               "| --- | --- | --- | --- |"]
-    for code, info in plan.subjects().items():
-        if blocks is not plan.blocks and not any(b.code == code for b in blocks):
-            continue
+    for code, info in plan.subjects(blocks).items():
         forms = ", ".join(f"{FORM_NAMES.get(f, f)} ×{n}"
                           for f, n in sorted(info["forms"].items()))
         people = ", ".join(sorted(p.title() for p in info["lecturers"])) or "—"
@@ -69,8 +70,9 @@ def markdown(plan: GroupPlan, blocks=None, title_suffix=""):
     lines.append("")
 
     lines += ["## Jak czytać oznaczenia podgrup", ""]
+    families = {family_of(s) for b in blocks for s in b.subgroups}
     for prefix, desc in SUBGROUP_HELP.items():
-        if any(s.startswith(prefix) for b in blocks for s in b.subgroups):
+        if prefix in families:
             lines.append(f"- `{prefix}xx` – {desc}")
     lines += ["", "Wpis bez oznaczenia podgrupy oznacza zajęcia dla całej grupy "
                   "(albo dla całego rocznika, jeśli wymieniono kilka grup).", ""]
@@ -95,23 +97,30 @@ def ics(plan: GroupPlan, blocks=None, name=None):
            "END:VTIMEZONE"]
 
     for i, b in enumerate(blocks):
-        sh, sm = divmod(minutes_of(b.start), 60)
-        eh, em = divmod(minutes_of(b.end), 60)
+        if not b.elearning:
+            sh, sm = divmod(minutes_of(b.start), 60)
+            eh, em = divmod(minutes_of(b.end), 60)
         for j, day in enumerate(b.dates):
             uid = f"{plan.name}-{i}-{j}-{day.isoformat()}@plan-zajec-pk"
             summary = f"{b.subject} ({b.form})"
+            if b.elearning:
+                summary += " e-learning"
             if b.subgroups:
                 summary += " " + " ".join(b.subgroups)
             description = "; ".join(x for x in [
                 f"Kod: {b.code}",
-                f"Forma: {b.form_name}",
+                f"Forma: {b.form_name}" + (" (e-learning)" if b.elearning else ""),
                 f"Prowadzący: {b.lecturer.title()}" if b.lecturer else "",
                 f"Grupa: {b.groups}" if b.groups else "",
             ] if x)
+            # e-learning nie ma w planie godziny - wpis na cały dzień
+            when = ([f"DTSTART;VALUE=DATE:{day:%Y%m%d}",
+                     f"DTEND;VALUE=DATE:{day + timedelta(days=1):%Y%m%d}"]
+                    if b.elearning else
+                    [f"DTSTART;TZID=Europe/Warsaw:{day:%Y%m%d}T{sh:02d}{sm:02d}00",
+                     f"DTEND;TZID=Europe/Warsaw:{day:%Y%m%d}T{eh:02d}{em:02d}00"])
             out += [
-                "BEGIN:VEVENT", f"UID:{uid}", f"DTSTAMP:{stamp}",
-                f"DTSTART;TZID=Europe/Warsaw:{day:%Y%m%d}T{sh:02d}{sm:02d}00",
-                f"DTEND;TZID=Europe/Warsaw:{day:%Y%m%d}T{eh:02d}{em:02d}00",
+                "BEGIN:VEVENT", f"UID:{uid}", f"DTSTAMP:{stamp}", *when,
                 f"SUMMARY:{_ics_escape(summary)}",
                 f"LOCATION:{_ics_escape(b.room)}",
                 f"DESCRIPTION:{_ics_escape(description)}",
