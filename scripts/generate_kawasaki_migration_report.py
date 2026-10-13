@@ -61,8 +61,9 @@ CONTENT: list[tuple] = [
         "fieldbusa (również po stronie PLC) oraz zamówienie opcji płatnych na nowym kontrolerze.",
         "Programy pojadą prawie poprawnie, ale nowy egzemplarz ramienia ma własne zerowanie i nigdy nie stanie "
         "idealnie w miejscu starego. Krytyczne punkty trzeba sprawdzić i douczyć.",
-        "Ten sam model ramienia rzeczywiście występuje w kilku generacjach: MX350L/MX420L/MX500N/MX700N (D, E, F04) "
-        "oraz ZX300S (D, E, F02). Dla innych rodzin (np. seria FS) następcą jest inny model (seria RS).",
+        "Ten sam model ramienia rzeczywiście występuje w kilku generacjach: MX350L/MX420L/MX500N/MX700N (D, E, F04), "
+        "ZX130L/ZX165U/ZX200S/ZX300S i MT400N (D, E, F02). Dla innych rodzin (np. seria FS) następcą jest inny model "
+        "(seria RS).",
         "Warianty robotów z kontrolerem D zakończyły produkcję głównie w latach 2010-2014. Kawasaki gwarantuje części "
         "przez maksymalnie 10 lat od zakończenia produkcji, więc dla większości robotów z D to okno już minęło. "
         "Większość wariantów z kontrolerem E wycofano w latach 2019-2024, więc nowy zakup to w praktyce kontroler F.",
@@ -82,14 +83,15 @@ CONTENT: list[tuple] = [
           "wynika:"),
     ("table", ["Rodzina ramion", "Z kontrolerem D", "Z kontrolerem E", "Z kontrolerem F (obecnie)"], [
         ["MX350L, MX420L, MX500N, MX700N", "tak", "tak", "tak, F04"],
-        ["ZX300S", "tak", "tak (E02)", "tak, F02"],
-        ["ZX130S/L, ZX165U, ZX200S", "tak", "tak (E02)", "nie ma na liście F02; seria Z ogólnie w instrukcji F0x - do potwierdzenia"],
-        ["MT (np. MT400N)", "tak", "tak", "seria MT w specyfikacji F02 - do potwierdzenia dla konkretnego modelu"],
+        ["ZX130L, ZX165U, ZX200S, ZX300S", "tak", "tak (E02)", "tak, F02"],
+        ["ZX130S", "tak", "tak", "tylko na brytyjskiej wersji strony F02 - do potwierdzenia"],
+        ["MT400N", "tak", "tak", "tak, F02"],
         ["FS (np. FS010N, FS020N)", "tak", "nie", "nie; następca to seria RS (np. RS010N, RS020N)"],
     ], [3.4, 2.4, 2.4, 5.8]),
-    ("note", "Źródła: lista wycofanych modeli Kawasaki (08.2023), strony produktów F02, F04 i E02, specyfikacja F0x. "
-             "Gdy „ten sam model” jest następcą, przed zamówieniem trzeba porównać karty katalogowe: zakresy osi, "
-             "zasięg, wymiary podstawy i kołnierza."),
+    ("note", "Źródła: lista wycofanych modeli Kawasaki (08.2023), strony produktów F02, F04 i E02 (stan 13.10.2026), "
+             "specyfikacja F0x. Regionalne wersje strony F02 różnią się listą ramion, dlatego dokładny kod modelu "
+             "trzeba potwierdzić u dystrybutora. Gdy „ten sam model” jest następcą, przed zamówieniem trzeba porównać "
+             "karty katalogowe: zakresy osi, zasięg, wymiary podstawy i kołnierza."),
 
     ("h1", "4. Dostępność części dla kontrolerów D i E"),
     ("table", ["Generacja", "Zakończenie produkcji wariantów robot+kontroler", "Gwarancja części (zasada Kawasaki: do 10 lat)"], [
@@ -107,32 +109,35 @@ CONTENT: list[tuple] = [
     ("p", "Kontroler D i kontrolery E/F mają te same polecenia zapisu poszczególnych typów danych. Każdy typ można "
           "zapisać do osobnego pliku i wczytać osobno poleceniem LOAD."),
     ("table", ["Dane", "Polecenie", "Ocena", "Uwagi"], [
-        ["Programy AS i programy blokowe", "SAVE/P", "Przenosi się", "Język AS jest zgodny wstecz. KRterm pokaże przy wczytywaniu linie, których nowy kontroler nie przyjmie."],
+        ["Programy AS i programy blokowe", "SAVE/P", "Przenosi się", "Te same polecenia SAVE/LOAD w D i F. LOAD przerywa się, jeśli program o tej nazwie już jest w pamięci - wczytywać do czystego kontrolera."],
         ["Punkty (zmienne pozycji)", "SAVE/L", "Przenosi się", "Wartości przechodzą 1:1, ale nowy egzemplarz ramienia wymaga sprawdzenia punktów (rozdział 7)."],
-        ["Zmienne liczbowe", "SAVE/R", "Przenosi się", "Liczniki, parametry, przesunięcia."],
-        ["Zmienne tekstowe", "SAVE/S", "Przenosi się", "Uwaga na teksty ze znakami sterującymi z PLC - potrafią uszkodzić zapis."],
+        ["Zmienne liczbowe", "SAVE/R", "Przenosi się", "Liczniki, parametry, przesunięcia. Zmienne o tej samej nazwie LOAD nadpisuje bez ostrzeżenia."],
+        ["Zmienne tekstowe", "SAVE/S", "Przenosi się", "Jak wyżej: nadpisywane bez ostrzeżenia."],
         ["Dane pomocnicze", "SAVE/A", "Przenosi się, sprawdzić", "Pozycja domowa, limity osi, ustawienia chwytaka i obciążenia, strefy pracy, ustawienia programów blokowych."],
         ["Dane systemowe", "SAVE/SYS", "Częściowo", "Sygnały dedykowane i przełączniki systemowe w większości zgodne; konfiguracja fieldbusa zwykle nie."],
         ["Ekran operatorski (Interface Panel)", "część pełnego backupu", "Częściowo", "Wczytuje się, ale nie zawsze jako wierna kopia. Wartości pól ustawianych przez BITS się nie przenoszą - zrobić zdjęcia ekranów."],
-        ["Program K-Logic (sterownik programowy)", "osobny", "Do sprawdzenia", "E ma opcję KLogic; dla F potwierdzić dostępność opcji i zgodność programu."],
-        ["Dane robota", "SAVE/ROB", "NIE przenosić", "Model, numer seryjny, zerowanie i parametry serwo nowego ramienia są ustawione fabrycznie."],
-        ["Pełny backup", "SAVE", "NIE wczytywać w całości", "Zawiera dane robota. Można go użyć jako archiwum i źródło do wycięcia sekcji z panelem, programami i zmiennymi."],
+        ["Program K-Logic (sterownik programowy)", "osobny", "Do sprawdzenia", "D miał K-Logic, F0x ma opcję Software PLC; zgodność programu trzeba potwierdzić."],
+        ["Dane robota", "SAVE/ROB", "NIE przenosić", "Model, numer seryjny, zerowanie i inne dane nowego ramienia są ustawione fabrycznie."],
+        ["Pełny backup", "SAVE", "NIE wczytywać w całości", "W praktyce plik pełnego backupu zawiera też dane robota. Można go użyć jako archiwum i źródło do wycięcia sekcji z panelem, programami i zmiennymi."],
     ], [3.6, 2.4, 2.6, 7.4]),
-    ("note", "Praktyczna metoda przy przejściu z D na E opisana przez praktyków: zrobić kopię pliku pełnego backupu, "
-             "usunąć z niej wszystko powyżej sekcji danych panelu (MFP) i wczytać resztę. Przenosi to panel, programy, "
-             "zmienne i teksty bez ryzyka nadpisania danych robota."),
+    ("note", "Wczytywanie selektywne: LOAD/Q pyta osobno o każdą porcję danych systemowych i każdy program "
+             "(Tak / Nie / Wczytaj wszystko / Wyjdź). Metoda praktyków przy przejściu z D na E: zrobić kopię pliku "
+             "pełnego backupu, usunąć z niej wszystko powyżej sekcji danych panelu (MFP) i wczytać resztę. Przenosi to "
+             "panel, programy, zmienne i teksty bez ryzyka nadpisania danych robota."),
 
     ("h1", "6. Co trzeba wykonać od nowa"),
     ("table", ["Obszar", "Kontroler D", "Kontroler F (E podobnie, szczegóły w tekście)", "Co zrobić"], [
-        ["Wejścia/wyjścia ogólne", "32 we / 32 wy standardowo (karta 1HW/1GW, złącza 37-pin D-sub), opcjonalnie 64/96/128", "32 we / 32 wy standardowo, do 64/64 w szafie i 128/128 z remote I/O", "Spisać mapę sygnałów, przygotować nowe przewody lub listwy przyłączeniowe do nowych złączy."],
+        ["Wejścia/wyjścia ogólne", "32 we / 32 wy na karcie 1HW/1GW (złącza CN2/CN4, 37-pin D-sub), więcej z dodatkowymi kartami", "32 we / 32 wy standardowo, do 64/64 w szafie i 128/128 z remote I/O; opcjonalne złącze też 37-pin D-sub", "Spisać mapę sygnałów. Typ złącza może być ten sam, ale przypisanie pinów trzeba porównać z instrukcją External I/O dla F."],
         ["Obwody bezpieczeństwa", "obwody sprzętowe (E-stop, drzwi, praca ręczna)", "wersja A (opcja Cubic-S) lub B (opcja CoreCubic-S); obwód do kat. 4 / PL e", "Przepiąć, zwalidować funkcje bezpieczeństwa i zaktualizować ocenę ryzyka stanowiska."],
-        ["Fieldbus", "DeviceNet, PROFIBUS-DP, INTERBUS, CC-Link, EtherNet/IP, ControlNet (opcje)", "moduł opcjonalny (slave na złączu XAB, master na karcie PCIe); osobna instrukcja 90210-1326", "Zamówić moduł, wgrać nowy plik konfiguracyjny (GSD/EDS/GSDML) w PLC i zmapować sygnały od nowa."],
+        ["Fieldbus", "DeviceNet, PROFIBUS, INTERBUS, EtherNet/IP, Modbus-TCP, CC-Link (opcje)", "moduł opcjonalny (slave na złączu XAB, master na karcie PCIe); osobna instrukcja 90210-1326", "Zamówić moduł, wgrać nowy plik konfiguracyjny (GSD/EDS/GSDML) w PLC i zmapować sygnały od nowa."],
         ["Pendant", "pendant serii D", "nowy pendant GenII (port USB, inny ekran)", "Przejrzeć i poprawić ekran operatorski; przeszkolić operatorów."],
         ["Opcje płatne", "np. fieldbus, śledzenie przenośnika, spawanie", "zamawiane osobno", "Spisać wszystkie opcje aktywne w D i zamówić odpowiedniki."],
         ["Zapis danych", "PC (KRterm/KCwin przez RS-232C lub Ethernet), karta PCMCIA", "USB, Ethernet, CFast", "Przygotować sposób zgrania danych z D przed demontażem."],
     ], [2.6, 4.1, 4.6, 4.7]),
-    ("p", "PROFINET i CANopen były dostępne w kontrolerze E, ale nie w D. Jeśli stanowisko używa sieci, której nie ma "
-          "w ofercie dla F (np. INTERBUS, ControlNet), trzeba zmienić sieć lub dodać bramkę."),
+    ("p", "PROFINET, CANopen, ControlNet, EtherCAT i CC-Link IE były dostępne tylko w kontrolerze E, nie w D. Katalog "
+          "Kawasaki dla kontrolera F60 wymienia CC-Link, CC-Link IE, DeviceNet, EtherNet/IP, EtherCAT, PROFIBUS-DP i "
+          "PROFINET, bez INTERBUS. Jeśli stanowisko z D pracuje na INTERBUS (albo na Allen-Bradley Remote I/O), trzeba "
+          "potwierdzić dostępność dla F0x albo zaplanować zmianę sieci lub bramkę."),
 
     ("h1", "7. Punkty i kalibracja nowego ramienia"),
     ("p", "Nowy robot tego samego modelu ma tę samą kinematykę, ale własne, fabryczne zerowanie. Do tego nie da się "
@@ -145,8 +150,10 @@ CONTENT: list[tuple] = [
         "Na koniec sprawdzić na małej prędkości wszystkie programy i douczyć krytyczne punkty: pobranie, odłożenie, "
         "wejścia w maszynę i strefy kolizji.",
         "neoROSET wczytuje pełny backup z prawdziwego kontrolera D, D+, E i F, pozwala podmienić model robota bez "
-        "zmiany układu stanowiska, przesuwać i lustrzanie kopiować punkty oraz porównywać tekst programów. "
-        "Pozwala to sprawdzić zasięg i kolizje przed demontażem.",
+        "zmiany układu stanowiska, przesuwać i lustrzanie kopiować punkty oraz porównywać dane kontrolera z danymi "
+        "w projekcie. Pozwala to sprawdzić zasięg i kolizje przed demontażem.",
+        "Jeśli docelowe ramię nie jest identyczne (następca), punkty zapisane jako kąty osi (joint) trzeba douczyć. "
+        "Praktycy zalecają przeliczyć je przed backupem na transformacje.",
     ]),
 
     ("h1", "8. D na E czy D na F"),
@@ -174,7 +181,7 @@ CONTENT: list[tuple] = [
         "bezpieczeństwa.",
         "10. Zrobić pełny backup nowego kontrolera i zaktualizować dokumentację stanowiska.",
     ]),
-    ("p", "Wskazówka praktyków: kontrolery E i F mają szybszy procesor, więc ciasne pętle w programach PC i w "
+    ("p", "Wskazówka praktyków przy przejściu na E (F ma jeszcze szybszy procesor): ciasne pętle w programach PC i w "
           "programie głównym warto spowolnić krótkim TWAIT (np. TWAIT 0.02), żeby kontroler pozostawał responsywny."),
 
     ("h1", "10. Ryzyka"),
@@ -193,21 +200,31 @@ CONTENT: list[tuple] = [
         "a nie 16, jak wynikało z wypowiedzi na forum.",
         "Korekta: typ modułu fieldbus w F (HMS CompactCom) pochodził z forum i nie znalazłem go w dokumentacji "
         "Kawasaki. Potwierdzone jest tylko, że to opcjonalny moduł na złączu XAB (slave) lub karta PCIe (master).",
-        "Doprecyzowanie: „ten sam model ramienia” z nowszym kontrolerem istnieje dla części rodzin (MX, ZX300S). "
-        "Dla innych jest to następca, którego kartę katalogową trzeba porównać.",
-        "Potwierdzone w dokumentacji: polecenia SAVE/P, /L, /R, /S, /A, /SYS i /ROB w kontrolerach D i F; "
+        "Doprecyzowanie: „ten sam model ramienia” z nowszym kontrolerem istnieje dla części rodzin (MX, ZX130L, "
+        "ZX165U, ZX200S, ZX300S, MT400N). Dla innych jest to następca, którego kartę katalogową trzeba porównać.",
+        "Korekta: ControlNet nie był dostępny dla kontrolera D, tylko dla E (lista kodów produktów w instrukcji "
+        "fieldbusa 90210-1184, tabela X3).",
+        "Korekta: aktualna strona F02 wymienia ZX130L, ZX165U, ZX200S i MT400N, więc te ramiona też są dostępne z F.",
+        "Doprecyzowanie: instrukcja AS opisuje samo SAVE jako zapis pięciu typów danych (programy, punkty, liczby, "
+        "teksty, dane systemowe). To, że plik pełnego backupu zawiera też dane robota, wynika z praktyki i z okna "
+        "wczytywania w neoROSET, a nie z opisu polecenia.",
+        "Potwierdzone w dokumentacji: polecenia SAVE/P, /L, /R, /S, /A, /SYS i /ROB oraz LOAD/Q w kontrolerach D i F; "
         "zachowanie płytki Arm ID (wybór strony ramienia lub kontrolera); E0x jako poprzednik F0x; wersje A/B "
         "kontrolerów F0x; wczytywanie backupów D, D+, E i F w neoROSET.",
         "Oparte na doświadczeniu praktyków (forum robot-forum.com), nie na dokumentacji Kawasaki: metoda wycinania "
-        "sekcji z backupu, nieprzenoszenie wartości BITS na panelu, wskazówka z TWAIT, ocena zgodności danych "
-        "pomocniczych i systemowych.",
+        "sekcji z backupu, nieprzenoszenie wartości BITS na panelu, wskazówka z TWAIT, przeliczanie punktów joint na "
+        "transformacje, ocena zgodności danych pomocniczych i systemowych.",
+        "Każde twierdzenie z raportu ma przypisane źródło (dokument, rozdział, strona) w osobnym pliku "
+        "Zrodla_i_odwolania.md.",
     ]),
 
     ("h1", "12. Do potwierdzenia w serwisie Kawasaki przed zakupem"),
     ("bullets", [
         "Dokładny model docelowy (kod z oznaczeniem kontrolera) i jego zgodność wymiarowa ze starym ramieniem.",
         "Dostępność wybranego wariantu z kontrolerem E, jeśli ten wariant jest brany pod uwagę.",
-        "Dostępność potrzebnej sieci fieldbus i opcji (np. K-Logic) dla kontrolera F.",
+        "Dostępność potrzebnej sieci fieldbus i opcji (np. Software PLC zamiast K-Logic) dla kontrolera F0x - "
+        "lista sieci dla F0x jest w instrukcji 90210-1326, której nie ma publicznie.",
+        "Przypisanie pinów złącza I/O w F0x względem karty 1HW/1GW z kontrolera D.",
         "Wersja kontrolera F (A z Cubic-S albo B z CoreCubic-S) - nie każde ramię współpracuje z wersją B.",
         "Czy Kawasaki oferuje usługę lub narzędzie do konwersji danych z D na F.",
     ]),
@@ -217,19 +234,21 @@ CONTENT: list[tuple] = [
     ("bullets", [
         "Lista wycofanych modeli i zasada dostaw części (08.2023): kawasakirobotics.com/uploads/sites/2/2023/08/202308product-discontinuation-list.pdf",
         "Retired Models (części do 10 lat): kawasakirobotics.com/products/retired-models/",
-        "Specyfikacja kontrolerów F0x: kawasakirobotics.com/uploads/sites/2/2022/01/F0x-E-1-1.pdf",
-        "Instrukcja instalacji F0x: kawasakirobotics.com/uploads/sites/2/2022/01/F0x_Series_Controller-Installation_and_Connection_Manual-E-4.pdf",
-        "Strony kontrolerów F02, F04 i E02: kawasakirobotics.com (sekcja Controllers)",
-        "AS Language Reference Manual, kontroler F (90209-1025) i kontroler D - polecenia SAVE/LOAD",
-        "General Fieldbus I/O Usage Manual, kontrolery D/E (90210-1184)",
-        "Arm ID Board Instruction Manual, kontroler D (90210-1174) i E (90210-1246)",
-        "Specyfikacja kontrolerów D70/D4x (broszura Kawasaki)",
-        "neoROSET Operation Manual oraz broszura neoROSET: kawasakirobotics.com/uploads/sites/2/2026/02/neoROSET_EN_no.2645.pdf",
+        "Specyfikacja kontrolerów F0x (90152-0091DEE): kawasakirobotics.com/uploads/sites/2/2022/01/F0x-E-1-1.pdf",
+        "Instrukcja instalacji F0x (90202-1252DEH): kawasakirobotics.com/uploads/sites/2/2022/01/F0x_Series_Controller-Installation_and_Connection_Manual-E-4.pdf",
+        "Strony kontrolerów F02, F04, E02 i E04: kawasakirobotics.com/products-controllers/",
+        "AS Language Reference Manual, kontroler F (90209-1025DEB) i kontroler D (90209-1017) - rozdział 5.3, SAVE/LOAD",
+        "General Fieldbus I/O Usage Manual, kontrolery D/E (90210-1184DEK)",
+        "Arm ID Board Instruction Manual, kontroler D (90210-1174DEA)",
+        "Installation and Connection Manual, kontroler D (D30-D34) oraz broszura kontrolera D (Kawasaki Robotics USA)",
+        "Katalog Kawasaki Robot (Cat. No. 3L2521, 09.2025) - opcje kontrolera F60",
+        "neoROSET Operation Manual (90210-1515DED) oraz broszura neoROSET: kawasakirobotics.com/uploads/sites/2/2026/02/neoROSET_EN_no.2645.pdf",
         "Komunikat Kawasaki o kontrolerach E jako następcy D (29.09.2008): global.kawasaki.com",
         "Kawasaki Robotics, „Tips for an Industrial Robotics Upgrade or Retrofit”: kawasakirobotics.com/blog/",
     ]),
     ("p", "Źródła praktyków (robot-forum.com, wątki 38312, 49046, 43051, 41303, 36020) - wykorzystane tylko jako "
-          "uzupełnienie i oznaczone w rozdziale 11."),
+          "uzupełnienie i oznaczone w rozdziale 11. Dokładne miejsca w dokumentach (rozdział, strona, cytat) są w "
+          "pliku Zrodla_i_odwolania.md."),
 ]
 
 
