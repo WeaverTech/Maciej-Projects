@@ -1,0 +1,118 @@
+<!--
+  Bloki Gutenberga w formacie używanym przez Poradnik Automatyka ASTOR
+  (odtworzone ze źródła artykułu "Symulacja systemu wizyjnego w środowisku EPSON RC+ 8").
+  Wklejać w WordPressie przez: Edytor kodu (Ctrl+Shift+Alt+M).
+  Ścieżki obrazów (wp-content/uploads/RRRR/MM/...) zostaną nadane po wgraniu plików do biblioteki mediów.
+-->
+
+<!-- ===== Ramka "Z tego artykułu dowiesz się" (na samym początku) ===== -->
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:html -->
+<div class="dowiesz-sie">
+<h3>Z tego artykułu dowiesz się:</h3>
+<ul class="bulleted">
+<li>jak przygotować stanowisko i kamerę do kalibracji z robotem EPSON,</li>
+<li>jak przeprowadzić kalibrację kamery w Vision Guide 8.0 i ocenić jej wyniki,</li>
+<li>jak wykorzystać skalibrowaną kamerę w programie SPEL+ do wyznaczania pozycji obiektów.</li>
+</ul>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- ===== Akapit ===== -->
+<!-- wp:paragraph -->
+<p>W zakładce <strong>Vision</strong> wybieramy <strong>Setup -&gt; System Configuration</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- ===== Nagłówek sekcji (poprzedzony odstępem 50 px) ===== -->
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Tworzenie kalibracji</h2>
+<!-- /wp:heading -->
+
+<!-- ===== Zrzut ekranu (odstęp 30 px przed i po) ===== -->
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="image01.png" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- ===== Ikona z paska narzędzi w środku zdania ===== -->
+<!-- wp:paragraph -->
+<p>Nową kalibrację dodajemy przyciskiem:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full"><img src="ikona-new-calibration.png" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>w oknie <strong>Vision</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- ===== Lista ===== -->
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li>pierwszy element,</li>
+<li>drugi element,</li>
+<li>ostatni element.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- ===== Kod SPEL+ (odstęp 50 px przed i po) ===== -->
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>Function main
+	VRun FindParts
+	VGet FindParts.Geom1.NumberFound, number_found
+	Print "Found ", number_found, " parts."
+Fend</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- ===== Film z realizacji (opcjonalnie) ===== -->
+<!-- wp:video {"align":"center"} -->
+<figure class="wp-block-video aligncenter"><video controls src="film.mp4"></video></figure>
+<!-- /wp:video -->
+
+<!-- ===== Ramka autora (na końcu, odstęp 60 px przed) ===== -->
+<!-- wp:spacer {"height":"60px"} -->
+<div style="height:60px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:media-text {"align":"wide","mediaType":"image","mediaWidth":21,"backgroundColor":"very-light-gray"} -->
+<div class="wp-block-media-text alignwide is-stacked-on-mobile has-background has-very-light-gray-background-color" style="grid-template-columns:21% auto"><figure class="wp-block-media-text__media"><img src="zdjecie-autora.jpg" alt="" class="size-full"/></figure><div class="wp-block-media-text__content">
+<!-- wp:paragraph -->
+<p>Autor artykułu:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading"><strong>Maciej Tkacz</strong></h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Inżynier Robotyk ASTOR</p>
+<!-- /wp:paragraph -->
+</div></div>
+<!-- /wp:media-text -->
