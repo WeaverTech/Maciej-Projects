@@ -89,7 +89,7 @@ STRENGTHS = [
     "Validating and tuning physical parameters: kinematics, joint constraints, gear ratios, masses and inertias derived from CAD rather than guessed. My mechanical engineering coursework covers dynamic systems modelling, control and analytical mechanics.",
     "Where simulation meets the real machine: I program Kawasaki and Epson robots and commission the physical stations, so I see the gap between a model and the hardware regularly - which is the part of this discipline that cannot be learned from a simulator alone.",
     "Robot vision, on the station and in the simulator: the Epson vision system in RC+ and the Kawasaki vision system. Camera and robot calibration, object models and search setup tuned so detection holds up, part queues, and several different objects on a feeder at the same time. I have also run the Epson vision loop inside the RC+ simulator.",
-    "Client trials, simulation first and then the real robot: for a specific project I test the chosen robot configuration in simulation, build a quick physical station around that robot, repeat the trial, and write the report with the measurements and the full procedure. The cell side of that work is Astraada PLCs in CODESYS, HMI screens, and Ethernet/IP and PROFINET.",
+    "Client trials, simulation first and then the real robot: for a specific project I test the chosen robot configuration in simulation, build a quick physical station around that robot, repeat the trial, and write the report with the measurements and the full procedure. The cell side of that work is Astraada PLCs in CODESYS, HMI screens, and Ethernet/IP, PROFINET, Modbus and EtherCAT.",
     ISAAC_SKILL,
     "Working practice: Git-based version control of simulation assets and code, technical documentation of simulation workflows, and direct communication of assumptions and constraints to client engineers.",
 ]
@@ -114,7 +114,7 @@ JOBS = [
             "Program Kawasaki and Epson robots, including vision-guided applications: calibration, object models and search setup, part queues, and several different objects on a feeder at the same time.",
             "Run the Epson vision loop inside the RC+ simulator as well as on the station, and do the same class of vision work on the Kawasaki vision system.",
             "Design, build and commission demonstration stations presenting these robots in different applications - mechanical assembly, hardware-software integration, programming and bring-up.",
-            "Program Astraada controllers in CODESYS: PLC logic, HMI screens, and the cell network on Ethernet/IP and PROFINET.",
+            "Program Astraada controllers in CODESYS: PLC logic, HMI screens, and the cell network on Ethernet/IP, PROFINET, Modbus and EtherCAT.",
             "For client projects, test a robot configuration in simulation first, then build a physical test station around the real robot and repeat the trial, to see how that configuration behaves in the actual application. Write the report with the measurements and the full procedure.",
         ],
     },
@@ -546,7 +546,7 @@ def build_visual_pdf() -> Path:
             "Calibration and search",
             "Queues, multi-part feeder",
         ]),
-        ("Controls", ["CODESYS, Astraada PLC", "HMI", "Ethernet/IP, PROFINET"]),
+        ("Controls", ["CODESYS, Astraada PLC", "HMI", "Ethernet/IP, PROFINET", "Modbus, EtherCAT"]),
         ("Code", ["Python", "C++", "Git"]),
         ("CAD", ["SolidWorks", "Inventor", "Fusion 360", "AutoCAD"]),
         ("Robots", ["Kawasaki", "Epson", "Self-built SCARA"]),
@@ -787,7 +787,7 @@ def write_messages() -> Path:
 > then I build a quick station around the real robot in the configuration we are considering
 > and repeat it, and the deliverable is a report with the measurements and the procedure.
 > On the control side of those cells I program Astraada PLCs in CODESYS, the HMI screens,
-> and Ethernet/IP and PROFINET.
+> and Ethernet/IP, PROFINET, Modbus and EtherCAT.
 >
 > Separately, I designed, built and programmed a SCARA robotic arm from scratch: CAD,
 > 3D-printed structure, stepper drives and drivers, microcontroller electronics, and my own
@@ -997,12 +997,9 @@ kiedy wbudowane klocki się kończyły.
 ## Testy dla klientów i CODESYS
 
 Dopisane z Twojego opisu pracy w ASTOR. W CV i w liście jest: sterowniki Astraada w CODESYS,
-ekrany HMI, Ethernet/IP i PROFINET, oraz test pod konkretny projekt klienta — najpierw
-w symulacji, potem szybkie stanowisko z prawdziwym robotem w wybranej konfiguracji, na końcu
-raport z danymi i z całą procedurą.
-
-Nie dopisałem innych protokołów. Napisałeś „i resztę tych rzeczy” przy Ethernet/IP i PROFINET.
-W CV są tylko te dwa. Jak dojdziesz Modbus, EtherCAT albo OPC UA, dopiszę je nazwami.
+ekrany HMI, Ethernet/IP, PROFINET, Modbus i EtherCAT, oraz test pod konkretny projekt klienta —
+najpierw w symulacji, potem szybkie stanowisko z prawdziwym robotem w wybranej konfiguracji,
+na końcu raport z danymi i z całą procedurą.
 
 Dla 65335 ten akapit jest mocniejszy niż sam CODESYS. Oni chcą kogoś, kto stroi symulację
 i wie, co z niej zostaje na prawdziwej maszynie. Ty to robisz jako procedurę dla klienta,

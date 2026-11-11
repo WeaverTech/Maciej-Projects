@@ -109,12 +109,9 @@ kiedy wbudowane klocki się kończyły.
 ## Testy dla klientów i CODESYS
 
 Dopisane z Twojego opisu pracy w ASTOR. W CV i w liście jest: sterowniki Astraada w CODESYS,
-ekrany HMI, Ethernet/IP i PROFINET, oraz test pod konkretny projekt klienta — najpierw
-w symulacji, potem szybkie stanowisko z prawdziwym robotem w wybranej konfiguracji, na końcu
-raport z danymi i z całą procedurą.
-
-Nie dopisałem innych protokołów. Napisałeś „i resztę tych rzeczy” przy Ethernet/IP i PROFINET.
-W CV są tylko te dwa. Jak dojdziesz Modbus, EtherCAT albo OPC UA, dopiszę je nazwami.
+ekrany HMI, Ethernet/IP, PROFINET, Modbus i EtherCAT, oraz test pod konkretny projekt klienta —
+najpierw w symulacji, potem szybkie stanowisko z prawdziwym robotem w wybranej konfiguracji,
+na końcu raport z danymi i z całą procedurą.
 
 Dla 65335 ten akapit jest mocniejszy niż sam CODESYS. Oni chcą kogoś, kto stroi symulację
 i wie, co z niej zostaje na prawdziwej maszynie. Ty to robisz jako procedurę dla klienta,

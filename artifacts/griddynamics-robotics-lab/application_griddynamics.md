@@ -43,7 +43,7 @@
 > then I build a quick station around the real robot in the configuration we are considering
 > and repeat it, and the deliverable is a report with the measurements and the procedure.
 > On the control side of those cells I program Astraada PLCs in CODESYS, the HMI screens,
-> and Ethernet/IP and PROFINET.
+> and Ethernet/IP, PROFINET, Modbus and EtherCAT.
 >
 > Separately, I designed, built and programmed a SCARA robotic arm from scratch: CAD,
 > 3D-printed structure, stepper drives and drivers, microcontroller electronics, and my own
