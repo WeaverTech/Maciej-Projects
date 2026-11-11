@@ -7,7 +7,7 @@ Stan weryfikacji: **11 listopada 2026**, odpytane bezpośrednio z
 
 | Plik | Kiedy |
 |---|---|
-| `Maciej_Tkacz_CV_GridDynamics_Simulation_Visual.pdf` | domyślny wybór |
+| `Maciej_Tkacz_CV_GridDynamics_Simulation_Visual.pdf` | domyślny wybór. Układ z Twojego wcześniejszego CV: granatowy pasek, daty w kolumnie, zdjęcie i krótka lista po prawej. Treść jest aktualna, po angielsku. |
 | `Maciej_Tkacz_CV_GridDynamics_Simulation_ATS.pdf` | gdy formularz chce prostego pliku |
 | `application_griddynamics.md` | list do zgłoszenia, wiadomość do rekruterki, pytania na rozmowę |
 

@@ -20,9 +20,11 @@ from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.utils import ImageReader
 from reportlab.pdfgen import canvas
 
 OUT_DIR = Path(__file__).resolve().parents[1] / "artifacts" / "griddynamics-robotics-lab"
+PORTRAIT = Path(__file__).resolve().parent / "assets" / "portrait.jpg"
 FONT_REGULAR = "DejaVuSans"
 FONT_BOLD = "DejaVuSans-Bold"
 ACCENT = "1F4E79"
@@ -327,16 +329,15 @@ def build_visual_docx() -> Path:
     header = doc.add_table(rows=1, cols=1)
     header.alignment = WD_TABLE_ALIGNMENT.CENTER
     hcell = header.cell(0, 0)
-    shade(hcell, "F2F6FA")
+    shade(hcell, "003C73")
     p = hcell.paragraphs[0]
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run(NAME)
     run.bold = True
     run.font.size = Pt(20)
-    run.font.color.rgb = RGBColor.from_string(ACCENT)
+    run.font.color.rgb = RGBColor(255, 255, 255)
     p2 = hcell.add_paragraph(TITLE)
-    p2.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p2.runs[0].bold = True
+    p2.runs[0].font.color.rgb = RGBColor(255, 255, 255)
+    p2.runs[0].font.size = Pt(9)
 
     table = doc.add_table(rows=1, cols=2)
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
@@ -348,7 +349,10 @@ def build_visual_docx() -> Path:
     left.width = Inches(4.7)
     right.width = Inches(2.0)
     right.vertical_alignment = WD_CELL_VERTICAL_ALIGNMENT.TOP
-    shade(right, "F2F6FA")
+    shade(right, "F3F4F6")
+    photo = right.paragraphs[0]
+    photo.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    photo.add_run().add_picture(str(PORTRAIT), width=Inches(1.35))
 
     doc_heading(left, "Profile")
     left.add_paragraph(PROFILE)
@@ -472,131 +476,262 @@ def build_ats_pdf() -> Path:
     return path
 
 
+def date_rail(date: str) -> tuple[str, str]:
+    months = {
+        "Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06",
+        "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12",
+    }
+
+    def one(part: str) -> str:
+        part = part.strip()
+        if part.lower() == "present":
+            return "present"
+        bits = part.split()
+        if len(bits) == 2 and bits[0] in months:
+            return f"{bits[1]}-{months[bits[0]]}"
+        return part
+
+    if " - " in date:
+        start, end = date.split(" - ", 1)
+        return one(start), one(end)
+    return one(date), ""
+
+
 def build_visual_pdf() -> Path:
+    """Visual CV in the two-column layout of the earlier personal CV.
+
+    Navy name bar, dates in a rail, photo and a short skill list on the right.
+    The ATS file stays single-column. This one is the document a person reads.
+    """
     path = OUT_DIR / "Maciej_Tkacz_CV_GridDynamics_Simulation_Visual.pdf"
-    margin = 1.5 * cm
-    side_width = 5.2 * cm
-    gap = 0.55 * cm
-    side_x = margin
-    main_x = margin + side_width + gap
-    main_width = A4[0] - margin - main_x
-    top = A4[1] - 1.4 * cm
-    bottom = 1.5 * cm
+    page_w, page_h = A4
+    navy = (0 / 255, 60 / 255, 115 / 255)
+    ink = (0.13, 0.14, 0.16)
+    muted = (0.35, 0.38, 0.42)
+    side_bg = (0.945, 0.949, 0.953)
+
+    main_x = 1.15 * cm
+    side_w = 5.05 * cm
+    margin_r = 0.7 * cm
+    side_x = page_w - margin_r - side_w
+    gap = 0.38 * cm
+    main_w = side_x - gap - main_x
+    date_w = 1.62 * cm
+    text_x = main_x + date_w + 0.18 * cm
+    text_w = main_x + main_w - text_x
+    header_h = 2.05 * cm
+    bottom = 1.05 * cm
+
+    isaac = "Isaac Sim / OpenUSD" if ISAAC_PORT_DONE else "Isaac Sim (in progress)"
+    side_groups = [
+        ("Contact", [
+            "maciek01110@gmail.com",
+            "+48 881 912 125",
+            "Krakow, Poland",
+            "EU citizen, no sponsorship",
+        ]),
+        ("Languages", ["Polish - native", "English - C1"]),
+        ("Simulation", [
+            "Visual Components",
+            "Python plugins in VC",
+            "Digital twins",
+            "Physics-based simulation",
+            isaac,
+        ]),
+        ("Vision", [
+            "Epson vision in RC+",
+            "Kawasaki vision",
+            "Calibration and search",
+            "Queues, multi-part feeder",
+        ]),
+        ("Code", ["Python", "C++", "Git"]),
+        ("CAD", ["SolidWorks", "Inventor", "Fusion 360", "AutoCAD"]),
+        ("Robots", ["Kawasaki", "Epson", "Self-built SCARA"]),
+    ]
 
     c = canvas.Canvas(str(path), pagesize=A4)
+    y = 0.0
+    first_page = True
 
-    def sidebar() -> None:
-        c.setFillColorRGB(0.95, 0.965, 0.98)
-        c.rect(margin - 0.3 * cm, bottom - 0.3 * cm,
-               side_width + 0.6 * cm, top - bottom + 0.9 * cm, stroke=0, fill=1)
-        c.setFillColorRGB(0, 0, 0)
+    def paint_chrome() -> None:
+        nonlocal y
+        c.setFillColorRGB(*navy)
+        c.rect(0, page_h - header_h, page_w, header_h, stroke=0, fill=1)
+        c.setFillColorRGB(1, 1, 1)
+        if first_page:
+            c.setFont(FONT_BOLD, 18)
+            c.drawString(main_x, page_h - 0.78 * cm, NAME)
+            title_y = page_h - 1.22 * cm
+            c.setFont(FONT_REGULAR, 8)
+            for line in wrap(TITLE, FONT_REGULAR, 8, main_w):
+                c.drawString(main_x, title_y, line)
+                title_y -= 10
+        else:
+            c.setFont(FONT_BOLD, 12)
+            c.drawString(main_x, page_h - 1.15 * cm, NAME)
+        c.setFillColorRGB(*side_bg)
+        c.rect(side_x - 0.18 * cm, 0, page_w - side_x + 0.18 * cm, page_h - header_h, stroke=0, fill=1)
+        c.setFillColorRGB(*muted)
+        c.setFont(FONT_REGULAR, 6.1)
+        consent_y = 0.42 * cm
+        for line in wrap(CONSENT, FONT_REGULAR, 6.1, main_w):
+            c.drawString(main_x, consent_y, line)
+            consent_y -= 7.4
+        y = page_h - header_h - 0.42 * cm
 
-    sidebar()
+    def draw_sidebar() -> None:
+        if not PORTRAIT.exists():
+            return
+        diameter = 3.15 * cm
+        cx = side_x + side_w / 2 - 0.05 * cm
+        cy = page_h - header_h - 0.38 * cm - diameter / 2
+        c.saveState()
+        clip = c.beginPath()
+        clip.circle(cx, cy, diameter / 2)
+        c.clipPath(clip, stroke=0, fill=0)
+        c.drawImage(
+            ImageReader(str(PORTRAIT)),
+            cx - diameter / 2,
+            cy - diameter / 2,
+            diameter,
+            diameter,
+            mask="auto",
+        )
+        c.restoreState()
+        side_y = cy - diameter / 2 - 0.38 * cm
+        inner_x = side_x + 0.22 * cm
+        inner_w = side_w - 0.55 * cm
+        for heading, items in side_groups:
+            c.setFillColorRGB(*navy)
+            c.setFont(FONT_BOLD, 9)
+            c.drawString(inner_x, side_y, heading)
+            side_y -= 2.4
+            c.setStrokeColorRGB(*navy)
+            c.setLineWidth(0.6)
+            c.line(inner_x, side_y, inner_x + 1.15 * cm, side_y)
+            side_y -= 10
+            c.setFillColorRGB(*ink)
+            c.setFont(FONT_REGULAR, 7.5)
+            for item in items:
+                for line in wrap(item, FONT_REGULAR, 7.5, inner_w):
+                    c.drawString(inner_x, side_y, line)
+                    side_y -= 9.2
+                side_y -= 1.2
+            side_y -= 5
 
-    y = top
-    c.setFillColorRGB(0.12, 0.31, 0.47)
-    c.setFont(FONT_BOLD, 18)
-    c.drawString(main_x, y, NAME)
-    y -= 14
-    c.setFillColorRGB(0, 0, 0)
-    c.setFont(FONT_BOLD, 9)
-    for line in wrap(TITLE, FONT_BOLD, 9, main_width):
-        c.drawString(main_x, y, line)
-        y -= 11
-    y -= 2
-
-    side_y = top
-
-    def side_heading(t: str) -> None:
-        nonlocal side_y
-        side_y -= 5
-        c.setFont(FONT_BOLD, 8.2)
-        c.setFillColorRGB(0.12, 0.31, 0.47)
-        c.drawString(side_x, side_y, t.upper())
-        side_y -= 8
-        c.setFillColorRGB(0, 0, 0)
-
-    def side_item(t: str, size: float = 7.4) -> None:
-        nonlocal side_y
-        for line in wrap(t, FONT_REGULAR, size, side_width - 8):
-            c.setFont(FONT_REGULAR, size)
-            c.drawString(side_x + 6, side_y, line)
-            side_y -= 8.8
-        side_y -= 0.6
-
-    for heading_text, items in SIDEBAR.items():
-        side_heading(heading_text)
-        for item in items:
-            side_item(item)
-    side_heading("Consent")
-    for line in wrap(CONSENT, FONT_REGULAR, 6.2, side_width - 8):
-        c.setFont(FONT_REGULAR, 6.2)
-        c.drawString(side_x + 6, side_y, line)
-        side_y -= 7.4
+    def new_page() -> None:
+        nonlocal first_page
+        c.showPage()
+        first_page = False
+        paint_chrome()
 
     def ensure(needed: float) -> None:
-        nonlocal y
         if y - needed < bottom:
-            c.showPage()
-            sidebar()
-            y = top
+            new_page()
 
-    def main_heading(t: str) -> None:
+    def section(label: str, reserve: float = 150) -> None:
         nonlocal y
-        ensure(22)
-        y -= 6
-        c.setFont(FONT_BOLD, 9.4)
-        c.setFillColorRGB(0.12, 0.31, 0.47)
-        c.drawString(main_x, y, t.upper())
-        y -= 3
-        c.setStrokeColorRGB(0.12, 0.31, 0.47)
-        c.setLineWidth(0.6)
-        c.line(main_x, y, main_x + main_width, y)
+        # Keep the heading with the entry that follows it.
+        if y - reserve < bottom:
+            new_page()
         y -= 8
-        c.setFillColorRGB(0, 0, 0)
+        c.setFillColorRGB(*navy)
+        c.setFont(FONT_BOLD, 11.5)
+        c.drawString(main_x, y, label)
+        y -= 3.5
+        c.setStrokeColorRGB(*navy)
+        c.setLineWidth(0.8)
+        c.line(main_x, y, main_x + main_w, y)
+        y -= 11
+        c.setFillColorRGB(*ink)
 
-    def main_text(body: str, size: float = 8.6, font: str = FONT_REGULAR,
-                  leading: float = 10.7) -> None:
+    def paragraph(body: str, size: float = 8.3, leading: float = 10.8) -> None:
         nonlocal y
-        for line in wrap(body, font, size, main_width):
+        for line in wrap(body, FONT_REGULAR, size, main_w):
             ensure(leading)
-            c.setFont(font, size)
+            c.setFillColorRGB(*ink)
+            c.setFont(FONT_REGULAR, size)
             c.drawString(main_x, y, line)
             y -= leading
-
-    def main_bullet(body: str, size: float = 8.6, leading: float = 10.7) -> None:
-        nonlocal y
-        for index, line in enumerate(wrap(body, FONT_REGULAR, size, main_width - 10)):
-            ensure(leading)
-            c.setFont(FONT_REGULAR, size)
-            if index == 0:
-                c.drawString(main_x, y, "\u2022")
-            c.drawString(main_x + 10, y, line)
-            y -= leading
-        y -= 1
-
-    main_heading("Profile")
-    main_text(PROFILE)
-    main_heading("What I bring")
-    for item in STRENGTHS:
-        main_bullet(item)
-    main_heading("Selected project")
-    main_text(f"{PROJECT_TITLE} | {PROJECT_SUBTITLE}", size=8.8, font=FONT_BOLD)
-    for item in PROJECT:
-        main_bullet(item)
-    main_heading("Experience")
-    for job in JOBS:
-        main_text(f"{job['role']} | {job['company']}, {job['location']} | {job['date']}",
-                  size=8.8, font=FONT_BOLD)
-        for item in job["items"]:
-            main_bullet(item)
         y -= 2
-    main_heading("Education")
-    for item in EDUCATION:
-        main_bullet(item)
-    main_heading("Certificates")
-    for item in CERTIFICATES:
-        main_bullet(item)
+
+    def entry(start: str, end: str, title: str, subtitle: str, bullets: list[str]) -> None:
+        nonlocal y
+        title_lines = wrap(title, FONT_BOLD, 9.1, text_w)
+        sub_lines = wrap(subtitle, FONT_REGULAR, 8, text_w) if subtitle else []
+        wrapped = [wrap(item, FONT_REGULAR, 8.05, text_w - 10) for item in bullets]
+        height = 11 * len(title_lines) + 10 * len(sub_lines) + 6
+        height += sum(9.8 * len(lines) + 2 for lines in wrapped)
+        if y - height < bottom and y < page_h - header_h - 1.2 * cm:
+            new_page()
+        top_y = y
+        c.setFillColorRGB(*muted)
+        c.setFont(FONT_REGULAR, 7.5)
+        c.drawString(main_x, top_y, start)
+        if end:
+            c.drawString(main_x, top_y - 9, "\u2013 " + end)
+        c.setFillColorRGB(*ink)
+        c.setFont(FONT_BOLD, 9.1)
+        for line in title_lines:
+            c.drawString(text_x, y, line)
+            y -= 11
+        if sub_lines:
+            c.setFillColorRGB(*muted)
+            c.setFont(FONT_REGULAR, 8)
+            for line in sub_lines:
+                c.drawString(text_x, y, line)
+                y -= 10
+        c.setFillColorRGB(*ink)
+        for lines in wrapped:
+            for index, line in enumerate(lines):
+                ensure(10)
+                c.setFont(FONT_REGULAR, 8.05)
+                if index == 0:
+                    c.drawString(text_x, y, "\u2022")
+                c.drawString(text_x + 9, y, line)
+                y -= 9.8
+            y -= 1.4
+        y -= 6
+
+    paint_chrome()
+    draw_sidebar()
+
+    section("Profile")
+    paragraph(PROFILE)
+
+    section("Experience")
+    for job in JOBS:
+        start, end = date_rail(job["date"])
+        entry(start, end, job["role"], f"{job['company']}, {job['location']}", job["items"])
+
+    section("Selected project", reserve=210)
+    entry("Personal", "R&D", PROJECT_TITLE, PROJECT_SUBTITLE, PROJECT)
+
+    section("Education")
+    entry(
+        "2024-10", "present",
+        "Mechanical Engineering, Engineer's degree",
+        "Cracow University of Technology, Krakow",
+        ["In progress. Coursework: dynamic systems modelling, automation and control, analytical mechanics, mechatronics."],
+    )
+    entry(
+        "", "",
+        "PKMechPower, Mechanical Section",
+        "Student research group, Cracow University of Technology",
+        ["CAD and 3D-printed parts for a student vehicle, optimized for mass and strength."],
+    )
+    entry(
+        "2019-09", "2024-04",
+        "Software Technician",
+        "Zespol Szkol Informatycznych, Kielce",
+        [],
+    )
+
+    section("Certificates")
+    entry("2022-05", "", "Kawasaki robot operation and programming", "Integrator course with certificate, ASTOR Robotics Center.", [])
+    entry("", "", "Epson industrial robot programming", "Certified course.", [])
+    entry("", "", "Python", "Courses, plus self-directed Python and C++ in robotics and simulation projects.", [])
+
     c.save()
     return path
 
@@ -752,7 +887,7 @@ Stan weryfikacji: **11 listopada 2026**, odpytane bezpośrednio z
 
 | Plik | Kiedy |
 |---|---|
-| `Maciej_Tkacz_CV_GridDynamics_Simulation_Visual.pdf` | domyślny wybór |
+| `Maciej_Tkacz_CV_GridDynamics_Simulation_Visual.pdf` | domyślny wybór. Układ z Twojego wcześniejszego CV: granatowy pasek, daty w kolumnie, zdjęcie i krótka lista po prawej. Treść jest aktualna, po angielsku. |
 | `Maciej_Tkacz_CV_GridDynamics_Simulation_ATS.pdf` | gdy formularz chce prostego pliku |
 | `application_griddynamics.md` | list do zgłoszenia, wiadomość do rekruterki, pytania na rozmowę |
 
