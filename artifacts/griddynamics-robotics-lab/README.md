@@ -74,9 +74,31 @@ magistra, 2+ lat uruchamiania robotów przemysłowych **i niemieckiego C1/C2** -
 
 Zostaje jedna realna luka: **Isaac Sim i Omniverse**. Stąd weekend opisany wyżej.
 
+## Wizja Epsona i Kawasaki - co zmienia, a czego nie
+
+Dopisane z Twojego opisu, bez dorzucania nazw produktów, których nie podałeś. W CV i w liście
+jest: system wizyjny Epsona w RC+, system wizyjny Kawasaki, kalibracja, modele obiektów i
+strojenie wyszukiwania, kolejki, kilka różnych obiektów na feederze naraz, oraz pętla wizyjna
+odpalona też w symulatorze RC+.
+
+**To wzmacnia 65335.** Ogłoszenie prosi o strojenie parametrów fizycznych, kinematyki i
+ograniczeń oraz o współpracę z ludźmi od robotyki. Kalibracja kamera-robot i wizja w pętli
+symulatora to dokładnie ten rodzaj roboty: zamykasz pętlę między tym, co widzi kamera, a tym,
+co robi maszyna, i widziałeś tę pętlę po obu stronach.
+
+**To nie otwiera 65625.** Ogłoszenie z LinkedIna nadal wymaga komercyjnego ROS 2, orkiestracji
+scenariuszy, SIL/HIL i symulacji na skalę. Wizja przemysłowa jest sąsiednia, nie jest tym
+wymaganiem.
+
+**To nie jest wejście na 65624, Rendering & Sensor Simulation Engineer** (Kraków, żywe
+11.11.2026). Tamte wymagania to programowanie grafiki: Unreal Engine 5, Omniverse RTX, C++,
+CUDA, Vulkan albo OpenGL, shadery, oraz modelowanie kamery, LiDAR-u i radaru razem z szumem
+sensorycznym. Twoja wizja to aplikacja na robocie. Ich wizja to silnik renderujący, który ma
+udawać sensor. Inna praca.
+
 ## Jak to CV jest ustawione
 
-Nie dopisałem ani jednego faktu. Zmieniła się optyka:
+Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
 
 1. **Tytuł i profil mówią „Simulation Engineer", nie „Robotics Engineer".** Rekrutujesz się
    do Robotics Lab na rolę symulacyjną, więc na górze stoi to, co robisz komercyjnie od dwóch lat.

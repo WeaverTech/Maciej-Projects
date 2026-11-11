@@ -62,9 +62,10 @@ PROFILE = (
     "Cracow University of Technology, so the physical parameters, kinematics and constraints I "
     "tune in a simulator are quantities I understand from first principles rather than numbers I "
     "adjust until the scene looks right. Currently a Robotics Engineer at ASTOR, programming "
-    "Kawasaki and Epson industrial robots, building digital twins of production lines and "
-    "commissioning the physical stations those twins describe - so I routinely see where a "
-    "simulation and the real machine disagree. I also designed, built and programmed a SCARA "
+    "Kawasaki and Epson industrial robots and their vision systems, building digital twins of "
+    "production lines and commissioning the physical stations those twins describe - so I "
+    "routinely see where a simulation and the real machine disagree. I also designed, built and "
+    "programmed a SCARA "
     "robotic arm from scratch, including its forward and inverse kinematics, and validated the "
     "control software against the physical arm." + ISAAC_PROFILE
 )
@@ -85,6 +86,7 @@ STRENGTHS = [
     "CAD to simulation asset: SolidWorks, Autodesk Inventor, Fusion 360 and AutoCAD. I prepare, simplify and optimize 3D geometry specifically for simulation use - reducing mesh complexity, fixing collision geometry, and keeping assets usable rather than merely accurate.",
     "Validating and tuning physical parameters: kinematics, joint constraints, gear ratios, masses and inertias derived from CAD rather than guessed. My mechanical engineering coursework covers dynamic systems modelling, control and analytical mechanics.",
     "Where simulation meets the real machine: I program Kawasaki and Epson robots and commission the physical stations, so I see the gap between a model and the hardware regularly - which is the part of this discipline that cannot be learned from a simulator alone.",
+    "Robot vision, on the station and in the simulator: the Epson vision system in RC+ and the Kawasaki vision system. Camera and robot calibration, object models and search setup tuned so detection holds up, part queues, and several different objects on a feeder at the same time. I have also run the Epson vision loop inside the RC+ simulator.",
     ISAAC_SKILL,
     "Working practice: Git-based version control of simulation assets and code, technical documentation of simulation workflows, and direct communication of assumptions and constraints to client engineers.",
 ]
@@ -106,7 +108,8 @@ JOBS = [
         "date": "Jul 2026 - present",
         "items": [
             "Build digital twins of production lines and robot simulations, validating reach, motion sequences and process behaviour before physical implementation.",
-            "Program Kawasaki and Epson industrial robots: motion programs, teach pendant work and complete application cycles.",
+            "Program Kawasaki and Epson robots, including vision-guided applications: calibration, object models and search setup, part queues, and several different objects on a feeder at the same time.",
+            "Run the Epson vision loop inside the RC+ simulator as well as on the station, and do the same class of vision work on the Kawasaki vision system.",
             "Design, build and commission demonstration stations presenting these robots in different applications - mechanical assembly, hardware-software integration, programming and bring-up.",
             "Test and troubleshoot robot cells end to end, across mechanics, electrics and robot software.",
         ],
@@ -188,6 +191,15 @@ SIDEBAR = {
         "AutoCAD",
         "Mesh & collision prep",
         "FDM / SLA / MJF printing",
+    ],
+    "Vision": [
+        "Epson vision in RC+",
+        "Kawasaki vision",
+        "Calibration",
+        "Object models & search",
+        "Part queues",
+        "Multi-part feeder",
+        "Vision-in-the-loop, RC+",
     ],
     "Robots": ["Kawasaki", "Epson", "Self-built SCARA"],
 }
@@ -625,7 +637,11 @@ def write_messages() -> Path:
 > derive rather than numbers I nudge until the scene looks plausible. Second, I also program
 > Kawasaki and Epson industrial robots and commission the physical stations, so I regularly see
 > where a model and the real machine disagree - which is the part of simulation work that a
-> simulator alone will not teach.
+> simulator alone will not teach. That includes vision. I run the Epson vision system inside
+> RC+ and the Kawasaki vision system: calibration, the object models the camera searches for,
+> tuning that search so detection holds up, part queues, and several different objects on a
+> feeder at once. I have also run the Epson vision loop inside the RC+ simulator, so that
+> closed loop is something I have exercised in simulation as well as on the station.
 >
 > Separately, I designed, built and programmed a SCARA robotic arm from scratch: CAD,
 > 3D-printed structure, stepper drives and drivers, microcontroller electronics, and my own
@@ -665,7 +681,8 @@ odpowiedź na jej własne zaproszenie.
 > Hi Olivera, I saw your post about the simulation engineering team you're building for the
 > heavy-equipment programme. I'm a simulation engineer in Krakow with two years of commercial
 > physics-based robot simulation and digital twin work, Python simulation scripting and
-> CAD-to-sim, plus industrial robot programming and commissioning on the hardware side.
+> CAD-to-sim, plus vision-guided Epson and Kawasaki applications - calibration, object search,
+> part queues, multi-part feeders - including the Epson vision loop inside the RC+ simulator.
 >
 > I've applied for the Robotics Lab Simulation Engineer role (65335). I can see I'm not there
 > yet for the scenario-framework role in the migration pod - my ROS 2 is from my own projects,
@@ -798,9 +815,31 @@ magistra, 2+ lat uruchamiania robotów przemysłowych **i niemieckiego C1/C2** -
 
 Zostaje jedna realna luka: **Isaac Sim i Omniverse**. Stąd weekend opisany wyżej.
 
+## Wizja Epsona i Kawasaki - co zmienia, a czego nie
+
+Dopisane z Twojego opisu, bez dorzucania nazw produktów, których nie podałeś. W CV i w liście
+jest: system wizyjny Epsona w RC+, system wizyjny Kawasaki, kalibracja, modele obiektów i
+strojenie wyszukiwania, kolejki, kilka różnych obiektów na feederze naraz, oraz pętla wizyjna
+odpalona też w symulatorze RC+.
+
+**To wzmacnia 65335.** Ogłoszenie prosi o strojenie parametrów fizycznych, kinematyki i
+ograniczeń oraz o współpracę z ludźmi od robotyki. Kalibracja kamera-robot i wizja w pętli
+symulatora to dokładnie ten rodzaj roboty: zamykasz pętlę między tym, co widzi kamera, a tym,
+co robi maszyna, i widziałeś tę pętlę po obu stronach.
+
+**To nie otwiera 65625.** Ogłoszenie z LinkedIna nadal wymaga komercyjnego ROS 2, orkiestracji
+scenariuszy, SIL/HIL i symulacji na skalę. Wizja przemysłowa jest sąsiednia, nie jest tym
+wymaganiem.
+
+**To nie jest wejście na 65624, Rendering & Sensor Simulation Engineer** (Kraków, żywe
+11.11.2026). Tamte wymagania to programowanie grafiki: Unreal Engine 5, Omniverse RTX, C++,
+CUDA, Vulkan albo OpenGL, shadery, oraz modelowanie kamery, LiDAR-u i radaru razem z szumem
+sensorycznym. Twoja wizja to aplikacja na robocie. Ich wizja to silnik renderujący, który ma
+udawać sensor. Inna praca.
+
 ## Jak to CV jest ustawione
 
-Nie dopisałem ani jednego faktu. Zmieniła się optyka:
+Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
 
 1. **Tytuł i profil mówią „Simulation Engineer", nie „Robotics Engineer".** Rekrutujesz się
    do Robotics Lab na rolę symulacyjną, więc na górze stoi to, co robisz komercyjnie od dwóch lat.
@@ -809,9 +848,9 @@ Nie dopisałem ani jednego faktu. Zmieniła się optyka:
 3. **Wykształcenie mechaniczne podane jako argument techniczny, nie formalny.** Sformułowanie
    o parametrach wyprowadzanych, a nie dobieranych na oko, jest celowe: w zespole symulacyjnym
    to jest realna różnica, a Ty naprawdę tak pracujesz.
-4. **Programowanie robotów i uruchamianie stanowisk wystawione jako przewaga symulacyjna.**
-   Większość inżynierów symulacji nigdy nie uruchamiała fizycznej maszyny, więc nie wie, gdzie
-   model kłamie. Ty wiesz i to jest wyróżnik, a nie bagaż z poprzedniej branży.
+4. **Programowanie robotów, wizja i uruchamianie stanowisk wystawione jako przewaga
+   symulacyjna.** Większość inżynierów symulacji nigdy nie skalibrowała kamery do robota ani
+   nie uruchamiała fizycznej maszyny, więc nie wie, gdzie model kłamie. Ty wiesz.
 5. **SCARA przeramowany pod tę rolę.** Nie jako „fajny projekt hobbystyczny", tylko jako
    jedyny powód, dla którego możesz zrobić zmierzone porównanie symulacji z rzeczywistością:
    masz CAD, prawdziwe masy, model kinematyczny i maszynę.

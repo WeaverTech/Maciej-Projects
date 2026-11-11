@@ -32,7 +32,11 @@
 > derive rather than numbers I nudge until the scene looks plausible. Second, I also program
 > Kawasaki and Epson industrial robots and commission the physical stations, so I regularly see
 > where a model and the real machine disagree - which is the part of simulation work that a
-> simulator alone will not teach.
+> simulator alone will not teach. That includes vision. I run the Epson vision system inside
+> RC+ and the Kawasaki vision system: calibration, the object models the camera searches for,
+> tuning that search so detection holds up, part queues, and several different objects on a
+> feeder at once. I have also run the Epson vision loop inside the RC+ simulator, so that
+> closed loop is something I have exercised in simulation as well as on the station.
 >
 > Separately, I designed, built and programmed a SCARA robotic arm from scratch: CAD,
 > 3D-printed structure, stepper drives and drivers, microcontroller electronics, and my own
@@ -72,7 +76,8 @@ odpowiedź na jej własne zaproszenie.
 > Hi Olivera, I saw your post about the simulation engineering team you're building for the
 > heavy-equipment programme. I'm a simulation engineer in Krakow with two years of commercial
 > physics-based robot simulation and digital twin work, Python simulation scripting and
-> CAD-to-sim, plus industrial robot programming and commissioning on the hardware side.
+> CAD-to-sim, plus vision-guided Epson and Kawasaki applications - calibration, object search,
+> part queues, multi-part feeders - including the Epson vision loop inside the RC+ simulator.
 >
 > I've applied for the Robotics Lab Simulation Engineer role (65335). I can see I'm not there
 > yet for the scenario-framework role in the migration pod - my ROS 2 is from my own projects,
