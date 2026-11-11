@@ -21,7 +21,9 @@
 > For the last two years my commercial work has been exactly the four things your essential
 > functions list. I build physics-based simulations and digital twins of robotic production
 > systems; I validate and tune kinematics, joint constraints and physical parameters; I write
-> the Python that drives simulation logic and automates scene and process setup; and I take CAD
+> the Python that drives simulation logic and automates scene and process setup, including
+> plugins and functions of my own when Visual Components' built-in options could not express the
+> behaviour the cell needed; and I take CAD
 > models and turn them into simulation assets, which in practice means simplifying geometry,
 > fixing collision meshes and keeping assets usable rather than merely accurate. I did this at
 > AIAutomation for automotive production workcells, and I do it now at ASTOR building digital
@@ -75,8 +77,9 @@ odpowiedź na jej własne zaproszenie.
 
 > Hi Olivera, I saw your post about the simulation engineering team you're building for the
 > heavy-equipment programme. I'm a simulation engineer in Krakow with two years of commercial
-> physics-based robot simulation and digital twin work, Python simulation scripting and
-> CAD-to-sim, plus vision-guided Epson and Kawasaki applications - calibration, object search,
+> physics-based robot simulation and digital twin work, Python inside Visual Components
+> including plugins I wrote when the built-in options ran out, plus vision-guided Epson and
+> Kawasaki applications - calibration, object search,
 > part queues, multi-part feeders - including the Epson vision loop inside the RC+ simulator.
 >
 > I've applied for the Robotics Lab Simulation Engineer role (65335). I can see I'm not there

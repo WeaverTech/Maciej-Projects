@@ -96,6 +96,16 @@ CUDA, Vulkan albo OpenGL, shadery, oraz modelowanie kamery, LiDAR-u i radaru raz
 sensorycznym. Twoja wizja to aplikacja na robocie. Ich wizja to silnik renderujący, który ma
 udawać sensor. Inna praca.
 
+## Pluginy w Visual Components
+
+Dopisane z Twojego opisu. Kiedy komórka wymagała zachowania, którego nie dało się ustawić
+wbudowanymi opcjami, pisałeś własne pluginy i funkcje w Pythonie. W CV i w liście jest to
+dokładnie na tym poziomie ogólności. Nie wymyśliłem, jakich zjawisk dotyczyły.
+
+Dla 65335 to jest trafienie w punkt *„Create Python scripts for automation and simulation
+logic"*, i to w mocniejszej wersji: nie tylko używałeś API, tylko rozszerzałeś narzędzie,
+kiedy wbudowane klocki się kończyły.
+
 ## Jak to CV jest ustawione
 
 Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
@@ -107,9 +117,9 @@ Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
 3. **Wykształcenie mechaniczne podane jako argument techniczny, nie formalny.** Sformułowanie
    o parametrach wyprowadzanych, a nie dobieranych na oko, jest celowe: w zespole symulacyjnym
    to jest realna różnica, a Ty naprawdę tak pracujesz.
-4. **Programowanie robotów i uruchamianie stanowisk wystawione jako przewaga symulacyjna.**
-   Większość inżynierów symulacji nigdy nie uruchamiała fizycznej maszyny, więc nie wie, gdzie
-   model kłamie. Ty wiesz i to jest wyróżnik, a nie bagaż z poprzedniej branży.
+4. **Programowanie robotów, wizja i uruchamianie stanowisk wystawione jako przewaga
+   symulacyjna.** Większość inżynierów symulacji nigdy nie skalibrowała kamery do robota ani
+   nie uruchamiała fizycznej maszyny, więc nie wie, gdzie model kłamie. Ty wiesz.
 5. **SCARA przeramowany pod tę rolę.** Nie jako „fajny projekt hobbystyczny", tylko jako
    jedyny powód, dla którego możesz zrobić zmierzone porównanie symulacji z rzeczywistością:
    masz CAD, prawdziwe masy, model kinematyczny i maszynę.

@@ -82,7 +82,7 @@ ISAAC_SKILL = (
 
 STRENGTHS = [
     "Physics-based simulation, commercially: two years building robot workcell simulations and digital twins for automotive production, covering robot motion, process logic, collision checking, reach validation and cycle behaviour before anything was built physically.",
-    "Python for simulation logic and automation: scripted simulation behaviour, automated repetitive scene and process setup, and optimized simulation performance through a simulator's Python API. This is the single largest part of my commercial work.",
+    "Python inside the simulator, including my own plugins: scripted simulation behaviour, automated scene and process setup, and optimized simulation performance through Visual Components' Python API. When a cell needed behaviour the built-in options could not express, I wrote plugins and functions for it rather than simplifying the process to fit the tool.",
     "CAD to simulation asset: SolidWorks, Autodesk Inventor, Fusion 360 and AutoCAD. I prepare, simplify and optimize 3D geometry specifically for simulation use - reducing mesh complexity, fixing collision geometry, and keeping assets usable rather than merely accurate.",
     "Validating and tuning physical parameters: kinematics, joint constraints, gear ratios, masses and inertias derived from CAD rather than guessed. My mechanical engineering coursework covers dynamic systems modelling, control and analytical mechanics.",
     "Where simulation meets the real machine: I program Kawasaki and Epson robots and commission the physical stations, so I see the gap between a model and the hardware regularly - which is the part of this discipline that cannot be learned from a simulator alone.",
@@ -121,7 +121,7 @@ JOBS = [
         "date": "Jan 2025 - May 2026",
         "items": [
             "Built robotics simulations and digital twins of production workcells in Visual Components for automotive clients.",
-            "Wrote Python scripts to automate simulation logic, optimize processes and improve simulation performance.",
+            "Wrote Python scripts, plugins and functions inside Visual Components: automation and process logic where the built-in options were enough, and custom behaviour where they were not.",
             "Developed robot paths, motion sequences, process logic, collision checking and cycle flows; validated processes virtually before implementation.",
             "Prepared and optimized workcell layouts and 3D geometry for simulation use, working from CAD in SolidWorks and Autodesk Inventor.",
             "Worked from customer documentation and engineering standards, and presented simulation assumptions, constraints and improvement proposals directly to client engineers.",
@@ -176,6 +176,7 @@ SIDEBAR = {
     "Languages": ["Polish - native", "English - C1"],
     "Simulation": [
         "Visual Components",
+        "Python plugins in VC",
         "Digital twins",
         "Physics-based simulation",
         "Collision checking",
@@ -626,7 +627,9 @@ def write_messages() -> Path:
 > For the last two years my commercial work has been exactly the four things your essential
 > functions list. I build physics-based simulations and digital twins of robotic production
 > systems; I validate and tune kinematics, joint constraints and physical parameters; I write
-> the Python that drives simulation logic and automates scene and process setup; and I take CAD
+> the Python that drives simulation logic and automates scene and process setup, including
+> plugins and functions of my own when Visual Components' built-in options could not express the
+> behaviour the cell needed; and I take CAD
 > models and turn them into simulation assets, which in practice means simplifying geometry,
 > fixing collision meshes and keeping assets usable rather than merely accurate. I did this at
 > AIAutomation for automotive production workcells, and I do it now at ASTOR building digital
@@ -680,8 +683,9 @@ odpowiedź na jej własne zaproszenie.
 
 > Hi Olivera, I saw your post about the simulation engineering team you're building for the
 > heavy-equipment programme. I'm a simulation engineer in Krakow with two years of commercial
-> physics-based robot simulation and digital twin work, Python simulation scripting and
-> CAD-to-sim, plus vision-guided Epson and Kawasaki applications - calibration, object search,
+> physics-based robot simulation and digital twin work, Python inside Visual Components
+> including plugins I wrote when the built-in options ran out, plus vision-guided Epson and
+> Kawasaki applications - calibration, object search,
 > part queues, multi-part feeders - including the Epson vision loop inside the RC+ simulator.
 >
 > I've applied for the Robotics Lab Simulation Engineer role (65335). I can see I'm not there
@@ -836,6 +840,16 @@ wymaganiem.
 CUDA, Vulkan albo OpenGL, shadery, oraz modelowanie kamery, LiDAR-u i radaru razem z szumem
 sensorycznym. Twoja wizja to aplikacja na robocie. Ich wizja to silnik renderujący, który ma
 udawać sensor. Inna praca.
+
+## Pluginy w Visual Components
+
+Dopisane z Twojego opisu. Kiedy komórka wymagała zachowania, którego nie dało się ustawić
+wbudowanymi opcjami, pisałeś własne pluginy i funkcje w Pythonie. W CV i w liście jest to
+dokładnie na tym poziomie ogólności. Nie wymyśliłem, jakich zjawisk dotyczyły.
+
+Dla 65335 to jest trafienie w punkt *„Create Python scripts for automation and simulation
+logic"*, i to w mocniejszej wersji: nie tylko używałeś API, tylko rozszerzałeś narzędzie,
+kiedy wbudowane klocki się kończyły.
 
 ## Jak to CV jest ustawione
 
