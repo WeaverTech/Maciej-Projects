@@ -39,6 +39,11 @@
 > tuning that search so detection holds up, part queues, and several different objects on a
 > feeder at once. I have also run the Epson vision loop inside the RC+ simulator, so that
 > closed loop is something I have exercised in simulation as well as on the station.
+> For client projects I use that same order on purpose: the trial runs in simulation first,
+> then I build a quick station around the real robot in the configuration we are considering
+> and repeat it, and the deliverable is a report with the measurements and the procedure.
+> On the control side of those cells I program Astraada PLCs in CODESYS, the HMI screens,
+> and Ethernet/IP and PROFINET.
 >
 > Separately, I designed, built and programmed a SCARA robotic arm from scratch: CAD,
 > 3D-printed structure, stepper drives and drivers, microcontroller electronics, and my own
