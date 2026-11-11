@@ -136,7 +136,10 @@ JOBS = [
         "company": "Cubic Inch Additive Manufacturing",
         "location": "Piaseczno, Poland",
         "date": "Jun 2023 - Aug 2023",
+        "date_label": "Dec 2022 and Jun 2023 - Aug 2023",
+        "earlier": "2022-12",
         "items": [
+            "Started with an internship in December 2022. The company brought me back for the summer of 2023.",
             "Designed and optimized CAD models in Fusion 360 and Autodesk Inventor for additive manufacturing.",
             "Ran FDM, MJF and SLA printers in production: process parameters, post-processing and quality control.",
             "Coordinated production tasks in a 10-person team, balancing quality, manufacturability and deadlines.",
@@ -305,7 +308,7 @@ def build_ats_docx() -> Path:
         p.paragraph_format.space_before = Pt(4)
         p.paragraph_format.space_after = Pt(1)
         p.add_run(job["role"]).bold = True
-        p.add_run(f" | {job['company']}, {job['location']} | {job['date']}")
+        p.add_run(f" | {job['company']}, {job['location']} | {job.get('date_label', job['date'])}")
         doc_bullets(doc, job["items"])
 
     doc_heading(doc, "Education")
@@ -372,7 +375,7 @@ def build_visual_docx() -> Path:
         p = left.add_paragraph()
         p.paragraph_format.space_before = Pt(4)
         p.add_run(job["role"]).bold = True
-        p.add_run(f" | {job['company']}, {job['location']} | {job['date']}")
+        p.add_run(f" | {job['company']}, {job['location']} | {job.get('date_label', job['date'])}")
         doc_bullets(left, job["items"])
 
     doc_heading(left, "Education")
@@ -461,7 +464,7 @@ def build_ats_pdf() -> Path:
         bullet(item)
     heading("Experience")
     for job in JOBS:
-        text(f"{job['role']} | {job['company']}, {job['location']} | {job['date']}",
+        text(f"{job['role']} | {job['company']}, {job['location']} | {job.get('date_label', job['date'])}",
              size=8.9, font=FONT_BOLD)
         for item in job["items"]:
             bullet(item)
@@ -658,7 +661,8 @@ def build_visual_pdf() -> Path:
             y -= leading
         y -= 2
 
-    def entry(start: str, end: str, title: str, subtitle: str, bullets: list[str]) -> None:
+    def entry(start: str, end: str, title: str, subtitle: str, bullets: list[str],
+              earlier: str = "") -> None:
         nonlocal y
         title_lines = wrap(title, FONT_BOLD, 9.1, text_w)
         sub_lines = wrap(subtitle, FONT_REGULAR, 8, text_w) if subtitle else []
@@ -670,9 +674,9 @@ def build_visual_pdf() -> Path:
         top_y = y
         c.setFillColorRGB(*muted)
         c.setFont(FONT_REGULAR, 7.5)
-        c.drawString(main_x, top_y, start)
-        if end:
-            c.drawString(main_x, top_y - 9, "\u2013 " + end)
+        date_lines = [line for line in (earlier, start, ("\u2013 " + end) if end else "") if line]
+        for index, line in enumerate(date_lines):
+            c.drawString(main_x, top_y - index * 9, line)
         c.setFillColorRGB(*ink)
         c.setFont(FONT_BOLD, 9.1)
         for line in title_lines:
@@ -705,7 +709,8 @@ def build_visual_pdf() -> Path:
     section("Experience")
     for job in JOBS:
         start, end = date_rail(job["date"])
-        entry(start, end, job["role"], f"{job['company']}, {job['location']}", job["items"])
+        entry(start, end, job["role"], f"{job['company']}, {job['location']}", job["items"],
+              job.get("earlier", ""))
 
     section("Selected project", reserve=210)
     entry("Personal", "R&D", PROJECT_TITLE, PROJECT_SUBTITLE, PROJECT)
@@ -1007,7 +1012,11 @@ z raportem na końcu.
 
 ## Jak to CV jest ustawione
 
-Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
+Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język.
+
+Praktyki w Cubic Inch z grudnia 2022 są w tej samej pozycji co wakacje 2023, nie jako
+osobna praca. Daty to „Dec 2022 and Jun 2023 - Aug 2023”, a pierwszy punkt mówi, że po
+praktykach wzięli Cię na lato.
 
 1. **Tytuł i profil mówią „Simulation Engineer", nie „Robotics Engineer".** Rekrutujesz się
    do Robotics Lab na rolę symulacyjną, więc na górze stoi to, co robisz komercyjnie od dwóch lat.

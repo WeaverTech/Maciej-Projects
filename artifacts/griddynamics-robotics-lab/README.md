@@ -119,7 +119,11 @@ z raportem na końcu.
 
 ## Jak to CV jest ustawione
 
-Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język:
+Fakty biorę tylko z tego, co sam opisujesz. Reszta to kolejność i język.
+
+Praktyki w Cubic Inch z grudnia 2022 są w tej samej pozycji co wakacje 2023, nie jako
+osobna praca. Daty to „Dec 2022 and Jun 2023 - Aug 2023”, a pierwszy punkt mówi, że po
+praktykach wzięli Cię na lato.
 
 1. **Tytuł i profil mówią „Simulation Engineer", nie „Robotics Engineer".** Rekrutujesz się
    do Robotics Lab na rolę symulacyjną, więc na górze stoi to, co robisz komercyjnie od dwóch lat.
