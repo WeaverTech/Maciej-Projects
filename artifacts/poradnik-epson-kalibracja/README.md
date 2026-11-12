@@ -5,9 +5,12 @@ pisanego w tym samym stylu co istniejące poradniki z kategorii „Automatyka w 
 
 | Plik | Zawartość |
 |---|---|
-| `README.md` | analiza stylu wzorcowych artykułów, lista kontrolna, pytania do ustalenia |
-| `szkic-poradnika.md` | szkic artykułu: struktura, treść robocza, miejsca na zrzuty ekranu i kod SPEL+ |
-| `szablon-wordpress.html` | gotowe bloki Gutenberga w formacie używanym przez Poradnik (do wklejenia w edytor kodu WP) |
+| `poradnik.md` | **tekst artykułu** ułożony ze zrzutów, ze zdjęciami w kolejności kroków |
+| `poradnik-wordpress.html` | ten sam tekst w blokach Gutenberga |
+| `zrzuty/` | 19 kadrów nazwanych `01-`…`19-` w kolejności artykułu |
+| `README.md` | analiza stylu wzorcowych artykułów i lista kontrolna |
+| `szkic-poradnika.md` | wcześniejszy szkic, sprzed zrzutów |
+| `szablon-wordpress.html` | puste bloki Gutenberga (wzorzec formatowania) |
 
 ---
 

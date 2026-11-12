@@ -1,0 +1,570 @@
+<!--
+  Poradnik Automatyka — bloki Gutenberga.
+  Przed wklejeniem: wgraj pliki z folderu zrzuty/ do biblioteki mediów i podmień src
+  na adresy z wp-content/uploads/. Notatkę o rozbieżności Standalone / Fixed downward
+  rozstrzygnij przed publikacją (jest na górze poradnik.md), do artykułu jej nie wklejaj.
+-->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:html -->
+<div class="dowiesz-sie">
+<h3>Z tego artykułu dowiesz się:</h3>
+<ul class="bulleted">
+<li>jak przygotować sekwencję, która znajduje dziewięć punktów płytki kalibracyjnej,</li>
+<li>jak przejść kreator kalibracji kamery w Vision Guide,</li>
+<li>jak nauczyć punkty kalibracyjne robotem i ocenić wynik kalibracji.</li>
+</ul>
+</div>
+<!-- /wp:html -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>W tym poradniku skalibrujemy kamerę współpracującą z robotem EPSON SCARA. Kamera patrzy z góry na podświetlaną płytkę z dziewięcioma punktami, a robot dojeżdża końcówką do każdego z nich. Na końcu Vision Guide poda skalę obrazu w milimetrach na piksel, pole widzenia, pochylenie kamery i błąd kalibracji.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Osobom, które chcą najpierw przećwiczyć system wizyjny bez stanowiska, polecamy artykuł <a href="https://www.astor.com.pl/poradnikautomatyka/symulacja-systemu-wizyjnego-w-srodowisku-epson-rc-8/">Symulacja systemu wizyjnego w środowisku EPSON RC+ 8</a>. Tutaj pracujemy na fizycznym robocie, podłączonym do komputera po USB.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Po co kalibrować kamerę</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Obraz z kamery to siatka pikseli. Informacja, że punkt leży w pikselu (400, 300), nie mówi jeszcze, ile to milimetrów ani gdzie ma podjechać robot. Kalibracja wyznacza skalę obrazu, pochylenie kamery względem płaszczyzny roboczej i — gdy punkty odniesienia nauczamy robotem — związek tego obrazu z układem współrzędnych stanowiska.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Dopiero wtedy sekwencja wizyjna zwraca położenie w milimetrach. Na zrzutach widać to w wynikach obiektu <strong>Blob</strong>: pola <strong>CameraX</strong> i <strong>CameraY</strong> są podane w mm. Ta sama kalibracja jest podstawą aplikacji pick and place, w której robot pobiera detal z miejsca wskazanego przez kamerę.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Kalibracja obowiązuje dla konkretnego ustawienia. Przesunięcie kamery, zmiana ostrości, przysłony albo wysokości płytki oznacza, że trzeba ją powtórzyć.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Stanowisko</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Do kalibracji pokazanej w artykule używamy:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li>oprogramowania EPSON RC+ z modułem Vision Guide, połączonego z kontrolerem przez <strong>USB</strong>,</li>
+<li>robota SCARA <strong>T6-B602S</strong>, widocznego w programie jako robot <strong>1, MNP01</strong>,</li>
+<li>kamery <strong>Camera 1</strong>,</li>
+<li>podajnika <strong>Part Feeder 1</strong> z podświetleniem od spodu,</li>
+<li>płytki z dziewięcioma ciemnymi punktami ułożonymi w siatce 3×3.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Płytka leży w polu widzenia kamery i zajmuje prawie cały kadr. Punkty są rozstawione od brzegu do brzegu, więc kalibracja obejmuje cały obraz, łącznie z jego krawędziami.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Sekwencja, która znajduje punkty</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Kalibracja potrzebuje sekwencji, która wskaże wszystkie dziewięć punktów płytki. Tworzymy ją przyciskiem nowej sekwencji w oknie <strong>Vision</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>W oknie <strong>New Vision Sequence</strong> wpisujemy nazwę <strong>BlobSeq</strong> i wybieramy kamerę <strong>1. Camera 1</strong>. Pole <strong>Copy from existing sequence</strong> zostawiamy puste i zatwierdzamy <strong>OK</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="01-nowa-sekwencja.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Ponieważ zdjęcie powstaje na podświetleniu podajnika, pojawia się pytanie o <strong>Part Feeder Backlight</strong>. Wybieramy <strong>Part Feeder 1</strong> i klikamy <strong>OK</strong>. Przy uruchomieniu sekwencji program włączy podświetlenie, a punkty będą ciemnymi plamami na jasnym tle.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="02-podswietlenie-podajnika.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>W oknie sekwencji dodajemy jeden obiekt typu <strong>Blob</strong> o nazwie <strong>Blob01</strong>. Po prawej stronie widać schemat: sekwencja <strong>BlobSeq</strong> i krok <strong>Step 1</strong>. Niebieska ramka na obrazie to okno wyszukiwania. Rozciągamy je tak, aby cała płytka znalazła się w środku, razem ze wszystkimi dziewięcioma punktami.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="04-sekwencja-blob.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>We właściwościach obiektu ustawiamy <strong>NumberToFind</strong> na <strong>All</strong>. Wartość wyświetla się na czerwono, bo różni się od domyślnej: program ma znaleźć wszystkie dziewięć punktów. <strong>MinArea</strong> wynosi 25 pikseli, <strong>MaxArea</strong> 200000 pikseli, więc odfiltrowane zostają drobne szumy i przypadkowe duże plamy. <strong>Graphics</strong> ustawione na <strong>All</strong> rysuje na obrazie wszystko, co obiekt znalazł.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Po uruchomieniu sekwencji na liście wyników widać <strong>Result 1 of 9</strong>. Przykładowy punkt ma <strong>Found</strong> równe True, pole <strong>Area</strong> 585 pikseli, <strong>Angle</strong> −68,390°, <strong>CameraX</strong> 243,536 mm i <strong>CameraY</strong> 211,256 mm. Liczba 9 przy wyniku oznacza, że płytka jest znaleziona w całości i można przejść do kalibracji.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="03-wlasciwosci-blob.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Nowa kalibracja</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>W drzewie projektu, w gałęzi <strong>Vision</strong>, widać sekwencje <strong>BlobSeq</strong>, <strong>Kalibracja</strong>, <strong>DuzyLens</strong> i <strong>MalyDetal</strong> oraz gałąź <strong>Calibrations</strong> z kalibracją <strong>Calibr</strong>. W prawym górnym rogu RC+ połączenie jest ustawione na <strong>USB</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="05-projekt-vision.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Nową kalibrację otwieramy przyciskiem na pasku okna <strong>Vision</strong>, zaznaczonym na zrzucie czerwoną ramką.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="06-przycisk-kalibracji.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 1. Nazwa i kamera</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Kreator ma 11 kroków. W kroku <strong>General</strong> wpisujemy nazwę <strong>Kalibracja</strong>, wybieramy <strong>1. Camera 1</strong> i zostawiamy puste pole kopiowania z istniejącej kalibracji. Klikamy <strong>Next</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="07-kreator-nazwa.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 2. Sposób pracy kamery</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>W kroku <strong>Camera Usage &amp; Orientation</strong> decydujemy, jak kamera jest używana.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Do wyboru jest <strong>Standalone Camera</strong>, czyli kamera pracująca samodzielnie, oraz <strong>Robot Camera</strong>, czyli kalibracja przypisana do robota. Dla kamery robota wskazujemy robota na liście, tutaj <strong>1, MNP01</strong>, i sposób montażu:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li><strong>Fixed looking upward</strong> — kamera nieruchoma, patrząca w górę,</li>
+<li><strong>Fixed looking downward</strong> — kamera nieruchoma, patrząca w dół,</li>
+<li><strong>Mounted on joint 2</strong> — kamera zamocowana na drugim przegubie,</li>
+<li><strong>Mounted on joint 4</strong> — kamera zamocowana na czwartym przegubie.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Na zrzucie zaznaczone jest <strong>Robot Camera</strong> oraz <strong>Fixed looking downward</strong>. Po prawej widać podgląd takiego układu: kamera na statywie nad robotem SCARA, oś Z skierowana w dół, a na stole układ osi X-Y.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="08-kreator-orientacja.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 3. Sekwencja wzorca</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>W kroku <strong>Target Sequence</strong> wskazujemy sekwencję, która podczas kalibracji znajduje punkty płytki. Wybieramy <strong>BlobSeq</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Nagłówek tego okna podaje orientację zapisaną w pokazanym przejściu kreatora: <strong>Camera Orientation: Standalone</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="09-kreator-sekwencja.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Kroki 4–7 oraz krok 10 przechodzimy przyciskiem <strong>Next</strong>. Poniżej są kroki, w których na stanowisku coś ustawiamy.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 8. Dystorsja obiektywu i pochylenie kamery</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>W kroku <strong>Lens Distortion &amp; Camera Tilt Compensation</strong> włączamy opcję <strong>Enable lens distortion and camera tilt compensation</strong> i jako <strong>Dist Correction Target Sequence</strong> wskazujemy <strong>BlobSeq</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Korekcja korzysta z płytki leżącej w polu widzenia kamery. Dzięki niej skala obrazu pozostaje prawdziwa także przy brzegach kadru. Przy obiektywie o zauważalnej dystorsji albo przy kamerze, która nie stoi idealnie prostopadle do stołu, warto tę opcję zostawić włączoną.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="10-kreator-dystorsja.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 9. Światło</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>W kroku <strong>Light Control</strong> pole <strong>Calibration lamp on delay</strong> zostawiamy na <strong>0</strong>, a <strong>Calibration lamp output bit</strong> na <strong>None</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Osobnej lampy kalibracyjnej nie używamy. Podświetlenie włącza sam podajnik, przypisany wcześniej do sekwencji <strong>BlobSeq</strong>. Wyjście lampy dla kamery patrzącej w górę jest wyszarzone, bo w tej konfiguracji go nie dotyczy.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="11-kreator-swiatlo.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Krok 11. Podsumowanie</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Ostatni krok zbiera ustawienia:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li><strong>Camera:</strong> 1. Camera 1,</li>
+<li><strong>Camera Orientation:</strong> Standalone,</li>
+<li><strong>Reference Type:</strong> Taught Points,</li>
+<li><strong>Target Sequence:</strong> BlobSeq.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p><strong>Taught Points</strong> oznacza, że współrzędne punktów odniesienia zbierzemy sami, dojeżdżając do nich robotem. Klikamy <strong>Finish</strong>. Kalibracja <strong>Kalibracja</strong> zostaje zapisana w projekcie.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="12-kreator-podsumowanie.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Uczenie punktów</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Po zamknięciu kreatora na dole okna <strong>Vision</strong> widać pasek <strong>Calibration: Kalibracja</strong>. Przycisk <strong>Teach Points</strong> jest aktywny. <strong>Calibrate</strong> jest jeszcze wyszarzony, bo żaden punkt nie został nauczony.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="13-teach-points.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Klikamy <strong>Teach Points</strong>. Po lewej zostaje podgląd kamery z poleceniem, do którego punktu dojechać, po prawej lista kroków, a z boku panel <strong>Jog</strong>:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li><strong>Motor: On</strong>, <strong>Power: Low</strong> — silniki są włączone, a uczenie jedzie na małej mocy,</li>
+<li>robot <strong>1, MNP01, T6-B602S</strong>, narzędzie <strong>Tool 0</strong>, ramię <strong>Arm 0</strong>,</li>
+<li>układ <strong>World</strong>; osie <strong>X</strong>, <strong>Y</strong>, <strong>Z</strong> i <strong>U</strong> są aktywne, a <strong>V</strong> i <strong>W</strong> pozostają wyszarzone, bo T6 jest robotem SCARA,</li>
+<li><strong>Jog Distance</strong> ma skok <strong>Continuous</strong>, <strong>Long</strong>, <strong>Medium</strong> i <strong>Short</strong>.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Do zgrubnego dojazdu wystarczy prędkość <strong>High</strong> i ruch ciągły. Ostatnie milimetry nad punktem ustawiamy skokiem <strong>Short</strong>, żeby końcówka trafiła w środek znacznika.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="14-jog.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Kolejność punktów ustala program. Na liście po prawej widać:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list">
+<li><strong>Top Left</strong>,</li>
+<li><strong>Top Center</strong>,</li>
+<li><strong>Top Right</strong>,</li>
+<li><strong>Right Center</strong>,</li>
+<li><strong>Center</strong>,</li>
+<li><strong>Left Center</strong>,</li>
+<li><strong>Bottom Left</strong>,</li>
+<li><strong>Bottom Center</strong>,</li>
+<li><strong>Bottom Right</strong> — ostatnia pozycja jest poniżej widocznego fragmentu listy.</li>
+</ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Dojeżdżamy końcówką roboczą do punktu, który wskazuje niebieski napis nad obrazem, i klikamy <strong>Teach</strong>. Ramię wchodzi wtedy w kadr kamery. Tak ma być: program uczy się pozycji robota w chwili, gdy końcówka stoi na znaczniku. Nauczony krok zmienia kolor na zielony.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Pierwszy punkt to lewy górny róg płytki.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="15-punkt-top-left.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Po zatwierdzeniu pierwszego punktu program prosi o <strong>Top Center</strong>. <strong>Teach Step 1</strong> jest już zielony.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="16-punkt-top-center.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>W połowie listy zielone są kroki od <strong>Top Left</strong> do <strong>Right Center</strong>, a program prosi o środek płytki, <strong>Center</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="17-punkt-center.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Gdy wszystkie kroki są zielone, nad obrazem pojawia się komunikat <strong>All calibration points are now taught.</strong> Aktywny staje się przycisk <strong>Finish</strong>. Klikamy go i wracamy do okna sekwencji.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="18-wszystkie-punkty.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"50px"} -->
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Wynik kalibracji</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Po nauce punktów przycisk <strong>Calibrate</strong> staje się aktywny, a <strong>Teach Points</strong> wygasza się. Klikamy <strong>Calibrate</strong>. Program uruchamia sekwencję <strong>BlobSeq</strong> (na obrazie widać napis <strong>Calibration in cycle</strong>) i po chwili pokazuje okno <strong>Calibration Complete</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Lewa kolumna, <strong>Previous values</strong>, jest pusta. To pierwsza kalibracja tej kamery, więc nie ma z czym porównywać. W kolumnie <strong>New values</strong> dostajemy:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li><strong>X mm per pixel</strong> 0,2049, <strong>Y mm per pixel</strong> 0,2039,</li>
+<li><strong>Max X error</strong> 0,3824, <strong>Max Y error</strong> 0,7339,</li>
+<li><strong>Avg X error</strong> 0,0135, <strong>Avg Y error</strong> 0,0085,</li>
+<li><strong>X tilt</strong> 1,09, <strong>Y tilt</strong> 2,03,</li>
+<li><strong>FOV</strong> 327,83 mm × 244,68 mm.</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="19-wynik.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Skala w obu osiach jest prawie taka sama: jeden piksel to około 0,20 mm. Pochylenie kamery jest niewielkie, nieco ponad jeden stopień w osi X i dwa stopnie w osi Y.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Błąd średni to setne części milimetra, czyli wyraźnie mniej niż jeden piksel. Błąd maksymalny, 0,73 mm w osi Y, dotyczy najsłabszego z dziewięciu punktów. Przy kolejnym uruchomieniu <strong>Calibrate</strong> te liczby przejdą do kolumny <strong>Previous values</strong> i będzie widać, czy ponowne nauczenie punktu coś poprawiło.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Wynik zatwierdzamy przyciskiem <strong>OK</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Kalibrację powtarzamy, gdy ktoś poruszy kamerę, zmieni ostrość albo przysłonę, albo gdy detale zaczną leżeć na innej wysokości niż płytka, na której uczyliśmy punkty.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"60px"} -->
+<div style="height:60px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:media-text {"align":"wide","mediaType":"image","mediaWidth":21,"backgroundColor":"very-light-gray"} -->
+<div class="wp-block-media-text alignwide is-stacked-on-mobile has-background has-very-light-gray-background-color" style="grid-template-columns:21% auto"><figure class="wp-block-media-text__media"><img src="zdjecie-autora.jpg" alt="" class="size-full"/></figure><div class="wp-block-media-text__content">
+<!-- wp:paragraph -->
+<p>Autor artykułu:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading"><strong>Maciej Tkacz</strong></h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Inżynier Robotyk, ASTOR</p>
+<!-- /wp:paragraph -->
+</div></div>
+<!-- /wp:media-text -->

@@ -1,4 +1,6 @@
-# [SZKIC] Kalibracja kamery w systemie wizyjnym EPSON Vision Guide 8.0
+# [SZKIC, ZASTĄPIONY] Kalibracja kamery w systemie wizyjnym EPSON Vision Guide 8.0
+
+> Aktualny tekst, napisany ze zrzutów, jest w `poradnik.md`. Ten plik zostaje jako wcześniejszy szkic.
 
 > Szkic roboczy. `[ZRZUT nn]` = miejsce na zrzut ekranu (`image01.png`, …), `[SPRAWDZIĆ]` = nazwa
 > lub zachowanie do potwierdzenia na stanowisku. Główny przykład: kamera **Fixed Downward**
