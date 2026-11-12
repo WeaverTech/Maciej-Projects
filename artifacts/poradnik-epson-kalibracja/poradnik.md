@@ -101,7 +101,7 @@ Kroki 6 i 7 zatwierdzamy **Next**.
 
 ### Krok 8. Dystorsja i pochylenie
 
-**Lens Distortion & Camera Tilt Compensation**. Zaznaczamy **Enable lens distortion and camera tilt compensation**, a **Dist Correction Target Sequence** to **BlobSeq**.
+**Lens Distortion & Camera Tilt Compensation**. Nagłówek: **Fixed downward**. Zaznaczamy **Enable lens distortion and camera tilt compensation**, a **Dist Correction Target Sequence** to **BlobSeq**.
 
 Program bierze płytkę z kadru i prostuje zniekształcenie obiektywu oraz pochylenie kamery. Przy brzegu obrazu skala lubi uciekać, więc haczyk zostaje włączony.
 
@@ -109,7 +109,7 @@ Program bierze płytkę z kadru i prostuje zniekształcenie obiektywu oraz pochy
 
 ### Krok 9. Światło
 
-**Light Control**. **Calibration lamp on delay** zostaje **0**, **Calibration lamp output bit** zostaje **None**.
+**Light Control**, nagłówek **Fixed downward**. **Calibration lamp on delay** zostaje **0**, **Calibration lamp output bit** zostaje **None**.
 
 Osobnej lampy nie ma. Świeci podajnik, ten sam co w **BlobSeq**. Wyjście dla kamery patrzącej w górę jest szare. Nas nie dotyczy.
 
