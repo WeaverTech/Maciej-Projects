@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import re
 from pathlib import Path
 
@@ -42,7 +43,6 @@ pdfmetrics.registerFont(TTFont("DejaVu", "/usr/share/fonts/truetype/dejavu/DejaV
 pdfmetrics.registerFont(TTFont("DejaVuBold", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"))
 pdfmetrics.registerFontFamily("DejaVu", normal="DejaVu", bold="DejaVuBold", italic="DejaVu", boldItalic="DejaVuBold")
 
-NAVY = RGBColor(0x1F, 0x3A, 0x5F)
 NOTE_BG = "FFF4D6"
 
 
@@ -253,14 +253,14 @@ def build_docx(blocks: list[dict], dest: Path) -> None:
         if kind == "h1":
             p = doc.add_paragraph()
             p.paragraph_format.space_after = Pt(12)
-            add_inline(p, block["text"], size=20, color=NAVY)
+            add_inline(p, block["text"], size=20)
             for run in p.runs:
                 run.bold = True
         elif kind in ("h2", "h3"):
             p = doc.add_paragraph()
             p.paragraph_format.space_before = Pt(14 if kind == "h2" else 10)
             p.paragraph_format.space_after = Pt(6)
-            add_inline(p, block["text"], size=15 if kind == "h2" else 13, color=NAVY)
+            add_inline(p, block["text"], size=15 if kind == "h2" else 13)
             for run in p.runs:
                 run.bold = True
         elif kind == "note":
@@ -303,12 +303,8 @@ def build_docx(blocks: list[dict], dest: Path) -> None:
                     cell = table.cell(r, c)
                     cell.paragraphs[0].clear()
                     p = cell.paragraphs[0]
-                    add_inline(p, value, size=10, color=RGBColor(255, 255, 255) if r == 0 else None)
-                    if r == 0:
-                        shade_cell(cell, "1F3A5F")
-                        for run in p.runs:
-                            run.bold = True
-                    elif c == 0:
+                    add_inline(p, value, size=10)
+                    if r == 0 or c == 0:
                         for run in p.runs:
                             run.bold = True
             doc.add_paragraph().paragraph_format.space_after = Pt(4)
@@ -336,14 +332,14 @@ def build_docx(blocks: list[dict], dest: Path) -> None:
 def build_pdf(blocks: list[dict], dest: Path) -> None:
     styles = {
         "h1": ParagraphStyle(
-            "h1", fontName="DejaVuBold", fontSize=18, leading=22, textColor=colors.HexColor("#1F3A5F"), spaceAfter=10
+            "h1", fontName="DejaVuBold", fontSize=18, leading=22, textColor=colors.black, spaceAfter=10
         ),
         "h2": ParagraphStyle(
             "h2",
             fontName="DejaVuBold",
             fontSize=14,
             leading=18,
-            textColor=colors.HexColor("#1F3A5F"),
+            textColor=colors.black,
             spaceBefore=14,
             spaceAfter=6,
         ),
@@ -352,7 +348,7 @@ def build_pdf(blocks: list[dict], dest: Path) -> None:
             fontName="DejaVuBold",
             fontSize=12,
             leading=16,
-            textColor=colors.HexColor("#1F3A5F"),
+            textColor=colors.black,
             spaceBefore=10,
             spaceAfter=4,
         ),
@@ -361,7 +357,7 @@ def build_pdf(blocks: list[dict], dest: Path) -> None:
         ),
         "note": ParagraphStyle("note", fontName="DejaVu", fontSize=9, leading=12.5, textColor=colors.HexColor("#3D3208")),
         "li": ParagraphStyle("li", fontName="DejaVu", fontSize=10.5, leading=14, leftIndent=0),
-        "th": ParagraphStyle("th", fontName="DejaVuBold", fontSize=9, leading=12, textColor=colors.white),
+        "th": ParagraphStyle("th", fontName="DejaVuBold", fontSize=9, leading=12, textColor=colors.black),
         "td": ParagraphStyle("td", fontName="DejaVu", fontSize=9, leading=12),
         "tdb": ParagraphStyle("tdb", fontName="DejaVuBold", fontSize=9, leading=12),
     }
@@ -429,9 +425,7 @@ def build_pdf(blocks: list[dict], dest: Path) -> None:
             table.setStyle(
                 TableStyle(
                     [
-                        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1F3A5F")),
-                        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#F4F7FB")),
-                        ("GRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#D0D7E2")),
+                        ("GRID", (0, 0), (-1, -1), 0.4, colors.black),
                         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                         ("LEFTPADDING", (0, 0), (-1, -1), 6),
                         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
@@ -472,14 +466,100 @@ def build_pdf(blocks: list[dict], dest: Path) -> None:
     pdf.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
+def to_html(text: str) -> str:
+    parts = []
+    for part in iter_inline(text):
+        if part[0] == "text":
+            parts.append(html.escape(part[1]))
+        elif part[0] == "bold":
+            parts.append(f"<strong>{html.escape(part[1])}</strong>")
+        else:
+            parts.append(f'<a href="{html.escape(part[2], quote=True)}">{html.escape(part[1])}</a>')
+    return "".join(parts)
+
+
+def spacer(px: int) -> str:
+    return (
+        f'<!-- wp:spacer {{"height":"{px}px"}} -->\n'
+        f'<div style="height:{px}px" aria-hidden="true" class="wp-block-spacer"></div>\n'
+        f"<!-- /wp:spacer -->"
+    )
+
+
+def build_wp(blocks: list[dict], dest: Path) -> None:
+    chunks = [
+        "<!-- Bloki Gutenberga. Obrazki wskazują pliki z folderu zrzuty/. Po wgraniu do biblioteki mediów podmień src. -->"
+    ]
+    for block in blocks:
+        kind = block["type"]
+        if kind == "h1":
+            continue
+        if kind == "h2":
+            chunks.append(spacer(50))
+            chunks.append(
+                "<!-- wp:heading -->\n"
+                f"<h2 class=\"wp-block-heading\">{to_html(block['text'])}</h2>\n"
+                "<!-- /wp:heading -->"
+            )
+        elif kind == "h3":
+            chunks.append(spacer(30))
+            chunks.append(
+                "<!-- wp:heading {\"level\":3} -->\n"
+                f"<h3 class=\"wp-block-heading\">{to_html(block['text'])}</h3>\n"
+                "<!-- /wp:heading -->"
+            )
+        elif kind == "p":
+            chunks.append(
+                "<!-- wp:paragraph -->\n"
+                f"<p>{to_html(block['text'])}</p>\n"
+                "<!-- /wp:paragraph -->"
+            )
+        elif kind in ("ul", "ol"):
+            tag = "ul" if kind == "ul" else "ol"
+            ordered = ' {"ordered":true}' if kind == "ol" else ""
+            items = "\n".join(f"<li>{to_html(item)}</li>" for item in block["items"])
+            chunks.append(
+                f"<!-- wp:list{ordered} -->\n"
+                f'<{tag} class="wp-block-list">\n{items}\n</{tag}>\n'
+                "<!-- /wp:list -->"
+            )
+        elif kind == "img":
+            name = Path(block["src"]).name
+            chunks.append(spacer(30))
+            chunks.append(
+                '<!-- wp:image {"align":"center","sizeSlug":"full"} -->\n'
+                f'<figure class="wp-block-image aligncenter size-full"><img src="{html.escape(name)}" alt=""/></figure>\n'
+                "<!-- /wp:image -->"
+            )
+            chunks.append(spacer(30))
+        elif kind == "table":
+            rows = []
+            for r, row in enumerate(block["rows"]):
+                cell = "th" if r == 0 else "td"
+                inner = "".join(f"<{cell}>{to_html(value)}</{cell}>" for value in row)
+                rows.append(f"<tr>{inner}</tr>")
+            body = "\n".join(rows)
+            chunks.append(
+                "<!-- wp:table -->\n"
+                f'<figure class="wp-block-table"><table><tbody>\n{body}\n</tbody></table></figure>\n'
+                "<!-- /wp:table -->"
+            )
+        elif kind == "hr":
+            chunks.append(spacer(40))
+    dest.write_text("\n\n".join(chunks) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     blocks = parse(SRC.read_text(encoding="utf-8"))
     docx_path = OUT_DIR / f"{STEM}.docx"
     pdf_path = OUT_DIR / f"{STEM}.pdf"
     build_docx(blocks, docx_path)
     build_pdf(blocks, pdf_path)
+    wp_path = OUT_DIR / "poradnik-wordpress.html"
+    build_wp(blocks, wp_path)
     print(docx_path, docx_path.stat().st_size)
     print(pdf_path, pdf_path.stat().st_size)
+    print(wp_path, wp_path.stat().st_size)
 
 
 if __name__ == "__main__":
