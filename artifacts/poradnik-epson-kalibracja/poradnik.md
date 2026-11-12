@@ -1,193 +1,154 @@
 # Kalibracja kamery w systemie wizyjnym EPSON Vision Guide
 
-Kamera wisi nad robotem EPSON SCARA i patrzy w dół, na podświetlaną płytkę. Na płytce jest dziewięć punktów. Robot dojeżdża do nich końcówką, a Vision Guide liczy z tego skalę, pole widzenia, pochylenie i błąd.
+W tym poradniku skalibrujemy kamerę, która wisi nad robotem EPSON SCARA i patrzy w dół na podświetlaną płytkę z dziewięcioma punktami. Robot dojeżdża końcówką do każdego z nich, a Vision Guide na tej podstawie wylicza skalę obrazu, pole widzenia, pochylenie kamery i błąd kalibracji.
 
-Kto chce najpierw poklikać to samo bez stanowiska, ma artykuł [Symulacja systemu wizyjnego w środowisku EPSON RC+ 8](https://www.astor.com.pl/poradnikautomatyka/symulacja-systemu-wizyjnego-w-srodowisku-epson-rc-8/). Tutaj robot jest prawdziwy. Kontroler wpięty po USB.
+Osoby, które wolą najpierw przejść tę samą ścieżkę bez fizycznego stanowiska, znajdą opis symulacji w artykule [Symulacja systemu wizyjnego w środowisku EPSON RC+ 8](https://www.astor.com.pl/poradnikautomatyka/symulacja-systemu-wizyjnego-w-srodowisku-epson-rc-8/). Tutaj pracujemy na prawdziwym robocie, a kontroler jest podłączony do komputera kablem USB.
 
 ## Po co ta kalibracja
 
-Kamera widzi piksele. Robot jeździ w milimetrach. Bez przeliczenia jedno z drugim nie gada.
+Kamera podaje położenie w pikselach, a robot porusza się w milimetrach, dlatego bez przeliczenia jednej jednostki na drugą obraz nie da się przełożyć na ruch. Sam fakt, że punkt leży w pikselu (400, 300), nie mówi jeszcze, o ile milimetrów przesunąć oś X ani oś Y. Kalibracja wykonuje właśnie to przeliczenie, a gdy punkty odniesienia uczymy robotem, wiąże obraz także z układem współrzędnych stanowiska.
 
-Punkt w pikselu (400, 300) nie mówi, ile odjechać w X ani w Y. Kalibracja robi z pikseli milimetry. Jak punkty uczymy robotem, obraz dostaje też układ stanowiska.
+Po zapisaniu kalibracji obiekt Blob zwraca **CameraX** i **CameraY** już w milimetrach. Aplikacja pick and place bierze te współrzędne i jedzie w miejsce, które zobaczyła kamera.
 
-Po niej Blob oddaje **CameraX** i **CameraY** w mm. Pick and place bierze te liczby i jedzie w miejsce, które zobaczyła kamera.
-
-Kalibracja siedzi na konkretnym ustawieniu. Ktoś trąci kamerę, przekręci ostrość albo położy detale wyżej niż płytkę, i wczorajsze liczby już nie pasują. Robimy ją od nowa.
+Wynik obowiązuje tylko dla ustawienia, w którym powstał. Gdy ktoś poruszy kamerę, przekręci ostrość albo położy detale wyżej niż płytkę, wcześniejsze liczby przestają pasować i kalibrację trzeba zrobić od nowa.
 
 ## Co jest na stanowisku
 
-- EPSON RC+ z Vision Guide, połączenie **USB**,
-- SCARA **T6-B602S**, w programie robot **1, MNP01**,
-- kamera **Camera 1**,
-- podajnik **Part Feeder 1**, podświetlenie od spodu,
-- płytka, dziewięć ciemnych punktów, siatka 3×3.
+Do opisanej kalibracji używamy oprogramowania EPSON RC+ z modułem Vision Guide, połączonego z kontrolerem przez **USB**. Robot to SCARA **T6-B602S**, widoczny w programie jako robot **1, MNP01**, a kamera nazywa się **Camera 1**. Płytka leży na podajniku **Part Feeder 1**, który świeci od spodu, i niesie dziewięć ciemnych punktów ułożonych w siatce 3×3.
 
-Płytka leży w białej ramce, dookoła świeci podświetlenie. Na szarym arkuszu dziewięć czarnych kropek, trzy na trzy. W kadrze kamery zajmuje prawie cały obraz, kropki dochodzą do brzegów. Dzięki temu błąd widać też przy krawędzi.
+Sama płytka siedzi w białej ramce, a podświetlenie biegnie dookoła niej. Na szarym arkuszu widać dziewięć czarnych kropek, po trzy w każdym rzędzie. W kadrze kamery płytka zajmuje prawie cały obraz, a kropki dochodzą do brzegów, dzięki czemu błąd da się ocenić także przy krawędzi kadru.
 
 ![Płytka kalibracyjna na podświetleniu](zrzuty/plytka.jpg)
 
 ## Sekwencja, która znajduje punkty
 
-Kalibracja potrzebuje sekwencji, która złapie wszystkie dziewięć kropek. Nowa sekwencja, okno **Vision**.
+Zanim otworzymy kreator, potrzebna jest sekwencja, która znajdzie wszystkie dziewięć kropek. Tworzymy ją w oknie **Vision**.
 
-W **New Vision Sequence** wpisujemy **BlobSeq**, kamera **1. Camera 1**. Pole kopiowania zostawiamy puste. **OK**.
+W oknie **New Vision Sequence** wpisujemy nazwę **BlobSeq** i wybieramy kamerę **1. Camera 1**. Pola kopiowania z istniejącej sekwencji nie wypełniamy, po czym zatwierdzamy okno przyciskiem **OK**.
 
 ![Nowa sekwencja: BlobSeq, kamera Camera 1](zrzuty/01-nowa-sekwencja.jpg)
 
-Zaraz wyskakuje **Part Feeder Backlight**. Płytka leży na podświetleniu, więc bierzemy **Part Feeder 1** i **OK**. Przy starcie sekwencji podświetlenie się włączy. Kropki będą ciemne na jasnym tle, Blob ma wtedy łatwo.
+Zaraz potem program pyta o **Part Feeder Backlight**, ponieważ zdjęcie ma powstać na podświetleniu podajnika. Wskazujemy **Part Feeder 1** i klikamy **OK**. Dzięki temu przy uruchomieniu sekwencji podświetlenie włączy się samo, a kropki wyjdą ciemne na jasnym tle, co obiektowi Blob ułatwia ich znalezienie.
 
 ![Podajnik z podświetleniem: Part Feeder 1](zrzuty/02-podswietlenie-podajnika.jpg)
 
-W sekwencji jeden obiekt, **Blob**, nazwa **Blob01**. Po prawej schemat: **BlobSeq** i **Step 1**. Niebieska ramka na obrazie to okno szukania. Rozciągamy je na całą płytkę. Wszystkie dziewięć punktów ma być w środku.
+W sekwencji dodajemy jeden obiekt typu **Blob** i zostawiamy mu nazwę **Blob01**. Po prawej stronie widać schemat, na którym sekwencja **BlobSeq** schodzi do kroku **Step 1**. Niebieska ramka na obrazie to okno wyszukiwania. Rozciągamy je na całą płytkę, tak aby wszystkie dziewięć punktów znalazło się w środku.
 
 ![Sekwencja BlobSeq, okno na całą płytkę](zrzuty/04-sekwencja-blob.jpg)
 
-We właściwościach **NumberToFind** stawiamy na **All**. Pole robi się czerwone, bo to już nie jest wartość domyślna. Chcemy każdą kropkę. **MinArea** 25 pikseli, **MaxArea** 200000, czyli odsiewamy pył i jakąś wielką plamę od kabla. **Graphics** na **All**, niech rysuje to, co znalazł.
+We właściwościach ustawiamy **NumberToFind** na **All**. Pole robi się czerwone, ponieważ ta wartość różni się od domyślnej, a nam chodzi o to, żeby program znalazł każdą kropkę. **MinArea** zostawiamy na 25 pikseli, a **MaxArea** na 200000, dzięki czemu odsiewamy drobny pył i przypadkową dużą plamę, na przykład od kabla. **Graphics** ustawiamy na **All**, żeby na obrazie rysowało się wszystko, co obiekt znalazł.
 
-Odpalamy. Na liście **Result 1 of 9**. U nas pierwszy punkt wyszedł tak: **Found** True, **Area** 585 pikseli, **Angle** −68,390°, **CameraX** 243,536 mm, **CameraY** 211,256 mm. Dziewiątka na liczniku znaczy, że płytka jest cała. Można iść dalej.
+Po uruchomieniu sekwencji na liście wyników pojawia się **Result 1 of 9**. Pierwszy punkt wyszedł u nas tak, że **Found** ma wartość True, **Area** wynosi 585 pikseli, **Angle** wynosi −68,390°, **CameraX** 243,536 mm, a **CameraY** 211,256 mm. Licznik pokazuje dziewięć trafień, więc płytka jest znaleziona w całości i można przejść do kalibracji.
 
 ![Blob01, NumberToFind = All, wynik 1 z 9](zrzuty/03-wlasciwosci-blob.jpg)
 
 ## Nowa kalibracja
 
-W drzewie projektu, gałąź **Vision**: sekwencje **BlobSeq**, **Kalibracja**, **DuzyLens** i **MalyDetal**, a pod spodem **Calibrations** z kalibracją **Calibr**. W rogu RC+ połączenie stoi na **USB**.
+W drzewie projektu, w gałęzi **Vision**, widać sekwencje **BlobSeq**, **Kalibracja**, **DuzyLens** i **MalyDetal**, a niżej gałąź **Calibrations** z kalibracją **Calibr**. W prawym górnym rogu RC+ połączenie jest ustawione na **USB**.
 
 ![Drzewo projektu: sekwencje i kalibracje](zrzuty/05-projekt-vision.jpg)
 
-Nową kalibrację otwiera przycisk na pasku **Vision**. Na zrzucie jest obwiedziony czerwoną ramką.
+Nową kalibrację otwieramy przyciskiem na pasku okna **Vision**. Na zrzucie jest obwiedziony czerwoną ramką.
 
 ![Przycisk nowej kalibracji](zrzuty/06-przycisk-kalibracji.jpg)
 
 ### Krok 1. Nazwa
 
-Kreator ma 11 kroków. W **General** nazwa **Kalibracja**, kamera **1. Camera 1**. Kopiowania z innej kalibracji nie ruszamy. **Next**.
+Kreator prowadzi przez jedenaście kroków. W kroku **General** nadajemy kalibracji nazwę **Kalibracja** i wybieramy kamerę **1. Camera 1**. Kopiowania z istniejącej kalibracji nie używamy, po czym przechodzimy dalej przyciskiem **Next**.
 
 ![Kreator, krok 1: nazwa Kalibracja](zrzuty/07-kreator-nazwa.jpg)
 
 ### Krok 2. Jak kamera stoi
 
-**Camera Usage & Orientation**.
+W kroku **Camera Usage & Orientation** ustalamy, w jaki sposób kamera pracuje. **Standalone Camera** oznacza kamerę liczoną samodzielnie, natomiast **Robot Camera** przypina kalibrację do konkretnego robota. Z listy wybieramy robota **1, MNP01**. Sposób montażu obejmuje cztery warianty: **Fixed looking upward**, czyli kamerę nieruchomą patrzącą w górę, **Fixed looking downward**, czyli nieruchomą patrzącą w dół, oraz **Mounted on joint 2** i **Mounted on joint 4**, gdy kamera jest zamocowana na ramieniu.
 
-**Standalone Camera** to kamera sama dla siebie. **Robot Camera** przypina kalibrację do robota. Na liście jest **1, MNP01**. Montaż:
-
-- **Fixed looking upward**, nieruchoma, patrzy w górę,
-- **Fixed looking downward**, nieruchoma, patrzy w dół,
-- **Mounted on joint 2**,
-- **Mounted on joint 4**.
-
-Na tym zrzucie zaznaczone jest **Robot Camera** i **Fixed looking downward**. Obok podgląd: statyw nad SCARA, oś Z w dół, na stole osie X i Y.
+Na zrzucie zaznaczone jest **Robot Camera** oraz **Fixed looking downward**, ponieważ nasza kamera stoi sztywno nad stołem i patrzy w dół. Obok widać podgląd takiego układu: statyw nad robotem SCARA, oś Z skierowana w dół oraz osie X i Y rozrysowane na stole.
 
 ![Kreator, krok 2: Robot Camera, Fixed looking downward](zrzuty/08-kreator-orientacja.jpg)
 
 ### Krok 3. Czym szukamy kropek
 
-**Target Sequence**: **BlobSeq**. W nagłówku stoi **Camera Orientation: Fixed downward**.
+W kroku **Target Sequence** wskazujemy sekwencję, która podczas kalibracji znajduje punkty płytki, i wybieramy **BlobSeq**. W nagłówku okna stoi już **Camera Orientation: Fixed downward**, co znaczy, że orientacja z poprzedniego kroku została przeniesiona dalej.
 
 ![Kreator, krok 3: sekwencja BlobSeq, Fixed downward](zrzuty/09-kreator-sekwencja.jpg)
 
 ### Krok 4. Układ lokalny
 
-**Robot Local** zostawiamy na **0**. Kreator sam pisze, że inny numer wymaga **Local Wizard**. U nas nie.
+W kroku **Robot Local** zostawiamy układ numer **0**. Kreator informuje, że przy innym numerze trzeba przejść przez **Local Wizard**, a ponieważ pracujemy w układzie bazowym, tego kreatora nie otwieramy.
 
 ![Kreator, krok 4: Robot Local 0](zrzuty/krok4-robot-local.jpg)
 
 ### Krok 5. Skąd bierzemy współrzędne
 
-**Reference Type**: **Taught Point**. **Robot Tool** 0, **Robot Arm** 0. **Two point reference** odznaczone. **End Effector** nie ruszamy, więc **Tool Wizard** i **Arm Wizard** zostają szare.
+W kroku **Reference Type** wybieramy **Taught Point**, ponieważ współrzędne punktów zbierzemy sami, dojeżdżając do nich robotem. **Robot Tool** i **Robot Arm** zostawiamy na 0, a opcję **Two point reference** pozostawiamy odznaczoną. Pola **End Effector** nie zaznaczamy, dlatego przyciski **Tool Wizard** i **Arm Wizard** zostają wyszarzone.
 
 ![Kreator, krok 5: Taught Point, narzędzie 0, ramię 0](zrzuty/krok5-reference.jpg)
 
-Kroki 6 i 7 zatwierdzamy **Next**.
+Kroki 6 i 7 nie wymagają u nas zmian, więc przechodzimy je przyciskiem **Next**.
 
 ### Krok 8. Dystorsja i pochylenie
 
-**Lens Distortion & Camera Tilt Compensation**. Nagłówek: **Fixed downward**. Zaznaczamy **Enable lens distortion and camera tilt compensation**, a **Dist Correction Target Sequence** to **BlobSeq**.
-
-Program bierze płytkę z kadru i prostuje zniekształcenie obiektywu oraz pochylenie kamery. Przy brzegu obrazu skala lubi uciekać, więc haczyk zostaje włączony.
+W kroku **Lens Distortion & Camera Tilt Compensation** nagłówek nadal pokazuje **Fixed downward**. Zaznaczamy **Enable lens distortion and camera tilt compensation**, a jako **Dist Correction Target Sequence** wskazujemy **BlobSeq**. Program skorzysta wtedy z płytki leżącej w kadrze i skoryguje zniekształcenie obiektywu oraz pochylenie kamery. Przy brzegu obrazu skala bez tej korekcji lubi się rozjeżdżać, dlatego zostawiamy tę opcję włączoną.
 
 ![Kreator, krok 8: korekcja dystorsji, sekwencja BlobSeq](zrzuty/10-kreator-dystorsja.jpg)
 
 ### Krok 9. Światło
 
-**Light Control**, nagłówek **Fixed downward**. **Calibration lamp on delay** zostaje **0**, **Calibration lamp output bit** zostaje **None**.
-
-Osobnej lampy nie ma. Świeci podajnik, ten sam co w **BlobSeq**. Wyjście dla kamery patrzącej w górę jest szare. Nas nie dotyczy.
+W kroku **Light Control** nagłówek również pokazuje **Fixed downward**. **Calibration lamp on delay** zostawiamy na 0, a **Calibration lamp output bit** ustawiamy na **None**, ponieważ osobnej lampy kalibracyjnej nie używamy. Światło daje podajnik przypisany wcześniej do sekwencji **BlobSeq**. Wyjście przeznaczone dla kamery patrzącej w górę jest wyszarzone, gdyż ta kalibracja go nie dotyczy.
 
 ![Kreator, krok 9: bez lampy kalibracyjnej](zrzuty/11-kreator-swiatlo.jpg)
 
 ### Krok 10. Jak robot jeździ przy kalibracji
 
-**Robot Speed** 10%, **Robot Accel** 10%. **Motion Delay** 500 ms, żeby obraz się uspokoił po dojeździe. **Use Approach Point** odznaczone. **Max move distance** 200 mm.
+W kroku **Robot Motion Parameters** ustawiamy **Robot Speed** i **Robot Accel** na 10 procent, żeby dojazdy do punktów odbywały się powoli. **Motion Delay** wynosi 500 milisekund, dzięki czemu obraz zdąży się uspokoić po zatrzymaniu ramienia. Opcję **Use Approach Point** zostawiamy odznaczoną, a **Max move distance** ustawiamy na 200 mm.
 
 ![Kreator, krok 10: prędkość, opóźnienie, limit ruchu](zrzuty/krok10-ruch.jpg)
 
 ### Krok 11. Co się zapisuje
 
-Ostatni ekran:
-
-- **Camera:** 1. Camera 1,
-- **Camera Orientation:** Fixed downward,
-- **Reference Type:** Taught Points,
-- **Target Sequence:** BlobSeq.
-
-**Taught Points** znaczy tyle, że współrzędne bierzemy z robota. Dojeżdżamy do kropek sami. **Finish**. Kalibracja **Kalibracja** wpada do projektu.
+Ostatni ekran zbiera ustawienia, które kreator zapisze. Kamera to **1. Camera 1**, orientacja to **Fixed downward**, typ odniesienia to **Taught Points**, a sekwencja wzorca to **BlobSeq**. **Taught Points** oznacza, że współrzędne pochodzą z pozycji, do których dojedziemy robotem. Po kliknięciu **Finish** kalibracja o nazwie **Kalibracja** pojawia się w projekcie.
 
 ![Kreator, krok 11: podsumowanie](zrzuty/12-kreator-podsumowanie.jpg)
 
 ## Uczenie punktów
 
-Na dole okna **Vision** jest pasek **Calibration: Kalibracja**. **Teach Points** się świeci. **Calibrate** jest szary, punktów jeszcze nie ma.
+Po zamknięciu kreatora na dole okna **Vision** widać pasek **Calibration: Kalibracja**. Przycisk **Teach Points** jest aktywny, natomiast **Calibrate** pozostaje wyszarzony, ponieważ żaden punkt nie został jeszcze nauczony.
 
 ![Teach Points aktywny, Calibrate wyszarzony](zrzuty/13-teach-points.jpg)
 
-Klikamy **Teach Points**. Z lewej obraz i napis, dokąd jechać. Z prawej lista kroków. Z boku **Jog**:
+Po kliknięciu **Teach Points** po lewej zostaje podgląd kamery z napisem, do którego punktu mamy dojechać, po prawej lista kroków, a z boku panel **Jog**. Silniki są włączone, o czym informuje **Motor: On**, a moc jest ustawiona na małą, czyli **Power: Low**, i tak zostawiamy ją na czas uczenia. Robot to **1, MNP01, T6-B602S**, narzędzie ma numer **Tool 0**, a ramię numer **Arm 0**. Jedziemy w układzie **World**. Aktywne są osie **X**, **Y**, **Z** i **U**, a **V** oraz **W** pozostają szare, ponieważ T6 jest robotem SCARA i tych osi nie posiada. W polu **Jog Distance** można wybrać skok **Continuous**, **Long**, **Medium** albo **Short**.
 
-- **Motor: On**, **Power: Low**. Silniki chodzą, moc mała. Przy uczeniu tak zostaje.
-- Robot **1, MNP01, T6-B602S**, **Tool 0**, **Arm 0**.
-- Układ **World**. Żyją **X**, **Y**, **Z** i **U**. **V** i **W** są szare, bo T6 to SCARA.
-- **Jog Distance**: **Continuous**, **Long**, **Medium**, **Short**.
-
-Do podjazdu wystarczy **High** i ruch ciągły. Ostatnie milimetry lepiej na **Short**. Inaczej końcówka przeskakuje kropkę.
+Do zgrubnego podjazdu wystarczy prędkość **High** i ruch ciągły. Ostatnie milimetry lepiej pokonać skokiem **Short**, ponieważ przy ruchu ciągłym końcówka łatwo przeskakuje kropkę.
 
 ![Jog przy punkcie Top Left, moc Low](zrzuty/14-jog.jpg)
 
-Kolejność narzuca program:
+Kolejność punktów ustala program i nie wybieramy jej sami. Na liście po prawej są kolejno **Top Left**, **Top Center**, **Top Right**, **Right Center**, **Center**, **Left Center**, **Bottom Left**, **Bottom Center** oraz **Bottom Right**. Ostatnia pozycja jest schowana poniżej widocznego fragmentu listy, dlatego trzeba ją przewinąć.
 
-1. **Top Left**,
-2. **Top Center**,
-3. **Top Right**,
-4. **Right Center**,
-5. **Center**,
-6. **Left Center**,
-7. **Bottom Left**,
-8. **Bottom Center**,
-9. **Bottom Right**, schowany pod spodem listy. Trzeba przewinąć.
-
-Jedziemy tam, gdzie każe niebieski napis, i **Teach**. Końcówka to szpilka ze śruby. Nakrętka ma zejść na kropkę. Ramię wchodzi w kadr. Ma wejść. Program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok robi się zielony.
+Dojeżdżamy tam, gdzie wskazuje niebieski napis nad obrazem, i klikamy **Teach**. Końcówką jest szpilka zrobiona ze śruby, a nakrętka ma zejść dokładnie na kropkę. Ramię wchodzi wtedy w kadr i tak powinno być, ponieważ program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok zmienia kolor na zielony.
 
 ![Szpilka nad kropką w rogu płytki](zrzuty/koncowka.jpg)
 
-Pierwszy jest lewy górny.
+Pierwszy punkt to lewy górny róg płytki.
 
 ![Dojazd do Top Left](zrzuty/15-punkt-top-left.jpg)
 
-Po nim program woła **Top Center**. **Teach Step 1** jest już zielony.
+Po jego zatwierdzeniu program prosi o **Top Center**, a **Teach Step 1** jest już zielony.
 
 ![Top Left nauczony, dojazd do Top Center](zrzuty/16-punkt-top-center.jpg)
 
-W połowie listy zielone są kroki od **Top Left** do **Right Center**. Teraz środek, **Center**.
+W połowie listy zielone są kroki od **Top Left** do **Right Center**, a następnie przychodzi kolej na środek, czyli **Center**.
 
 ![Cztery punkty nauczone, dojazd do środka](zrzuty/17-punkt-center.jpg)
 
-Wszystko zielone, nad obrazem **All calibration points are now taught.** **Finish** i wracamy do sekwencji.
+Gdy wszystkie kroki zmienią kolor, nad obrazem pojawia się komunikat **All calibration points are now taught.** Klikamy wtedy **Finish** i wracamy do okna sekwencji.
 
 ![Wszystkie punkty nauczone](zrzuty/18-wszystkie-punkty.jpg)
 
 ## Wynik
 
-**Calibrate** jest już aktywny, **Teach Points** zgasł. Klikamy **Calibrate**. Rusza **BlobSeq**, u góry widać **Calibration in cycle**. Po chwili okno **Calibration Complete**.
+Po nauce punktów przycisk **Calibrate** staje się aktywny, a **Teach Points** wygasa. Po kliknięciu **Calibrate** program uruchamia sekwencję **BlobSeq**, o czym informuje napis **Calibration in cycle** u góry obrazu, i po chwili otwiera okno **Calibration Complete**.
 
-**Previous values** puste. Pierwszy raz, nie ma z czym porównać. W **New values**:
+Kolumna **Previous values** jest pusta, ponieważ jest to pierwsza kalibracja tej kamery i nie ma jeszcze wcześniejszego wyniku do porównania. W kolumnie **New values** skala wynosi 0,2049 mm na piksel w osi X oraz 0,2039 mm na piksel w osi Y. Błąd maksymalny to 0,3824 mm w X i 0,7339 mm w Y, a błąd średni 0,0135 mm w X oraz 0,0085 mm w Y. Pochylenie wynosi 1,09 stopnia w X i 2,03 stopnia w Y. Pole widzenia, oznaczone jako **FOV**, ma wymiary **327,83 mm × 244,68 mm**.
 
 | | X | Y |
 |---|---|---|
@@ -196,17 +157,13 @@ Wszystko zielone, nad obrazem **All calibration points are now taught.** **Finis
 | błąd średni | 0,0135 | 0,0085 |
 | pochylenie | 1,09 | 2,03 |
 
-**FOV**: **327,83 mm × 244,68 mm**.
-
 ![Calibration Complete, pierwsza kalibracja](zrzuty/19-wynik.jpg)
 
-X i Y prawie się zgadzają. Około 0,20 mm na piksel. Pochylenie małe: trochę ponad stopień w X, dwa stopnie w Y.
+Skala w obu osiach jest prawie taka sama i wynosi około 0,20 mm na piksel, a pochylenie kamery pozostaje niewielkie. Błąd średni to setne części milimetra, czyli wyraźnie mniej niż jeden piksel. Wartość maksymalna, 0,73 mm w osi Y, dotyczy najsłabszej z dziewięciu kropek. Jeżeli ta dokładność nie wystarcza, punkt można nauczyć ponownie i jeszcze raz kliknąć **Calibrate**. Poprzednie liczby przejdą wtedy do kolumny **Previous values**, dzięki czemu widać, czy powtórka coś poprawiła.
 
-Średni błąd to setne milimetra. Poniżej piksela. Maksimum, 0,73 mm w Y, to najgorsza z dziewięciu kropek. Jak komuś mało, uczy ten punkt jeszcze raz i klika **Calibrate**. Stare liczby wskakują do **Previous values** i widać, czy jest lepiej.
+Wynik zatwierdzamy przyciskiem **OK**.
 
-**OK** zapisuje.
-
-Powtórka należy się, gdy kamera się ruszy, zmieni się ostrość albo przysłona, albo detale leżą wyżej niż płytka z uczenia.
+Kalibrację powtarzamy wtedy, gdy kamera się przesunie, zmieni się ostrość albo przysłona, albo gdy detale zaczną leżeć wyżej niż płytka, na której uczyliśmy punkty.
 
 ---
 
