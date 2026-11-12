@@ -22,7 +22,9 @@ Kalibracja siedzi na konkretnym ustawieniu. Ktoś trąci kamerę, przekręci ost
 - podajnik **Part Feeder 1**, podświetlenie od spodu,
 - płytka, dziewięć ciemnych punktów, siatka 3×3.
 
-Płytka zajmuje prawie cały kadr. Punkty dochodzą do brzegów, więc błąd widać też przy krawędzi obrazu.
+Płytka leży w białej ramce, dookoła świeci podświetlenie. Na szarym arkuszu dziewięć czarnych kropek, trzy na trzy. W kadrze kamery zajmuje prawie cały obraz, kropki dochodzą do brzegów. Dzięki temu błąd widać też przy krawędzi.
+
+![Płytka kalibracyjna na podświetleniu](zrzuty/plytka.jpg)
 
 ## Sekwencja, która znajduje punkty
 
@@ -79,13 +81,23 @@ Na tym zrzucie zaznaczone jest **Robot Camera** i **Fixed looking downward**. Ob
 
 ### Krok 3. Czym szukamy kropek
 
-**Target Sequence**: **BlobSeq**.
+**Target Sequence**: **BlobSeq**. W nagłówku stoi **Camera Orientation: Fixed downward**.
 
-W nagłówku tego okna stoi już **Camera Orientation: Standalone**. Krok 2 pokazuje inny wybór, a podsumowanie na końcu zapisuje właśnie Standalone. Przy powtarzaniu u siebie w kroku 2 zaznaczamy to, co ma zostać w podsumowaniu.
+![Kreator, krok 3: sekwencja BlobSeq, Fixed downward](zrzuty/09-kreator-sekwencja.jpg)
 
-![Kreator, krok 3: sekwencja BlobSeq](zrzuty/09-kreator-sekwencja.jpg)
+### Krok 4. Układ lokalny
 
-Kroki 4–7 i krok 10 idą na **Next**. Na zrzutach są tylko te, w których coś ustawiamy.
+**Robot Local** zostawiamy na **0**. Kreator sam pisze, że inny numer wymaga **Local Wizard**. U nas nie.
+
+![Kreator, krok 4: Robot Local 0](zrzuty/krok4-robot-local.jpg)
+
+### Krok 5. Skąd bierzemy współrzędne
+
+**Reference Type**: **Taught Point**. **Robot Tool** 0, **Robot Arm** 0. **Two point reference** odznaczone. **End Effector** nie ruszamy, więc **Tool Wizard** i **Arm Wizard** zostają szare.
+
+![Kreator, krok 5: Taught Point, narzędzie 0, ramię 0](zrzuty/krok5-reference.jpg)
+
+Kroki 6 i 7 zatwierdzamy **Next**.
 
 ### Krok 8. Dystorsja i pochylenie
 
@@ -103,12 +115,18 @@ Osobnej lampy nie ma. Świeci podajnik, ten sam co w **BlobSeq**. Wyjście dla k
 
 ![Kreator, krok 9: bez lampy kalibracyjnej](zrzuty/11-kreator-swiatlo.jpg)
 
+### Krok 10. Jak robot jeździ przy kalibracji
+
+**Robot Speed** 10%, **Robot Accel** 10%. **Motion Delay** 500 ms, żeby obraz się uspokoił po dojeździe. **Use Approach Point** odznaczone. **Max move distance** 200 mm.
+
+![Kreator, krok 10: prędkość, opóźnienie, limit ruchu](zrzuty/krok10-ruch.jpg)
+
 ### Krok 11. Co się zapisuje
 
 Ostatni ekran:
 
 - **Camera:** 1. Camera 1,
-- **Camera Orientation:** Standalone,
+- **Camera Orientation:** Fixed downward,
 - **Reference Type:** Taught Points,
 - **Target Sequence:** BlobSeq.
 
@@ -145,7 +163,9 @@ Kolejność narzuca program:
 8. **Bottom Center**,
 9. **Bottom Right**, schowany pod spodem listy. Trzeba przewinąć.
 
-Jedziemy tam, gdzie każe niebieski napis, i **Teach**. Ramię wchodzi w kadr. Ma wejść. Program zapisuje pozycję robota w chwili, gdy końcówka stoi na kropce. Nauczony krok robi się zielony.
+Jedziemy tam, gdzie każe niebieski napis, i **Teach**. Końcówka to szpilka ze śruby. Nakrętka ma zejść na kropkę. Ramię wchodzi w kadr. Ma wejść. Program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok robi się zielony.
+
+![Szpilka nad kropką w rogu płytki](zrzuty/koncowka.jpg)
 
 Pierwszy jest lewy górny.
 

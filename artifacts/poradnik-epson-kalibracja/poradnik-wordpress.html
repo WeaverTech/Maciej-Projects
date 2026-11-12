@@ -51,8 +51,20 @@
 <!-- /wp:list -->
 
 <!-- wp:paragraph -->
-<p>Płytka zajmuje prawie cały kadr. Punkty dochodzą do brzegów, więc błąd widać też przy krawędzi obrazu.</p>
+<p>Płytka leży w białej ramce, dookoła świeci podświetlenie. Na szarym arkuszu dziewięć czarnych kropek, trzy na trzy. W kadrze kamery zajmuje prawie cały obraz, kropki dochodzą do brzegów. Dzięki temu błąd widać też przy krawędzi.</p>
 <!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="plytka.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
 
 <!-- wp:spacer {"height":"50px"} -->
 <div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
@@ -248,11 +260,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p><strong>Target Sequence</strong>: <strong>BlobSeq</strong>.</p>
-<!-- /wp:paragraph -->
-
-<!-- wp:paragraph -->
-<p>W nagłówku tego okna stoi już <strong>Camera Orientation: Standalone</strong>. Krok 2 pokazuje inny wybór, a podsumowanie na końcu zapisuje właśnie Standalone. Przy powtarzaniu u siebie w kroku 2 zaznaczamy to, co ma zostać w podsumowaniu.</p>
+<p><strong>Target Sequence</strong>: <strong>BlobSeq</strong>. W nagłówku stoi <strong>Camera Orientation: Fixed downward</strong>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -267,8 +275,56 @@
 <div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
 <!-- /wp:spacer -->
 
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Krok 4. Układ lokalny</h3>
+<!-- /wp:heading -->
+
 <!-- wp:paragraph -->
-<p>Kroki 4–7 i krok 10 idą na <strong>Next</strong>. Na zrzutach są tylko te, w których coś ustawiamy.</p>
+<p><strong>Robot Local</strong> zostawiamy na <strong>0</strong>. Kreator sam pisze, że inny numer wymaga <strong>Local Wizard</strong>. U nas nie.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="krok4-robot-local.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Krok 5. Skąd bierzemy współrzędne</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Reference Type</strong>: <strong>Taught Point</strong>. <strong>Robot Tool</strong> 0, <strong>Robot Arm</strong> 0. <strong>Two point reference</strong> odznaczone. <strong>End Effector</strong> nie ruszamy, więc <strong>Tool Wizard</strong> i <strong>Arm Wizard</strong> zostają szare.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="krok5-reference.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:paragraph -->
+<p>Kroki 6 i 7 zatwierdzamy <strong>Next</strong>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -332,6 +388,30 @@
 <!-- /wp:spacer -->
 
 <!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Krok 10. Jak robot jeździ przy kalibracji</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p><strong>Robot Speed</strong> 10%, <strong>Robot Accel</strong> 10%. <strong>Motion Delay</strong> 500 ms, żeby obraz się uspokoił po dojeździe. <strong>Use Approach Point</strong> odznaczone. <strong>Max move distance</strong> 200 mm.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="krok10-ruch.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:heading {"level":3} -->
 <h3 class="wp-block-heading">Krok 11. Co się zapisuje</h3>
 <!-- /wp:heading -->
 
@@ -342,7 +422,7 @@
 <!-- wp:list -->
 <ul class="wp-block-list">
 <li><strong>Camera:</strong> 1. Camera 1,</li>
-<li><strong>Camera Orientation:</strong> Standalone,</li>
+<li><strong>Camera Orientation:</strong> Fixed downward,</li>
 <li><strong>Reference Type:</strong> Taught Points,</li>
 <li><strong>Target Sequence:</strong> BlobSeq.</li>
 </ul>
@@ -436,8 +516,20 @@
 <!-- /wp:list -->
 
 <!-- wp:paragraph -->
-<p>Jedziemy tam, gdzie każe niebieski napis, i <strong>Teach</strong>. Ramię wchodzi w kadr. Ma wejść. Program zapisuje pozycję robota w chwili, gdy końcówka stoi na kropce. Nauczony krok robi się zielony.</p>
+<p>Jedziemy tam, gdzie każe niebieski napis, i <strong>Teach</strong>. Końcówka to szpilka ze śruby. Nakrętka ma zejść na kropkę. Ramię wchodzi w kadr. Ma wejść. Program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok robi się zielony.</p>
 <!-- /wp:paragraph -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
+
+<!-- wp:image {"align":"center","sizeSlug":"full"} -->
+<figure class="wp-block-image aligncenter size-full"><img src="koncowka.jpg" alt=""/></figure>
+<!-- /wp:image -->
+
+<!-- wp:spacer {"height":"30px"} -->
+<div style="height:30px" aria-hidden="true" class="wp-block-spacer"></div>
+<!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
 <p>Pierwszy jest lewy górny.</p>
