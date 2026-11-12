@@ -37,7 +37,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "artifacts" / "poradnik-epson-kalibracja" / "poradnik.md"
 OUT_DIR = SRC.parent
 BASE = OUT_DIR
-STEM = "Kalibracja_kamery_EPSON_Vision_Guide"
+STEM = "Poradnik_kalibracja_kamery_EPSON"
 
 pdfmetrics.registerFont(TTFont("DejaVu", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DejaVuBold", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"))

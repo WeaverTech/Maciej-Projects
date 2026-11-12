@@ -6,8 +6,8 @@ pisanego w tym samym stylu co istniejące poradniki z kategorii „Automatyka w 
 | Plik | Zawartość |
 |---|---|
 | `poradnik.md` | **tekst artykułu** ułożony ze zrzutów, ze zdjęciami w kolejności kroków |
-| `Kalibracja_kamery_EPSON_Vision_Guide.docx` | ten sam tekst jako Word, ze zrzutami |
-| `Kalibracja_kamery_EPSON_Vision_Guide.pdf` | ten sam tekst jako PDF, ze zrzutami |
+| `Poradnik_kalibracja_kamery_EPSON.docx` | ten sam tekst jako Word, ze zrzutami |
+| `Poradnik_kalibracja_kamery_EPSON.pdf` | ten sam tekst jako PDF, ze zrzutami |
 | `poradnik-wordpress.html` | ten sam tekst w blokach Gutenberga |
 | `zrzuty/` | 19 kadrów nazwanych `01-`…`19-` w kolejności artykułu |
 | `README.md` | analiza stylu wzorcowych artykułów i lista kontrolna |
