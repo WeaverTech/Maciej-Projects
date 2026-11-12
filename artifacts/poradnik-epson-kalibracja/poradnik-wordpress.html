@@ -17,15 +17,15 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Kamera podaje położenie w pikselach, a robot porusza się w milimetrach, dlatego bez przeliczenia jednej jednostki na drugą obraz nie da się przełożyć na ruch. Sam fakt, że punkt leży w pikselu (400, 300), nie mówi jeszcze, o ile milimetrów przesunąć oś X ani oś Y. Kalibracja wykonuje właśnie to przeliczenie, a gdy punkty odniesienia uczymy robotem, wiąże obraz także z układem współrzędnych stanowiska.</p>
+<p>Kamera podaje położenie w pikselach, a robot porusza się w milimetrach, dlatego bez przeliczenia jednej jednostki na drugą obrazu nie da się przełożyć na ruch. Sam fakt, że punkt leży w pikselu (400, 300), nie mówi jeszcze, o ile milimetrów przesunąć oś X ani oś Y. Kalibracja wykonuje właśnie to przeliczenie, a gdy punkty odniesienia uczymy robotem, wiąże obraz także z układem współrzędnych stanowiska.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Po zapisaniu kalibracji obiekt Blob zwraca <strong>CameraX</strong> i <strong>CameraY</strong> już w milimetrach. Aplikacja pick and place bierze te współrzędne i jedzie w miejsce, które zobaczyła kamera.</p>
+<p>Po zapisaniu kalibracji obiekt Blob zwraca <strong>CameraX</strong> i <strong>CameraY</strong> już w milimetrach. Program pick and place bierze te współrzędne, a robot jedzie w miejsce, które zobaczyła kamera.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Wynik obowiązuje tylko dla ustawienia, w którym powstał. Gdy ktoś poruszy kamerę, przekręci ostrość albo położy detale wyżej niż płytkę, wcześniejsze liczby przestają pasować i kalibrację trzeba zrobić od nowa.</p>
+<p>Wynik obowiązuje tylko dla ustawienia, w którym powstał. Gdy ktoś poruszy kamerę, zmieni ostrość albo położy detale wyżej niż płytka, wcześniejsze liczby przestają pasować i kalibrację trzeba zrobić od nowa.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"50px"} -->
@@ -37,11 +37,21 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>Do opisanej kalibracji używamy oprogramowania EPSON RC+ z modułem Vision Guide, połączonego z kontrolerem przez <strong>USB</strong>. Robot to SCARA <strong>T6-B602S</strong>, widoczny w programie jako robot <strong>1, MNP01</strong>, a kamera nazywa się <strong>Camera 1</strong>. Płytka leży na podajniku <strong>Part Feeder 1</strong>, który świeci od spodu, i niesie dziewięć ciemnych punktów ułożonych w siatce 3×3.</p>
+<p>Do opisanej kalibracji używamy:</p>
 <!-- /wp:paragraph -->
 
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li>oprogramowania EPSON RC+ z modułem Vision Guide, połączonego z kontrolerem przez <strong>USB</strong>,</li>
+<li>robota SCARA <strong>T6-B602S</strong>, widocznego w programie jako robot <strong>1, MNP01</strong>,</li>
+<li>kamery <strong>Camera 1</strong>,</li>
+<li>podajnika <strong>Part Feeder 1</strong> z podświetleniem od spodu,</li>
+<li>płytki, na której znajduje się dziewięć ciemnych punktów ułożonych w siatce 3×3.</li>
+</ul>
+<!-- /wp:list -->
+
 <!-- wp:paragraph -->
-<p>Sama płytka siedzi w białej ramce, a podświetlenie biegnie dookoła niej. Na szarym arkuszu widać dziewięć czarnych kropek, po trzy w każdym rzędzie. W kadrze kamery płytka zajmuje prawie cały obraz, a kropki dochodzą do brzegów, dzięki czemu błąd da się ocenić także przy krawędzi kadru.</p>
+<p>Płytka leży w białej ramce, a podświetlenie biegnie dookoła niej. Na szarym arkuszu widać dziewięć czarnych kropek, po trzy w każdym rzędzie. W kadrze kamery płytka zajmuje prawie cały obraz, a kropki dochodzą do brzegów, dzięki czemu błąd da się ocenić także przy krawędzi kadru.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -69,7 +79,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>W oknie <strong>New Vision Sequence</strong> wpisujemy nazwę <strong>BlobSeq</strong> i wybieramy kamerę <strong>1. Camera 1</strong>. Pola kopiowania z istniejącej sekwencji nie wypełniamy, po czym zatwierdzamy okno przyciskiem <strong>OK</strong>.</p>
+<p>W oknie <strong>New Vision Sequence</strong> wpisujemy nazwę <strong>BlobSeq</strong> i wybieramy kamerę <strong>1. Camera 1</strong>. Pole kopiowania z istniejącej sekwencji zostawiamy puste, po czym zatwierdzamy okno przyciskiem <strong>OK</strong>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -85,7 +95,7 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>Zaraz potem program pyta o <strong>Part Feeder Backlight</strong>, ponieważ zdjęcie ma powstać na podświetleniu podajnika. Wskazujemy <strong>Part Feeder 1</strong> i klikamy <strong>OK</strong>. Dzięki temu przy uruchomieniu sekwencji podświetlenie włączy się samo, a kropki wyjdą ciemne na jasnym tle, co obiektowi Blob ułatwia ich znalezienie.</p>
+<p>Zaraz potem program pyta o <strong>Part Feeder Backlight</strong>, ponieważ zdjęcie ma powstać na podświetleniu podajnika. Wskazujemy <strong>Part Feeder 1</strong> i klikamy <strong>OK</strong>. Dzięki temu przy uruchomieniu sekwencji podświetlenie włączy się samo, a kropki będą ciemne na jasnym tle, co ułatwi obiektowi Blob ich znalezienie.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -101,7 +111,7 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>W sekwencji dodajemy jeden obiekt typu <strong>Blob</strong> i zostawiamy mu nazwę <strong>Blob01</strong>. Po prawej stronie widać schemat, na którym sekwencja <strong>BlobSeq</strong> schodzi do kroku <strong>Step 1</strong>. Niebieska ramka na obrazie to okno wyszukiwania. Rozciągamy je na całą płytkę, tak aby wszystkie dziewięć punktów znalazło się w środku.</p>
+<p>W sekwencji dodajemy jeden obiekt typu <strong>Blob</strong> i zostawiamy mu nazwę <strong>Blob01</strong>. Po prawej stronie widać schemat, na którym sekwencja <strong>BlobSeq</strong> prowadzi do kroku <strong>Step 1</strong>. Niebieska ramka na obrazie to okno wyszukiwania. Rozciągamy je na całą płytkę, tak aby wszystkie dziewięć punktów znalazło się w środku.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -121,7 +131,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Po uruchomieniu sekwencji na liście wyników pojawia się <strong>Result 1 of 9</strong>. Pierwszy punkt wyszedł u nas tak, że <strong>Found</strong> ma wartość True, <strong>Area</strong> wynosi 585 pikseli, <strong>Angle</strong> wynosi −68,390°, <strong>CameraX</strong> 243,536 mm, a <strong>CameraY</strong> 211,256 mm. Licznik pokazuje dziewięć trafień, więc płytka jest znaleziona w całości i można przejść do kalibracji.</p>
+<p>Po uruchomieniu sekwencji na liście wyników pojawia się <strong>Result 1 of 9</strong>. Licznik pokazuje dziewięć trafień, a przy znalezionym punkcie widać między innymi pozycję <strong>CameraX</strong> i <strong>CameraY</strong> w milimetrach. Płytka jest więc znaleziona w całości i można przejść do kalibracji.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -161,7 +171,7 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>Nową kalibrację otwieramy przyciskiem na pasku okna <strong>Vision</strong>. Na zrzucie jest obwiedziony czerwoną ramką.</p>
+<p>Nową kalibrację otwieramy przyciskiem na pasku okna <strong>Vision</strong>. Na zrzucie przycisk jest obwiedziony czerwoną ramką.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -213,7 +223,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Na zrzucie zaznaczone jest <strong>Robot Camera</strong> oraz <strong>Fixed looking downward</strong>, ponieważ nasza kamera stoi sztywno nad stołem i patrzy w dół. Obok widać podgląd takiego układu: statyw nad robotem SCARA, oś Z skierowana w dół oraz osie X i Y rozrysowane na stole.</p>
+<p>Na zrzucie zaznaczone są <strong>Robot Camera</strong> oraz <strong>Fixed looking downward</strong>, ponieważ nasza kamera stoi sztywno nad stołem i patrzy w dół. Obok widać podgląd takiego układu: statyw nad robotem SCARA, oś Z skierowana w dół oraz osie X i Y rozrysowane na stole.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -237,7 +247,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>W kroku <strong>Target Sequence</strong> wskazujemy sekwencję, która podczas kalibracji znajduje punkty płytki, i wybieramy <strong>BlobSeq</strong>. W nagłówku okna stoi już <strong>Camera Orientation: Fixed downward</strong>, co znaczy, że orientacja z poprzedniego kroku została przeniesiona dalej.</p>
+<p>W kroku <strong>Target Sequence</strong> wskazujemy sekwencję, która podczas kalibracji znajduje punkty płytki, i wybieramy <strong>BlobSeq</strong>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -261,7 +271,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>W kroku <strong>Robot Local</strong> zostawiamy układ numer <strong>0</strong>. Kreator informuje, że przy innym numerze trzeba przejść przez <strong>Local Wizard</strong>, a ponieważ pracujemy w układzie bazowym, tego kreatora nie otwieramy.</p>
+<p>W kroku <strong>Robot Local</strong> zostawiamy układ o numerze <strong>0</strong>. Kreator informuje, że przy innym numerze trzeba przejść przez <strong>Local Wizard</strong>, a ponieważ pracujemy w układzie bazowym, tego kreatora nie otwieramy.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -285,7 +295,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>W kroku <strong>Reference Type</strong> wybieramy <strong>Taught Point</strong>, ponieważ współrzędne punktów zbierzemy sami, dojeżdżając do nich robotem. <strong>Robot Tool</strong> i <strong>Robot Arm</strong> zostawiamy na 0, a opcję <strong>Two point reference</strong> pozostawiamy odznaczoną. Pola <strong>End Effector</strong> nie zaznaczamy, dlatego przyciski <strong>Tool Wizard</strong> i <strong>Arm Wizard</strong> zostają wyszarzone.</p>
+<p>W kroku <strong>Reference Type</strong> wybieramy <strong>Taught Point</strong>, ponieważ współrzędne punktów zbierzemy sami, dojeżdżając do nich robotem. <strong>Robot Tool</strong> i <strong>Robot Arm</strong> zostawiamy na 0, a opcję <strong>Two point reference</strong> pozostawiamy odznaczoną. Opcji <strong>End Effector</strong> nie zaznaczamy, dlatego przyciski <strong>Tool Wizard</strong> i <strong>Arm Wizard</strong> zostają wyszarzone.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -313,7 +323,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>W kroku <strong>Lens Distortion &amp; Camera Tilt Compensation</strong> nagłówek nadal pokazuje <strong>Fixed downward</strong>. Zaznaczamy <strong>Enable lens distortion and camera tilt compensation</strong>, a jako <strong>Dist Correction Target Sequence</strong> wskazujemy <strong>BlobSeq</strong>. Program skorzysta wtedy z płytki leżącej w kadrze i skoryguje zniekształcenie obiektywu oraz pochylenie kamery. Przy brzegu obrazu skala bez tej korekcji lubi się rozjeżdżać, dlatego zostawiamy tę opcję włączoną.</p>
+<p>W kroku <strong>Lens Distortion &amp; Camera Tilt Compensation</strong> zaznaczamy <strong>Enable lens distortion and camera tilt compensation</strong>, a jako <strong>Dist Correction Target Sequence</strong> wskazujemy <strong>BlobSeq</strong>. Program skorzysta wtedy z płytki leżącej w kadrze i skoryguje zniekształcenie obiektywu oraz pochylenie kamery. Przy brzegu obrazu skala bez tej korekcji lubi się rozjeżdżać, dlatego zostawiamy tę opcję włączoną.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -337,7 +347,7 @@
 <!-- /wp:heading -->
 
 <!-- wp:paragraph -->
-<p>W kroku <strong>Light Control</strong> nagłówek również pokazuje <strong>Fixed downward</strong>. <strong>Calibration lamp on delay</strong> zostawiamy na 0, a <strong>Calibration lamp output bit</strong> ustawiamy na <strong>None</strong>, ponieważ osobnej lampy kalibracyjnej nie używamy. Światło daje podajnik przypisany wcześniej do sekwencji <strong>BlobSeq</strong>. Wyjście przeznaczone dla kamery patrzącej w górę jest wyszarzone, gdyż ta kalibracja go nie dotyczy.</p>
+<p>W kroku <strong>Light Control</strong> pole <strong>Calibration lamp on delay</strong> zostawiamy na 0, a <strong>Calibration lamp output bit</strong> ustawiamy na <strong>None</strong>, ponieważ osobnej lampy kalibracyjnej nie używamy. Światło daje podajnik przypisany wcześniej do sekwencji <strong>BlobSeq</strong>. Wyjście przeznaczone dla kamery patrzącej w górę jest wyszarzone, gdyż ta kalibracja go nie dotyczy.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -425,8 +435,17 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>Po kliknięciu <strong>Teach Points</strong> po lewej zostaje podgląd kamery z napisem, do którego punktu mamy dojechać, po prawej lista kroków, a z boku panel <strong>Jog</strong>. Silniki są włączone, o czym informuje <strong>Motor: On</strong>, a moc jest ustawiona na małą, czyli <strong>Power: Low</strong>, i tak zostawiamy ją na czas uczenia. Robot to <strong>1, MNP01, T6-B602S</strong>, narzędzie ma numer <strong>Tool 0</strong>, a ramię numer <strong>Arm 0</strong>. Jedziemy w układzie <strong>World</strong>. Aktywne są osie <strong>X</strong>, <strong>Y</strong>, <strong>Z</strong> i <strong>U</strong>, a <strong>V</strong> oraz <strong>W</strong> pozostają szare, ponieważ T6 jest robotem SCARA i tych osi nie posiada. W polu <strong>Jog Distance</strong> można wybrać skok <strong>Continuous</strong>, <strong>Long</strong>, <strong>Medium</strong> albo <strong>Short</strong>.</p>
+<p>Po kliknięciu <strong>Teach Points</strong> po lewej zostaje podgląd kamery z napisem, do którego punktu mamy dojechać, po prawej lista kroków, a z boku panel <strong>Jog</strong>. W tym panelu widać:</p>
 <!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li><strong>Motor: On</strong> i <strong>Power: Low</strong>, czyli włączone silniki przy małej mocy, i tak zostawiamy te ustawienia na czas uczenia,</li>
+<li>robota <strong>1, MNP01, T6-B602S</strong>, narzędzie <strong>Tool 0</strong> i ramię <strong>Arm 0</strong>,</li>
+<li>układ <strong>World</strong>, w którym aktywne są osie <strong>X</strong>, <strong>Y</strong>, <strong>Z</strong> i <strong>U</strong>, a <strong>V</strong> oraz <strong>W</strong> pozostają szare, ponieważ T6 jest robotem SCARA i tych osi nie posiada,</li>
+<li>skok w polu <strong>Jog Distance</strong>: <strong>Continuous</strong>, <strong>Long</strong>, <strong>Medium</strong> albo <strong>Short</strong>.</li>
+</ul>
+<!-- /wp:list -->
 
 <!-- wp:paragraph -->
 <p>Do zgrubnego podjazdu wystarczy prędkość <strong>High</strong> i ruch ciągły. Ostatnie milimetry lepiej pokonać skokiem <strong>Short</strong>, ponieważ przy ruchu ciągłym końcówka łatwo przeskakuje kropkę.</p>
@@ -445,11 +464,29 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>Kolejność punktów ustala program i nie wybieramy jej sami. Na liście po prawej są kolejno <strong>Top Left</strong>, <strong>Top Center</strong>, <strong>Top Right</strong>, <strong>Right Center</strong>, <strong>Center</strong>, <strong>Left Center</strong>, <strong>Bottom Left</strong>, <strong>Bottom Center</strong> oraz <strong>Bottom Right</strong>. Ostatnia pozycja jest schowana poniżej widocznego fragmentu listy, dlatego trzeba ją przewinąć.</p>
+<p>Kolejność punktów ustala program i nie wybieramy jej sami. Na liście po prawej widać:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+<ol class="wp-block-list">
+<li><strong>Top Left</strong>,</li>
+<li><strong>Top Center</strong>,</li>
+<li><strong>Top Right</strong>,</li>
+<li><strong>Right Center</strong>,</li>
+<li><strong>Center</strong>,</li>
+<li><strong>Left Center</strong>,</li>
+<li><strong>Bottom Left</strong>,</li>
+<li><strong>Bottom Center</strong>,</li>
+<li><strong>Bottom Right</strong>.</li>
+</ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>Ostatnia pozycja jest schowana poniżej widocznego fragmentu listy, dlatego trzeba ją przewinąć.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Dojeżdżamy tam, gdzie wskazuje niebieski napis nad obrazem, i klikamy <strong>Teach</strong>. Końcówką jest szpilka zrobiona ze śruby, a nakrętka ma zejść dokładnie na kropkę. Ramię wchodzi wtedy w kadr i tak powinno być, ponieważ program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok zmienia kolor na zielony.</p>
+<p>Dojeżdżamy tam, gdzie wskazuje niebieski napis nad obrazem, i klikamy <strong>Teach</strong>. Końcówką jest szpilka zrobiona ze śruby, a nakrętka ma zejść dokładnie na kropkę. Ramię wchodzi wtedy w kadr, ponieważ program zapisuje pozycję robota w chwili, gdy szpilka stoi na punkcie. Nauczony krok zmienia kolor na zielony.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"30px"} -->
@@ -541,7 +578,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Kolumna <strong>Previous values</strong> jest pusta, ponieważ jest to pierwsza kalibracja tej kamery i nie ma jeszcze wcześniejszego wyniku do porównania. W kolumnie <strong>New values</strong> skala wynosi 0,2049 mm na piksel w osi X oraz 0,2039 mm na piksel w osi Y. Błąd maksymalny to 0,3824 mm w X i 0,7339 mm w Y, a błąd średni 0,0135 mm w X oraz 0,0085 mm w Y. Pochylenie wynosi 1,09 stopnia w X i 2,03 stopnia w Y. Pole widzenia, oznaczone jako <strong>FOV</strong>, ma wymiary <strong>327,83 mm × 244,68 mm</strong>.</p>
+<p>Kolumna <strong>Previous values</strong> jest pusta, ponieważ jest to pierwsza kalibracja tej kamery i nie ma jeszcze wcześniejszego wyniku do porównania. W kolumnie <strong>New values</strong> pojawiają się poniższe liczby, a pole widzenia, oznaczone jako <strong>FOV</strong>, ma wymiary <strong>327,83 mm × 244,68 mm</strong>.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:table -->
@@ -567,7 +604,7 @@
 <!-- /wp:spacer -->
 
 <!-- wp:paragraph -->
-<p>Skala w obu osiach jest prawie taka sama i wynosi około 0,20 mm na piksel, a pochylenie kamery pozostaje niewielkie. Błąd średni to setne części milimetra, czyli wyraźnie mniej niż jeden piksel. Wartość maksymalna, 0,73 mm w osi Y, dotyczy najsłabszej z dziewięciu kropek. Jeżeli ta dokładność nie wystarcza, punkt można nauczyć ponownie i jeszcze raz kliknąć <strong>Calibrate</strong>. Poprzednie liczby przejdą wtedy do kolumny <strong>Previous values</strong>, dzięki czemu widać, czy powtórka coś poprawiła.</p>
+<p>Skala w obu osiach jest prawie taka sama i wynosi około 0,20 mm na piksel, a pochylenie kamery pozostaje niewielkie. Błąd średni to setne części milimetra, czyli wyraźnie mniej niż jeden piksel. Wartość maksymalna, 0,73 mm w osi Y, dotyczy najsłabszej z dziewięciu kropek. Jeżeli ta dokładność nie wystarcza, punkt można nauczyć ponownie i jeszcze raz kliknąć <strong>Calibrate</strong>. Poprzednie liczby przejdą wtedy do kolumny <strong>Previous values</strong>, dzięki czemu widać, czy wynik się poprawił.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
@@ -575,7 +612,7 @@
 <!-- /wp:paragraph -->
 
 <!-- wp:paragraph -->
-<p>Kalibrację powtarzamy wtedy, gdy kamera się przesunie, zmieni się ostrość albo przysłona, albo gdy detale zaczną leżeć wyżej niż płytka, na której uczyliśmy punkty.</p>
+<p>Kalibrację powtarzamy wtedy, gdy kamera się przesunie, gdy zmieni się ostrość lub przysłona albo gdy detale zaczną leżeć wyżej niż płytka, na której uczyliśmy punkty.</p>
 <!-- /wp:paragraph -->
 
 <!-- wp:spacer {"height":"40px"} -->
