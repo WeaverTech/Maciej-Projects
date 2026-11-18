@@ -1,0 +1,193 @@
+{
+  "project": {
+    "version": 3,
+    "name": "Nowy projekt",
+    "pallet": {
+      "length": 1200,
+      "width": 800,
+      "base_corner": "D",
+      "x_direction": "prawo",
+      "y_direction": "gora"
+    },
+    "product": {
+      "kind": "worek",
+      "length": 600,
+      "width": 400,
+      "height": 100,
+      "layer_increment": 100,
+      "allow_overhang": true,
+      "max_overhang": 30,
+      "allow_overlap": true,
+      "max_overlap": 20
+    },
+    "layers": {
+      "A": {
+        "name": "A",
+        "items": [
+          {
+            "id": 1,
+            "x": 270,
+            "y": 200,
+            "rotation": 0,
+            "order": 1
+          },
+          {
+            "id": 2,
+            "x": 850,
+            "y": 200,
+            "rotation": 0,
+            "order": 2
+          },
+          {
+            "id": 3,
+            "x": 290,
+            "y": 580,
+            "rotation": 0,
+            "order": 3
+          },
+          {
+            "id": 4,
+            "x": 900,
+            "y": 600,
+            "rotation": 180,
+            "order": 4
+          },
+          {
+            "id": 5,
+            "x": 600,
+            "y": 830,
+            "rotation": 0,
+            "order": 5
+          }
+        ]
+      }
+    },
+    "sequence": [
+      "A"
+    ],
+    "robot": {
+      "program_name": "paletyzacja",
+      "base_name": "poczatekpal",
+      "pickup": "pobierz",
+      "pickup_approach": "pobierz_najazd",
+      "layers": 7,
+      "first_z": -100,
+      "safe_z": 500,
+      "pick_mode": "pojedynczy",
+      "s1_name": "Sekcja 1",
+      "s1_on": "12,-13",
+      "s1_off": "-12,13",
+      "s2_name": "Sekcja 2",
+      "s2_on": "10,-11",
+      "s2_off": "-10,11",
+      "assignments": "1=1,2=2;3=1,4=2;5=1,6=2",
+      "grip_wait": 0.5,
+      "release_wait": 0.2
+    }
+  },
+  "as": ".PROGRAM paletyzacja()\n  SPEED 100 ALWAYS\n  ACCEL 100 ALWAYS\n  DECEL 100 ALWAYS\n  .wyswarstwy = 100\n  .ilewarstw = 7\n; WARSTWA A\n  POINT wa_cel[1] = poczatekpal+TRANS(270.000,600.000,-100.000,0,0,0)\n  POINT wa_cel[2] = poczatekpal+TRANS(850.000,600.000,-100.000,0,0,0)\n  POINT wa_cel[3] = poczatekpal+TRANS(290.000,220.000,-100.000,0,0,0)\n  POINT wa_cel[4] = poczatekpal+TRANS(900.000,200.000,-100.000,180,0,0)\n  POINT wa_cel[5] = poczatekpal+TRANS(600.000,-30.000,-100.000,0,0,0)\n  FOR .j = 1 TO .ilewarstw\n    .z_offset = (.j-1)*.wyswarstwy\n    .z_safe = 500+.z_offset\n    POINT cel[1] = wa_cel[1]\n    POINT cel[2] = wa_cel[2]\n    POINT cel[3] = wa_cel[3]\n    POINT cel[4] = wa_cel[4]\n    POINT cel[5] = wa_cel[5]\n; CYKL 1\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[1] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[1] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[1] BY 0,0,.z_safe)\n; CYKL 2\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[2] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[2] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[2] BY 0,0,.z_safe)\n; CYKL 3\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[3] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[3] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[3] BY 0,0,.z_safe)\n; CYKL 4\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[4] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[4] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[4] BY 0,0,.z_safe)\n; CYKL 5\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[5] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[5] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[5] BY 0,0,.z_safe)\n  END\n.END\n",
+  "validation": {
+    "A": [
+      [
+        "Ostrzeżenie",
+        "Produkt 1 wystaje 30.00 mm",
+        [
+          1
+        ]
+      ],
+      [
+        "Ostrzeżenie",
+        "Produkt 3 wystaje 10.00 mm",
+        [
+          3
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkt 5 wystaje 230.00 mm",
+        [
+          5
+        ]
+      ],
+      [
+        "Ostrzeżenie",
+        "Produkty 1/2 nakładają się 20.00 mm",
+        [
+          1,
+          2
+        ]
+      ],
+      [
+        "Ostrzeżenie",
+        "Produkty 1/3 nakładają się 20.00 mm",
+        [
+          1,
+          3
+        ]
+      ],
+      [
+        "Ostrzeżenie",
+        "Produkty 2/3 nakładają się 20.00 mm",
+        [
+          2,
+          3
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkty 3/5 nakładają się 150.00 mm",
+        [
+          3,
+          5
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkty 4/5 nakładają się 170.00 mm",
+        [
+          4,
+          5
+        ]
+      ]
+    ]
+  },
+  "compare_ab": [
+    [
+      "Błąd",
+      "Brak warstwy B"
+    ]
+  ],
+  "cycles": [
+    [
+      [
+        1,
+        1
+      ]
+    ],
+    [
+      [
+        2,
+        1
+      ]
+    ],
+    [
+      [
+        3,
+        1
+      ]
+    ],
+    [
+      [
+        4,
+        1
+      ]
+    ],
+    [
+      [
+        5,
+        1
+      ]
+    ]
+  ],
+  "cycle_errors": []
+}

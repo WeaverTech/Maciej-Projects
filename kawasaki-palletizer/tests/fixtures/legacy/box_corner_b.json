@@ -1,0 +1,150 @@
+{
+  "project": {
+    "version": 3,
+    "name": "Nowy projekt",
+    "pallet": {
+      "length": 1200,
+      "width": 800,
+      "base_corner": "B",
+      "x_direction": "lewo",
+      "y_direction": "dol"
+    },
+    "product": {
+      "kind": "karton",
+      "length": 400,
+      "width": 300,
+      "height": 250,
+      "layer_increment": 250,
+      "allow_overhang": true,
+      "max_overhang": 30,
+      "allow_overlap": true,
+      "max_overlap": 20
+    },
+    "layers": {
+      "A": {
+        "name": "A",
+        "items": [
+          {
+            "id": 1,
+            "x": 200,
+            "y": 150,
+            "rotation": 0,
+            "order": 1
+          },
+          {
+            "id": 2,
+            "x": 590,
+            "y": 150,
+            "rotation": 0,
+            "order": 2
+          },
+          {
+            "id": 3,
+            "x": 1100,
+            "y": 700,
+            "rotation": 90,
+            "order": 3
+          },
+          {
+            "id": 4,
+            "x": 450.5,
+            "y": 480.25,
+            "rotation": 90,
+            "order": 4
+          }
+        ]
+      }
+    },
+    "sequence": [
+      "A"
+    ],
+    "robot": {
+      "program_name": "kartony",
+      "base_name": "bazapal",
+      "pickup": "pobierz",
+      "pickup_approach": "pobierz_najazd",
+      "layers": 4,
+      "first_z": -250,
+      "safe_z": 600,
+      "pick_mode": "pojedynczy",
+      "s1_name": "Sekcja 1",
+      "s1_on": "12,-13",
+      "s1_off": "-12,13",
+      "s2_name": "Sekcja 2",
+      "s2_on": "10,-11",
+      "s2_off": "-10,11",
+      "assignments": "1=1,2=2;3=1,4=2;5=1,6=2",
+      "grip_wait": 0.5,
+      "release_wait": 0.2
+    }
+  },
+  "as": ".PROGRAM kartony()\n  SPEED 100 ALWAYS\n  ACCEL 100 ALWAYS\n  DECEL 100 ALWAYS\n  .wyswarstwy = 250\n  .ilewarstw = 4\n; WARSTWA A\n  POINT wa_cel[1] = bazapal+TRANS(1000.000,150.000,-250.000,0,0,0)\n  POINT wa_cel[2] = bazapal+TRANS(610.000,150.000,-250.000,0,0,0)\n  POINT wa_cel[3] = bazapal+TRANS(100.000,700.000,-250.000,90,0,0)\n  POINT wa_cel[4] = bazapal+TRANS(749.500,480.250,-250.000,90,0,0)\n  FOR .j = 1 TO .ilewarstw\n    .z_offset = (.j-1)*.wyswarstwy\n    .z_safe = 600+.z_offset\n    POINT cel[1] = wa_cel[1]\n    POINT cel[2] = wa_cel[2]\n    POINT cel[3] = wa_cel[3]\n    POINT cel[4] = wa_cel[4]\n; CYKL 1\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[1] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[1] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[1] BY 0,0,.z_safe)\n; CYKL 2\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[2] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[2] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[2] BY 0,0,.z_safe)\n; CYKL 3\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[3] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[3] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[3] BY 0,0,.z_safe)\n; CYKL 4\n    JMOVE pobierz_najazd\n    LMOVE pobierz\n    SIGNAL 12,-13\n    TWAIT 0.5\n    LMOVE pobierz_najazd\n    JMOVE SHIFT(cel[4] BY 0,0,.z_safe)\n    LMOVE SHIFT(cel[4] BY 0,0,.z_offset)\n    SIGNAL -12,13\n    TWAIT 0.2\n    LMOVE SHIFT(cel[4] BY 0,0,.z_safe)\n  END\n.END\n",
+  "validation": {
+    "A": [
+      [
+        "Błąd",
+        "Produkt 3 wystaje 100.00 mm",
+        [
+          3
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkty 1/2 nakładają się 10.00 mm",
+        [
+          1,
+          2
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkty 1/4 nakładają się 19.75 mm",
+        [
+          1,
+          4
+        ]
+      ],
+      [
+        "Błąd",
+        "Produkty 2/4 nakładają się 19.75 mm",
+        [
+          2,
+          4
+        ]
+      ]
+    ]
+  },
+  "compare_ab": [
+    [
+      "Błąd",
+      "Brak warstwy B"
+    ]
+  ],
+  "cycles": [
+    [
+      [
+        1,
+        1
+      ]
+    ],
+    [
+      [
+        2,
+        1
+      ]
+    ],
+    [
+      [
+        3,
+        1
+      ]
+    ],
+    [
+      [
+        4,
+        1
+      ]
+    ]
+  ],
+  "cycle_errors": []
+}
