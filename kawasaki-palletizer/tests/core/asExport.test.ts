@@ -55,7 +55,7 @@ describe('eksport AS', () => {
     const code = renderAs(p, { date: new Date('2026-11-18T10:00:00Z') })
     const lines = code.split('\n')
     expect(lines[0]).toBe('.PROGRAM paletyzacja()')
-    expect(code).toContain('; Projekt: Zolte worki ? proba')
+    expect(code).toContain('; Projekt: Zolte worki - proba')
     expect(code).toContain('; Data: 2026-11-18')
     // eslint-disable-next-line no-control-regex
     expect(/[^\x00-\x7f]/.test(code)).toBe(false)
@@ -130,6 +130,8 @@ describe('formatowanie', () => {
 
   it('transliteracja polskich znaków', () => {
     expect(toAscii('Zażółć gęślą jaźń')).toBe('Zazolc gesla jazn')
+    expect(toAscii('Worki 25 kg – paleta 1200 × 1000')).toBe('Worki 25 kg - paleta 1200 x 1000')
+    expect(toAscii('Müller „test” 🙂')).toMatch(/^Muller "test" \?+$/)
   })
 })
 

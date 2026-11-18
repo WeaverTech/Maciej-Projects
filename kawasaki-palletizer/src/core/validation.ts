@@ -205,6 +205,7 @@ function validateLayers(project: Project): Issue[] {
       layer: ids.length ? 'B' : 'A',
       itemIds: ids.length ? ids : project.layers.A.items.filter((i) => i.order === res.order).map((i) => i.id),
       message: `Niespójność A/B: ${res.message.charAt(0).toLowerCase()}${res.message.slice(1)}`,
+      fix: 'relink-b',
     })
   }
   return out

@@ -116,7 +116,7 @@ export interface Issue {
   layer?: LayerName
   itemIds?: number[]
   /** Identyfikator szybkiej poprawki dostępnej w interfejsie. */
-  fix?: 'auto-pair' | 'renumber' | 'relink-b' | 'sync-b-orders'
+  fix?: 'auto-pair' | 'renumber' | 'relink-b'
 }
 
 export interface Rect {

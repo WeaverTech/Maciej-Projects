@@ -37,10 +37,17 @@ const TRANSLIT: Record<string, string> = {
   Ą: 'A', Ć: 'C', Ę: 'E', Ł: 'L', Ń: 'N', Ó: 'O', Ś: 'S', Ź: 'Z', Ż: 'Z',
 }
 
+const PUNCTUATION: Record<string, string> = {
+  '–': '-', '—': '-', '−': '-', '×': 'x', '„': '"', '”': '"', '“': '"', '’': "'", '…': '...', '°': 'deg', '·': '-', '\u00a0': ' ',
+}
+
 /** Komentarze AS tylko w ASCII – kontrolery nie zawsze obsługują polskie znaki. */
 export function toAscii(text: string): string {
   return text
     .replace(/[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/g, (c) => TRANSLIT[c] ?? c)
+    .replace(/[–—−×„”“’…°·\u00a0]/g, (c) => PUNCTUATION[c] ?? c)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^\x20-\x7e]/g, '?')
 }
 
