@@ -46,7 +46,7 @@ export function Toasts() {
   const toasts = useStore((s) => s.toasts)
   const dismiss = useStore((s) => s.dismissToast)
   return (
-    <div className="no-print pointer-events-none fixed inset-x-0 bottom-12 z-[70] flex flex-col items-center gap-2" aria-live="polite" data-testid="toasts">
+    <div className="no-print pointer-events-none fixed inset-x-0 bottom-24 z-[70] flex flex-col items-center gap-2" aria-live="polite" data-testid="toasts">
       {toasts.map((toast) => (
         <div
           key={toast.id}
