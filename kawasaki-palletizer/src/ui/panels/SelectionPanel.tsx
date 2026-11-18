@@ -12,7 +12,7 @@ import {
   RotateCw,
   Trash2,
 } from 'lucide-react'
-import { useId } from 'react'
+import { Fragment, useId } from 'react'
 import { pointExpression } from '../../core/asExport'
 import { formatMm, productsLabel } from '../../core/format'
 import { fromBase, orientationO, placementRect, rectsBounds, ROTATIONS, toBase, axesValid } from '../../core/geometry'
@@ -186,8 +186,13 @@ function SingleItem({ item, editable, count }: { item: Placement; editable: bool
               <Coord label="Kąt O" value={`${formatMm(orientationO(item.rotation, project), 3)}°`} />
             </dl>
             <div className="group relative rounded-lg border border-line bg-raised p-2.5 pr-9">
-              <code className="block font-mono text-[11.5px] leading-relaxed break-all text-fg" data-testid="point-line">
-                {pointLine}
+              <code className="block font-mono text-[11.5px] leading-relaxed [overflow-wrap:anywhere] text-fg" data-testid="point-line">
+                {pointLine.split(/(?<=[+,])/).map((part, idx) => (
+                  <Fragment key={idx}>
+                    {idx > 0 && <wbr />}
+                    {part}
+                  </Fragment>
+                ))}
               </code>
               <IconButton
                 label="Kopiuj linię"
