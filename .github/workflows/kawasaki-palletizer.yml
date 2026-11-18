@@ -1,0 +1,44 @@
+name: Kawasaki Palletizer
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - kawasaki-palletizer/**
+      - .github/workflows/kawasaki-palletizer.yml
+  pull_request:
+    paths:
+      - kawasaki-palletizer/**
+      - .github/workflows/kawasaki-palletizer.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kawasaki-palletizer-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kawasaki-palletizer
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: kawasaki-palletizer/package-lock.json
+
+      - run: npm ci
+
+      - run: npm run check
+
+      - run: npm run build
+
+      - run: npx playwright install --with-deps chromium
+
+      - run: npm run test:e2e
