@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createProject } from '../../src/core/defaults'
 import { createExampleProject } from '../../src/core/example'
-import { rotatedLayerB } from '../../src/core/layers'
+import { rotatedLayerB, syncLinkedLayers } from '../../src/core/layers'
 import type { Placement, Project } from '../../src/core/types'
 import { countIssues, issueItemSets, validateGeometry, validateOrder, validateProject } from '../../src/core/validation'
 
@@ -129,6 +129,24 @@ describe('walidacja projektu', () => {
     expect(issues.find((i) => i.id === 'name-invalid-program')?.severity).toBe('error')
     expect(issues.find((i) => i.id === 'name-empty-base')?.severity).toBe('error')
     expect(issues.find((i) => i.id === 'name-long-pickup')?.severity).toBe('warning')
+  })
+
+  it('problemy powiązanej warstwy B nie są liczone drugi raz', () => {
+    const p = createExampleProject()
+    const [first, second] = p.layers.A.items
+    first.x = second.x
+    first.y = second.y
+    syncLinkedLayers(p)
+    const issues = validateProject(p)
+    const overlapsA = issues.filter((i) => i.layer === 'A' && !i.mirrored)
+    const overlapsB = issues.filter((i) => i.layer === 'B')
+    expect(overlapsA.length).toBeGreaterThan(0)
+    expect(overlapsB.length).toBe(overlapsA.length)
+    expect(overlapsB.every((i) => i.mirrored)).toBe(true)
+    expect(countIssues(issues).errors).toBe(overlapsA.filter((i) => i.severity === 'error').length)
+    // Po odłączeniu warstwa B odpowiada za swoje problemy samodzielnie.
+    p.layers.B!.link = null
+    expect(validateProject(p).some((i) => i.mirrored)).toBe(false)
   })
 
   it('projekt przykładowy jest poprawny', () => {

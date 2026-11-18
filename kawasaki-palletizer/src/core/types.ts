@@ -116,6 +116,8 @@ export interface Issue {
   layer?: LayerName
   itemIds?: number[]
   /** Identyfikator szybkiej poprawki dostępnej w interfejsie. */
+  /** Powtórzenie problemu warstwy A w powiązanej warstwie B – służy tylko do kolorowania, nie jest liczone ani listowane. */
+  mirrored?: boolean
   fix?: 'auto-pair' | 'renumber' | 'relink-b'
 }
 

@@ -81,7 +81,7 @@ function SingleItem({ item, editable, count }: { item: Placement; editable: bool
   const activeLayer = useStore((s) => s.activeLayer)
   const coordMode = useStore((s) => s.coordMode)
   const store = useStore.getState()
-  const { issues } = useIssues()
+  const { allIssues } = useIssues()
   const ids = { order: useId(), x: useId(), y: useId() }
 
   const validAxes = axesValid(project.pallet)
@@ -89,7 +89,7 @@ function SingleItem({ item, editable, count }: { item: Placement; editable: bool
   const base = toBase(item.x, item.y, project.pallet)
   const shown = mode === 'base' ? base : { x: item.x, y: item.y }
   const rect = placementRect(item, project.product)
-  const related = issues.filter((i) => i.layer === activeLayer && i.itemIds?.includes(item.id))
+  const related = allIssues.filter((i) => i.layer === activeLayer && i.itemIds?.includes(item.id))
   const pointName = `w${activeLayer.toLowerCase()}_cel[${item.order}]`
   const pointLine = `POINT ${pointName} = ${pointExpression(item, project)}`
 

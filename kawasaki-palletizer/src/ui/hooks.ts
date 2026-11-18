@@ -7,15 +7,16 @@ import { useStore } from '../state/store'
 export function useIssues() {
   const project = useStore((s) => s.project)
   return useMemo(() => {
-    const issues = validateProject(project)
-    return { issues, ...countIssues(issues) }
+    const allIssues = validateProject(project)
+    // `issues` – lista dla użytkownika; `allIssues` zawiera też powtórzenia z powiązanej warstwy B (kolorowanie).
+    return { issues: allIssues.filter((i) => !i.mirrored), allIssues, ...countIssues(allIssues) }
   }, [project])
 }
 
 export function useIssueSets() {
-  const { issues } = useIssues()
+  const { allIssues } = useIssues()
   const layer = useStore((s) => s.activeLayer)
-  return useMemo(() => issueItemSets(issues, layer), [issues, layer])
+  return useMemo(() => issueItemSets(allIssues, layer), [allIssues, layer])
 }
 
 export function useStats() {

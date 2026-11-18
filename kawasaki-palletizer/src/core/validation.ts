@@ -231,8 +231,10 @@ export function validateProject(project: Project): Issue[] {
   }
   issues.push(...validateLayers(project))
   for (const name of layerNames(project)) {
-    issues.push(...validateOrder(project, name))
-    issues.push(...validateGeometry(project, name))
+    const layerIssues = [...validateOrder(project, name), ...validateGeometry(project, name)]
+    // Powiązana warstwa B jest lustrzanym odbiciem A, więc jej problemy są tymi samymi problemami.
+    const mirrored = name === 'B' && project.layers.B?.link === 'rot180'
+    issues.push(...(mirrored ? layerIssues.map((i) => ({ ...i, mirrored: true })) : layerIssues))
   }
   issues.push(...validateGripper(project))
   issues.push(...validateRobot(project))
@@ -263,6 +265,7 @@ export function countIssues(issues: Issue[]): { errors: number; warnings: number
   let errors = 0
   let warnings = 0
   for (const i of issues) {
+    if (i.mirrored) continue
     if (i.severity === 'error') errors++
     else if (i.severity === 'warning') warnings++
   }
