@@ -6,7 +6,7 @@ import { getLayer } from '../../core/layers'
 import { useCursor } from '../../state/cursor'
 import { useStore } from '../../state/store'
 import { useIssues, useStats } from '../hooks'
-import { cx } from '../kit'
+import { cx } from '../cx'
 
 function Sep() {
   return <span className="h-3.5 w-px bg-line" />

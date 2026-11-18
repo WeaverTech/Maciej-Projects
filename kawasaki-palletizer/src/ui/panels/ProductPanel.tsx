@@ -3,7 +3,8 @@ import { useId, type ReactNode } from 'react'
 import { formatMm } from '../../core/format'
 import type { ProductKind } from '../../core/types'
 import { useStore } from '../../state/store'
-import { Callout, cx, Field, NumberField, Section, Switch } from '../kit'
+import { cx } from '../cx'
+import { Callout, Field, NumberField, Section, Switch } from '../kit'
 
 const KINDS: { value: ProductKind; label: string; description: string; icon: ReactNode }[] = [
   { value: 'worek', label: 'Worek', description: 'Dopuszcza kontrolowane wystawanie i nakładanie', icon: <ShoppingBag size={18} /> },

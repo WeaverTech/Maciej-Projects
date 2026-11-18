@@ -3,7 +3,8 @@ import type { ReactNode } from 'react'
 import type { IssueScope } from '../../core/types'
 import { useStore, type Step } from '../../state/store'
 import { useIssues } from '../hooks'
-import { Button, cx } from '../kit'
+import { cx } from '../cx'
+import { Button } from '../kit'
 import { GripperPanel } from '../panels/GripperPanel'
 import { LayersPanel } from '../panels/LayersPanel'
 import { PalletPanel } from '../panels/PalletPanel'
@@ -129,7 +130,9 @@ export function StepRail() {
           <h2 className="text-[15px] font-semibold tracking-tight">{current.title}</h2>
           <p className="mt-0.5 text-[12px] text-muted">{current.description}</p>
         </header>
-        <div className="min-h-0 flex-1 overflow-y-auto">{current.panel}</div>
+        <div key={current.id} className="min-h-0 flex-1 overflow-y-auto">
+          {current.panel}
+        </div>
         <footer className="flex items-center justify-between gap-2 border-t border-line bg-raised/50 px-3 py-2.5">
           <Button variant="ghost" size="sm" disabled={!previous} icon={<ArrowLeft size={14} />} onClick={() => previous && store.setStep(previous.id)}>
             Wstecz

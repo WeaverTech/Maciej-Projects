@@ -4,6 +4,7 @@ import { axesValid, CORNER_LABELS, DIRECTION_LABELS, orientationO, toBase } from
 import { projectCycles, sectionSignals } from '../core/gripper'
 import { layerSequence, sortedByOrder } from '../core/layers'
 import type { LayerName, Project } from '../core/types'
+import { useState } from 'react'
 import { useStore } from '../state/store'
 import { useIssues, useStats } from './hooks'
 import { LayerThumb } from './LayerThumb'
@@ -44,6 +45,7 @@ export function PrintReport() {
   const project = useStore((s) => s.project)
   const stats = useStats()
   const { errors, warnings } = useIssues()
+  const [printedOn] = useState(() => new Date().toLocaleDateString('pl-PL'))
   const { pallet, product, robot } = project
   const sequence = layerSequence(project)
   const cycles = projectCycles(project).cycles
@@ -72,7 +74,7 @@ export function PrintReport() {
         <p className="text-right text-[10px]">
           {APP_NAME} {APP_VERSION}
           <br />
-          {new Date().toLocaleDateString('pl-PL')}
+          {printedOn}
         </p>
       </header>
 

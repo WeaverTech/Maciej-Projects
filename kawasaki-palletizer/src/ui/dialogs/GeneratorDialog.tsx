@@ -5,7 +5,8 @@ import { DEFAULT_GENERATOR_OPTIONS, generatePatterns, type GeneratorOptions } fr
 import { CORNERS } from '../../core/geometry'
 import { ORDER_STRATEGY_LABELS, type OrderStrategy } from '../../core/layers'
 import { useStore } from '../../state/store'
-import { Button, cx, Dialog, Field, NumberField, Select } from '../kit'
+import { cx } from '../cx'
+import { Button, Dialog, Field, NumberField, Select } from '../kit'
 import { LayerThumb } from '../LayerThumb'
 
 export function GeneratorDialog() {

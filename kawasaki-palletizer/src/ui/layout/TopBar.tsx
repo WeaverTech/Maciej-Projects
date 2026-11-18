@@ -22,7 +22,8 @@ import {
 } from 'lucide-react'
 import { copyAsCode, loadExample, newProject, openProject, saveAsCode, saveProject } from '../../state/actions'
 import { isDirty, useStore, type ViewMode } from '../../state/store'
-import { Button, cx, IconButton, Menu, Segmented } from '../kit'
+import { cx } from '../cx'
+import { Button, IconButton, Menu, Segmented } from '../kit'
 
 function Logo() {
   return (

@@ -1,9 +1,10 @@
 import { Check, Info, Wand2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { cyclesLabel } from '../../core/format'
 import { autoPairCycles, parseCycles, type Cycle, type Section } from '../../core/gripper'
 import { sortedByOrder } from '../../core/layers'
 import { useStore } from '../../state/store'
-import { Button, Callout, cx, Dialog, Segmented } from '../kit'
+import { Button, Callout, Dialog, Segmented } from '../kit'
 import { LayerThumb } from '../LayerThumb'
 
 interface Row {
@@ -174,7 +175,7 @@ export function CyclesDialog() {
               </Callout>
             ) : (
               <Callout tone="success" icon={<Check size={15} />}>
-                <span className={cx('font-medium')}>Konfiguracja poprawna</span> – {cycleCount} {cycleCount === 1 ? 'cykl' : 'cykli/cykle'} na warstwę.
+                <span className="font-medium">Konfiguracja poprawna</span> – {cyclesLabel(cycleCount)} na warstwę.
               </Callout>
             )}
           </aside>

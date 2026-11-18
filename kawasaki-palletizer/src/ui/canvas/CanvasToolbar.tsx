@@ -14,7 +14,8 @@ import {
   Trash2,
 } from 'lucide-react'
 import { isLayerEditable, useStore } from '../../state/store'
-import { Button, cx, IconButton } from '../kit'
+import { cx } from '../cx'
+import { Button, IconButton } from '../kit'
 
 const GRID_STEPS = [10, 25, 50, 100]
 

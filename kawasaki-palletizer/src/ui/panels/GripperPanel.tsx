@@ -3,7 +3,8 @@ import { useId } from 'react'
 import { cyclesLabel } from '../../core/format'
 import { parseSignal, projectCycles } from '../../core/gripper'
 import { useStore } from '../../state/store'
-import { Badge, Button, Callout, cx, Field, NumberField, Section, Segmented, TextField } from '../kit'
+import { cx } from '../cx'
+import { Badge, Button, Callout, Field, NumberField, Section, Segmented, TextField } from '../kit'
 
 export function GripperPanel() {
   const robot = useStore((s) => s.project.robot)

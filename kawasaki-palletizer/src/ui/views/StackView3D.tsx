@@ -10,7 +10,7 @@ import { getLayer, layerSequence, sortedByOrder } from '../../core/layers'
 import type { Project } from '../../core/types'
 import { useStore } from '../../state/store'
 import { useResolvedTheme, useStats } from '../hooks'
-import { cx, IconButton } from '../kit'
+import { IconButton } from '../kit'
 
 const MM = 0.001
 const PALLET_HEIGHT = 144
@@ -33,7 +33,6 @@ interface Built {
   products: THREE.Mesh[]
   /** Przekładki z indeksem produktu, po którym się pojawiają. */
   sheets: { mesh: THREE.Mesh; after: number }[]
-  layerEnds: number[]
   center: THREE.Vector3
   radius: number
   top: number
@@ -138,7 +137,6 @@ function buildStack(project: Project, palette: Palette): { group: THREE.Group; b
 
   const products: THREE.Mesh[] = []
   const sheets: Built['sheets'] = []
-  const layerEnds: number[] = []
   const sequence = layerSequence(project)
   let top = PALLET_HEIGHT
 
@@ -164,7 +162,6 @@ function buildStack(project: Project, palette: Palette): { group: THREE.Group; b
       group.add(mesh)
       products.push(mesh)
     }
-    layerEnds.push(products.length)
     top = z0 + visualHeight
   })
 
@@ -207,7 +204,23 @@ function buildStack(project: Project, palette: Palette): { group: THREE.Group; b
 
   const center = new THREE.Vector3((pallet.length / 2) * MM, (top / 2) * MM, (pallet.width / 2) * MM)
   const radius = Math.hypot(pallet.length, pallet.width, top) * 0.5 * MM
-  return { group, built: { products, sheets, layerEnds, center, radius, top } }
+  return { group, built: { products, sheets, center, radius, top } }
+}
+
+function webglAvailable(): boolean {
+  try {
+    const canvas = document.createElement('canvas')
+    return !!(canvas.getContext('webgl2') ?? canvas.getContext('webgl'))
+  } catch {
+    return false
+  }
+}
+
+function applyProgress(built: Built, shown: number) {
+  built.products.forEach((mesh, idx) => {
+    mesh.visible = idx < shown
+  })
+  for (const sheet of built.sheets) sheet.mesh.visible = sheet.after < shown || shown >= built.products.length
 }
 
 type CameraPreset = 'iso' | 'top' | 'front'
@@ -238,23 +251,28 @@ export function StackView3D() {
   const hostRef = useRef<HTMLDivElement>(null)
   const engineRef = useRef<Engine | null>(null)
   const builtRef = useRef<Built | null>(null)
-  const [failed, setFailed] = useState(false)
-  const [total, setTotal] = useState(0)
-  const [shown, setShown] = useState(0)
-  const [playing, setPlaying] = useState(false)
-  const [layerEnds, setLayerEnds] = useState<number[]>([])
+  const [failed] = useState(() => !webglAvailable())
+  /** Liczba ułożonych produktów w podglądzie; `null` = cały stos. */
+  const [progress, setProgress] = useState<number | null>(null)
+  const [playRequested, setPlayRequested] = useState(false)
+
+  const layerEnds = useMemo(
+    () =>
+      layerSequence(project).reduce<number[]>((ends, name) => {
+        ends.push((ends[ends.length - 1] ?? 0) + getLayer(project, name).items.length)
+        return ends
+      }, []),
+    [project],
+  )
+  const total = layerEnds[layerEnds.length - 1] ?? 0
+  const shown = progress === null ? total : Math.min(progress, total)
+  const playing = playRequested && shown < total
 
   /* silnik renderujący – tworzony raz */
   useEffect(() => {
     const host = hostRef.current
-    if (!host) return
-    let renderer: THREE.WebGLRenderer
-    try {
-      renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
-    } catch {
-      setFailed(true)
-      return
-    }
+    if (!host || failed) return
+    const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
@@ -323,10 +341,7 @@ export function StackView3D() {
       renderer.domElement.remove()
       engineRef.current = null
     }
-  }, [])
-
-  const playingRef = useRef(playing)
-  playingRef.current = playing
+  }, [failed])
 
   /* przebudowa sceny po zmianie projektu lub motywu */
   useEffect(() => {
@@ -361,37 +376,22 @@ export function StackView3D() {
       engine.controls.target.copy(built.center)
       engine.controls.update()
     }
-    setTotal(built.products.length)
-    setLayerEnds(built.layerEnds)
-    setShown((s) => (playingRef.current ? Math.min(s, built.products.length) : built.products.length))
     engine.render()
   }, [project, theme])
 
   /* widoczność produktów */
   useEffect(() => {
     const engine = engineRef.current
-    const built = builtRef.current
-    if (!engine || !built) return
-    built.products.forEach((mesh, idx) => {
-      mesh.visible = idx < shown
-    })
-    for (const sheet of built.sheets) sheet.mesh.visible = sheet.after < shown || shown === built.products.length
+    if (!engine || !builtRef.current) return
+    applyProgress(builtRef.current, shown)
     engine.render()
-  }, [shown, total, theme, project])
+  }, [shown, theme, project])
 
   /* animacja układania */
   useEffect(() => {
     if (!playing) return
     const interval = Math.max(40, Math.min(260, 9000 / Math.max(1, total)))
-    const timer = setInterval(() => {
-      setShown((s) => {
-        if (s >= total) {
-          setPlaying(false)
-          return s
-        }
-        return s + 1
-      })
-    }, interval)
+    const timer = setInterval(() => setProgress((p) => (p === null ? null : p + 1)), interval)
     return () => clearInterval(timer)
   }, [playing, total])
 
@@ -461,8 +461,12 @@ export function StackView3D() {
               aria-label={playing ? 'Wstrzymaj animację' : 'Odtwórz układanie'}
               data-testid="stack-play"
               onClick={() => {
-                if (!playing && shown >= total) setShown(0)
-                setPlaying((p) => !p)
+                if (playing) {
+                  setPlayRequested(false)
+                } else {
+                  setProgress(shown >= total ? 0 : shown)
+                  setPlayRequested(true)
+                }
               }}
               className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-accent text-accent-fg shadow-soft transition-colors hover:bg-accent-hover"
             >
@@ -473,8 +477,8 @@ export function StackView3D() {
               size="sm"
               tipSide="top"
               onClick={() => {
-                setPlaying(false)
-                setShown(total)
+                setPlayRequested(false)
+                setProgress(null)
               }}
             >
               <RotateCcw size={15} />
@@ -487,12 +491,12 @@ export function StackView3D() {
               max={total}
               value={shown}
               onChange={(e) => {
-                setPlaying(false)
-                setShown(Number(e.target.value))
+                setPlayRequested(false)
+                setProgress(Number(e.target.value))
               }}
               className="h-1.5 min-w-0 flex-1 cursor-pointer accent-(--accent)"
             />
-            <div className={cx('w-44 shrink-0 text-right text-[12px] leading-tight tabular-nums')} data-testid="stack-progress">
+            <div className="w-44 shrink-0 text-right text-[12px] leading-tight tabular-nums" data-testid="stack-progress">
               <p className="font-semibold">
                 {shown} / {total} szt.
               </p>

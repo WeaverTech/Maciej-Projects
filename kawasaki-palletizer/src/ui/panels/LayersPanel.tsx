@@ -6,7 +6,8 @@ import { compareAB, layerSequence, ORDER_STRATEGY_LABELS, type OrderStrategy } f
 import type { Corner } from '../../core/types'
 import { isLayerEditable, useStore } from '../../state/store'
 import { useStats } from '../hooks'
-import { Badge, Button, Callout, cx, Field, NumberField, Section, Select, Switch, TextField } from '../kit'
+import { cx } from '../cx'
+import { Badge, Button, Callout, Field, NumberField, Section, Select, Switch, TextField } from '../kit'
 
 export function LayersPanel() {
   const project = useStore((s) => s.project)

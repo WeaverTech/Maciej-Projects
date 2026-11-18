@@ -1,6 +1,7 @@
 import { CircleAlert, CircleCheck, Info, X } from 'lucide-react'
 import { useStore } from '../../state/store'
-import { Button, cx, Dialog } from '../kit'
+import { cx } from '../cx'
+import { Button, Dialog } from '../kit'
 
 export function ConfirmDialog() {
   const confirm = useStore((s) => s.confirm)

@@ -9,10 +9,7 @@ import {
   type KeyboardEvent,
   type ReactNode,
 } from 'react'
-
-export function cx(...parts: (string | false | null | undefined)[]): string {
-  return parts.filter(Boolean).join(' ')
-}
+import { cx } from './cx'
 
 /* ------------------------------------------------------------------ przyciski */
 
@@ -187,13 +184,11 @@ export function NumberField({
   integer,
 }: NumberFieldProps) {
   const digits = integer ? 0 : decimals
-  const [text, setText] = useState(() => formatNumber(value, digits))
-  const [focused, setFocused] = useState(false)
+  // Podczas edycji pole pokazuje wpisywany tekst, poza edycją – zawsze bieżącą wartość z projektu.
+  const [draft, setDraft] = useState<string | null>(null)
   const [invalid, setInvalid] = useState(false)
-
-  useEffect(() => {
-    if (!focused) setText(formatNumber(value, digits))
-  }, [value, digits, focused])
+  const text = draft ?? formatNumber(value, digits)
+  const setText = (next: string) => setDraft(next)
 
   const clamp = (n: number) => {
     let v = integer ? Math.round(n) : n
@@ -250,12 +245,12 @@ export function NumberField({
           setInvalid(e.target.value.trim() !== '' && parseNumber(e.target.value) === null)
         }}
         onFocus={(e) => {
-          setFocused(true)
+          setDraft(formatNumber(value, digits))
           e.currentTarget.select()
         }}
         onBlur={() => {
-          setFocused(false)
           commit(text)
+          setDraft(null)
         }}
         onKeyDown={onKeyDown}
         className={cx(INPUT_BASE, 'tabular-nums', unit && 'pr-9', invalid && 'border-danger focus:border-danger focus:ring-danger/20')}

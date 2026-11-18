@@ -5,7 +5,8 @@ import { axesValid, toBase } from '../../core/geometry'
 import { sectionByProduct } from '../../core/gripper'
 import { getLayer, sortedByOrder } from '../../core/layers'
 import { isLayerEditable, useStore } from '../../state/store'
-import { cx, IconButton, Segmented } from '../kit'
+import { cx } from '../cx'
+import { IconButton, Segmented } from '../kit'
 
 export function OrderPanel() {
   const project = useStore((s) => s.project)

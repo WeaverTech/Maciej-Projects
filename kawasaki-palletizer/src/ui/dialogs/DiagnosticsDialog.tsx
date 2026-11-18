@@ -4,7 +4,8 @@ import { APP_NAME, APP_VERSION, PROJECT_FORMAT_VERSION } from '../../core/defaul
 import { clearLog, environmentInfo, getLog, logAsText, subscribeLog } from '../../state/diagnostics'
 import { copyText, downloadText } from '../../state/fileAccess'
 import { useStore } from '../../state/store'
-import { Badge, Button, cx, Dialog } from '../kit'
+import { cx } from '../cx'
+import { Badge, Button, Dialog } from '../kit'
 
 export function DiagnosticsDialog() {
   const log = useSyncExternalStore(subscribeLog, getLog, getLog)

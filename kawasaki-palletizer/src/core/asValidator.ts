@@ -21,7 +21,7 @@ export function validateAs(code: string): AsIssue[] {
   code.split('\n').forEach((raw, idx) => {
     const n = idx + 1
     const trimmed = raw.trim()
-    if (/[^\x09\x20-\x7e]/.test(raw)) {
+    if (/[^\t -~]/.test(raw)) {
       issues.push({ severity: 'warning', message: 'Znaki spoza ASCII mogą nie zostać przyjęte przez kontroler', line: n })
     }
     if (!trimmed || trimmed.startsWith(';')) return

@@ -7,7 +7,8 @@ import { CORNER_LABELS, DIRECTION_LABELS, zAxisDirection } from '../../core/geom
 import { copyAsCode, saveAsCode } from '../../state/actions'
 import { useStore } from '../../state/store'
 import { useIssues, useStats } from '../hooks'
-import { Button, Callout, cx } from '../kit'
+import { cx } from '../cx'
+import { Button, Callout } from '../kit'
 
 const TOKEN =
   /(;.*$)|(\.PROGRAM\b|\.END\b|\b(?:FOR|TO|IF|THEN|ELSE|END|ALWAYS|MOD|AND|OR|BY|CALL)\b)|(\b(?:JMOVE|LMOVE|SPEED|ACCEL|DECEL|TWAIT|POINT|SHIFT|TRANS|INT)\b)|(\bSIGNAL\b)|(\.[a-z_][a-z0-9_]*)|((?<![A-Za-z_\]])-?\d+(?:\.\d+)?)/g
@@ -50,9 +51,10 @@ export function AsCodeView() {
   const [checked, setChecked] = useState<boolean[]>(() => CHECKLIST.map(() => false))
   const [activeLine, setActiveLine] = useState<number | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [today] = useState(() => new Date())
 
   const blockers = useMemo(() => exportBlockers(project), [project])
-  const code = useMemo(() => (blockers.length ? null : renderAs(project, { date: new Date() })), [project, blockers])
+  const code = useMemo(() => (blockers.length ? null : renderAs(project, { date: today })), [project, blockers, today])
   const lines = useMemo(() => (code ? code.replace(/\n$/, '').split('\n') : []), [code])
   const asIssues = useMemo(() => (code ? validateAs(code).filter((i) => i.severity === 'error') : []), [code])
   const zDir = zAxisDirection(project.pallet)

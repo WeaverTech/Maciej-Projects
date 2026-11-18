@@ -4,7 +4,8 @@ import { errorsLabel, warningsLabel } from '../../core/format'
 import type { Issue, IssueScope } from '../../core/types'
 import { useStore, type Step } from '../../state/store'
 import { useIssues } from '../hooks'
-import { Button, cx } from '../kit'
+import { cx } from '../cx'
+import { Button } from '../kit'
 
 const SCOPE_LABELS: Record<IssueScope, string> = {
   geometry: 'Geometria',

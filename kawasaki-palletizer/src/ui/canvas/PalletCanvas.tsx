@@ -10,7 +10,8 @@ import { loadExample } from '../../state/actions'
 import { useCursor } from '../../state/cursor'
 import { isLayerEditable, useStore } from '../../state/store'
 import { useIssueSets } from '../hooks'
-import { Button, cx, IconButton } from '../kit'
+import { cx } from '../cx'
+import { Button, IconButton } from '../kit'
 import { CanvasViewOptions } from './CanvasToolbar'
 
 const MIN_ZOOM = 0.04
@@ -401,6 +402,10 @@ export function PalletCanvas() {
 
   const base = origin(pallet)
   const validAxes = axesValid(pallet)
+  // Zaznaczone produkty są rysowane na wierzchu, żeby sąsiedzi nie zasłaniali ich obrysu.
+  const drawOrder = selection.length
+    ? [...layer.items].sort((a, b) => Number(selection.includes(a.id)) - Number(selection.includes(b.id)))
+    : layer.items
   const cursorClass =
     panning ? 'cursor-grabbing' : tool === 'measure' ? 'cursor-crosshair' : tool === 'order' ? 'cursor-pointer' : 'cursor-default'
 
@@ -479,7 +484,7 @@ export function PalletCanvas() {
           })}
 
         {/* Produkty */}
-        {layer.items.map((item) => (
+        {drawOrder.map((item) => (
           <ItemShape
             key={item.id}
             item={item}
@@ -709,8 +714,8 @@ function ItemShape({
           height={h + 6}
           rx={radius + 3}
           fill="none"
-          stroke="color-mix(in srgb, var(--accent) 35%, transparent)"
-          strokeWidth={4}
+          stroke="color-mix(in srgb, var(--accent) 42%, transparent)"
+          strokeWidth={5}
         />
       )}
       {/* Obrót przeciwny do zegara patrząc z góry – w SVG oś Y jest skierowana w dół. */}
@@ -721,9 +726,9 @@ function ItemShape({
           width={Math.max(1, length - 1.5)}
           height={Math.max(1, width - 1.5)}
           rx={radius}
-          fill={colors.fill}
+          fill={selected ? `color-mix(in srgb, var(--accent) 24%, ${colors.fill})` : colors.fill}
           stroke={selected ? 'var(--accent)' : colors.edge}
-          strokeWidth={selected ? 2.25 : 1.5}
+          strokeWidth={selected ? 2.5 : 1.5}
         />
         {kind === 'worek' ? (
           <>
@@ -782,7 +787,7 @@ function AxisArrow({ x, y, dir, color, label }: { x: number; y: number; dir: rea
         strokeWidth={1}
       />
       <text
-        x={ex + dir[0] * 22 + px * 0}
+        x={ex + dir[0] * 22}
         y={ey + dir[1] * 20}
         textAnchor="middle"
         dominantBaseline="central"

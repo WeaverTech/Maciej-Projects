@@ -13,7 +13,8 @@ import {
 } from '../../core/geometry'
 import type { Corner, Direction, Pallet } from '../../core/types'
 import { useStore } from '../../state/store'
-import { Button, Callout, cx, Field, NumberField, Section, Select } from '../kit'
+import { cx } from '../cx'
+import { Button, Callout, Field, NumberField, Section, Select } from '../kit'
 
 const ARROWS: Record<Direction, ReactNode> = {
   prawo: <ArrowRight size={15} />,
