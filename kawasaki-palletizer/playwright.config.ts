@@ -12,7 +12,8 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     // Lokalnie używany jest zainstalowany Chrome; w CI – Chromium pobrany przez `npx playwright install chromium`.
-    channel: process.env.PW_CHANNEL ?? (process.env.CI ? undefined : 'chrome'),
+    // PW_CHANNEL wymusza kanał; pusta wartość (`PW_CHANNEL=`) oznacza Chromium także lokalnie.
+    channel: process.env.PW_CHANNEL === undefined ? (process.env.CI ? undefined : 'chrome') : process.env.PW_CHANNEL || undefined,
     viewport: { width: 1440, height: 900 },
     locale: 'pl-PL',
     trace: 'retain-on-failure',
