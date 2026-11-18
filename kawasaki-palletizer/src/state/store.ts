@@ -26,7 +26,7 @@ export type ViewMode = 'layout' | 'stack' | 'code'
 export type Step = 'pallet' | 'product' | 'layers' | 'gripper' | 'robot'
 export type RightTab = 'selection' | 'order' | 'validation'
 export type Tool = 'select' | 'measure' | 'order'
-export type DialogId = 'generator' | 'cycles' | 'shortcuts' | 'diagnostics' | 'report' | 'welcome'
+export type DialogId = 'generator' | 'cycles' | 'shortcuts' | 'diagnostics'
 export type ThemePref = 'light' | 'dark' | 'system'
 export type CoordMode = 'board' | 'base'
 
