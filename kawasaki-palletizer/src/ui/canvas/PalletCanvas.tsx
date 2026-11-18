@@ -1,7 +1,7 @@
 import { Link2Off, Maximize, Minus, Plus, Sparkles, SquarePlus } from 'lucide-react'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { formatMm } from '../../core/format'
-import { cornerPoint, CORNERS, origin, placementRect, rectsBounds, rectsIntersect, VECTORS, axesValid } from '../../core/geometry'
+import { axesValid, cornerPoint, CORNERS, origin, placementRect, pointInRect, rectsBounds, rectsIntersect, VECTORS } from '../../core/geometry'
 import { sectionByProduct } from '../../core/gripper'
 import { getLayer } from '../../core/layers'
 import { snapMeasurePoint, snapMove, type Guide } from '../../core/snapping'
@@ -361,13 +361,14 @@ export function PalletCanvas() {
 
   const onDoubleClick = (e: React.MouseEvent<SVGSVGElement>) => {
     if (tool !== 'select' || !editable) return
-    const target = (e.target as Element).closest('[data-item-id]')
     const store = useStore.getState()
-    if (target) {
-      store.select([Number(target.getAttribute('data-item-id'))])
+    const mm = toMm(e.clientX, e.clientY)
+    // Test trafienia po współrzędnych: przy przechwyconym wskaźniku celem zdarzenia bywa całe płótno.
+    const hit = [...itemRects].reverse().find((r) => pointInRect(mm, r.rect))
+    if (hit) {
+      store.select([hit.item.id])
       store.rotateSelected(90)
     } else {
-      const mm = toMm(e.clientX, e.clientY)
       const step = grid ? gridStep : 1
       store.addItem({ x: Math.round(mm.x / step) * step, y: Math.round(mm.y / step) * step })
     }

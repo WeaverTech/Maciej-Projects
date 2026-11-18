@@ -8,7 +8,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile'
 export default defineConfig(({ mode }) => {
   const standalone = mode === 'standalone'
   return {
-    base: standalone ? './' : process.env.DEPLOY_BASE || '/',
+    base: process.env.DEPLOY_BASE || './',
     plugins: [react(), tailwindcss(), ...(standalone ? [viteSingleFile()] : [])],
     build: standalone
       ? {
