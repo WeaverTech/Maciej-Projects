@@ -1,4 +1,3 @@
-import { ListOrdered, MousePointerClick, ShieldCheck } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useStore, type RightTab } from '../../state/store'
 import { useIssues } from '../hooks'
@@ -13,18 +12,16 @@ export function RightPanel() {
   const setTab = useStore((s) => s.setRightTab)
   const { errors, warnings } = useIssues()
 
-  const tabs: { id: RightTab; label: string; icon: ReactNode; badge?: ReactNode }[] = [
+  const tabs: { id: RightTab; label: string; badge?: ReactNode }[] = [
     {
       id: 'selection',
       label: 'Zaznaczenie',
-      icon: <MousePointerClick size={14} />,
       badge: selectionCount > 0 ? <span className="rounded-full bg-accent px-1.5 text-[10px] font-bold text-accent-fg">{selectionCount}</span> : null,
     },
-    { id: 'order', label: 'Kolejność', icon: <ListOrdered size={14} /> },
+    { id: 'order', label: 'Kolejność' },
     {
       id: 'validation',
       label: 'Walidacja',
-      icon: <ShieldCheck size={14} />,
       badge:
         errors > 0 ? (
           <span className="rounded-full bg-danger px-1.5 text-[10px] font-bold text-white">{errors}</span>
@@ -48,11 +45,10 @@ export function RightPanel() {
               data-testid={`tab-${t.id}`}
               onClick={() => setTab(t.id)}
               className={cx(
-                'relative flex flex-1 items-center justify-center gap-1.5 text-[12.5px] font-medium transition-colors',
+                'relative flex flex-1 items-center justify-center gap-1.5 text-[13px] font-medium transition-colors',
                 active ? 'text-fg' : 'text-muted hover:text-fg',
               )}
             >
-              {t.icon}
               {t.label}
               {t.badge}
               {active && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-accent" />}

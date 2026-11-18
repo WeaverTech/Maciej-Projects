@@ -513,13 +513,20 @@ export function PalletCanvas() {
         )}
 
         {/* Linie przyciągania */}
-        {guides.map((g, idx) =>
-          g.axis === 'x' ? (
-            <line key={idx} x1={sx(g.pos)} x2={sx(g.pos)} y1={sy(g.from) - 14} y2={sy(g.to) + 14} stroke="var(--accent)" strokeWidth={1} strokeDasharray="4 3" pointerEvents="none" />
-          ) : (
-            <line key={idx} x1={sx(g.from) - 14} x2={sx(g.to) + 14} y1={sy(g.pos)} y2={sy(g.pos)} stroke="var(--accent)" strokeWidth={1} strokeDasharray="4 3" pointerEvents="none" />
-          ),
-        )}
+        {guides.map((g, idx) => {
+          const horizontal = g.axis === 'y'
+          const a = (horizontal ? sx(g.from) : sy(g.from)) - 26
+          const b = (horizontal ? sx(g.to) : sy(g.to)) + 26
+          const p = horizontal ? sy(g.pos) : sx(g.pos)
+          return (
+            <g key={idx} pointerEvents="none" stroke="var(--guide)" strokeWidth={1.5} strokeLinecap="round">
+              {horizontal ? <line x1={a} x2={b} y1={p} y2={p} /> : <line x1={p} x2={p} y1={a} y2={b} />}
+              {[a, b].map((end) =>
+                horizontal ? <line key={end} x1={end} x2={end} y1={p - 4} y2={p + 4} /> : <line key={end} x1={p - 4} x2={p + 4} y1={end} y2={end} />,
+              )}
+            </g>
+          )
+        })}
 
         {marquee && (
           <rect

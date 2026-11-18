@@ -200,7 +200,7 @@ function BasePicker({ pallet, onCorner }: { pallet: Pallet; onCorner: (corner: C
   const [bx, by] = pos[pallet.baseCorner]
   const arrow = (dir: Direction, color: string, label: string) => {
     const v = VECTORS[dir]
-    const len = Math.min(46, (Math.abs(v[0]) ? boxW : boxH) * 0.42)
+    const len = Math.min(40, (Math.abs(v[0]) ? boxW : boxH) * 0.42)
     const ex = bx + v[0] * len
     const ey = by + v[1] * len
     return (
@@ -210,7 +210,7 @@ function BasePicker({ pallet, onCorner }: { pallet: Pallet; onCorner: (corner: C
           d={`M ${ex + v[0] * 7} ${ey + v[1] * 7} L ${ex - v[1] * 4.5} ${ey + v[0] * 4.5} L ${ex + v[1] * 4.5} ${ey - v[0] * 4.5} Z`}
           fill={color}
         />
-        <text x={ex + v[0] * 17} y={ey + v[1] * 17} textAnchor="middle" dominantBaseline="central" fontSize={10.5} fontWeight={700} fill={color}>
+        <text x={ex + v[0] * 16} y={ey + v[1] * 15} textAnchor="middle" dominantBaseline="central" fontSize={10.5} fontWeight={700} fill={color}>
           {label}
         </text>
       </g>
@@ -219,7 +219,7 @@ function BasePicker({ pallet, onCorner }: { pallet: Pallet; onCorner: (corner: C
 
   return (
     <div className="relative mx-auto" style={{ width: W, height: H }} data-testid="base-picker">
-      <svg width={W} height={H} className="absolute inset-0">
+      <svg width={W} height={H} className="absolute inset-0 overflow-visible">
         <rect x={x0} y={y0} width={boxW} height={boxH} rx={5} fill="var(--pallet)" stroke="var(--pallet-edge)" strokeWidth={1.25} />
         {[1, 2, 3].map((i) => (
           <line key={i} x1={x0} x2={x0 + boxW} y1={y0 + (boxH * i) / 4} y2={y0 + (boxH * i) / 4} stroke="var(--pallet-plank)" strokeWidth={1.5} />
